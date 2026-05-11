@@ -62,11 +62,11 @@ export function ClosingSection() {
         {/* Top strip - Confidential notice */}
         <div className="bg-[#0a0a0a] py-3 border-b border-white/10">
           <div className="flex items-center justify-center gap-2">
-            <Lock className="w-4 h-4 text-amber-600" />
-            <span className="text-xs font-bold uppercase tracking-widest text-amber-600">
+            <Lock className="w-4 h-4 text-primary" />
+            <span className="text-xs font-bold uppercase tracking-widest text-primary">
               Confidential — Internal Use Only
             </span>
-            <Lock className="w-4 h-4 text-amber-600" />
+            <Lock className="w-4 h-4 text-primary" />
           </div>
         </div>
         
