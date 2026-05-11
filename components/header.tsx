@@ -3,6 +3,28 @@
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 
+// Accenture logo SVG - the ">" chevron
+function AccentureLogo() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="flex-shrink-0">
+      <path d="M5 2L19 12L5 22V2Z" fill="currentColor" />
+    </svg>
+  )
+}
+
+// HSBC logo SVG - red hexagon with white triangles
+function HSBCLogo() {
+  return (
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" className="flex-shrink-0">
+      <rect width="32" height="32" fill="#DB0011" />
+      <polygon points="0,0 16,0 0,16" fill="white" />
+      <polygon points="32,32 16,32 32,16" fill="white" />
+      <polygon points="32,0 16,0 32,16" fill="white" />
+      <polygon points="0,32 16,32 0,16" fill="white" />
+    </svg>
+  )
+}
+
 export function Header() {
   const [scrolled, setScrolled] = useState(false)
 
@@ -28,10 +50,18 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <div className="flex items-center gap-3">
-            <div className="text-xl font-bold text-primary tracking-tight font-[family-name:var(--font-display)]">Accenture</div>
-            <span className="text-muted-foreground">×</span>
-            <div className="text-xl font-bold text-[#DB0011] tracking-tight font-[family-name:var(--font-display)]">HSBC</div>
+          <div className="flex items-center gap-4">
+            {/* Accenture logo with wordmark */}
+            <div className="flex items-center gap-1.5 text-primary">
+              <AccentureLogo />
+              <span className="text-lg font-semibold tracking-tight">accenture</span>
+            </div>
+            
+            {/* Divider */}
+            <div className="w-px h-6 bg-muted-foreground/30" />
+            
+            {/* HSBC logo */}
+            <HSBCLogo />
           </div>
 
           {/* Navigation indicator */}
