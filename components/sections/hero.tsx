@@ -23,12 +23,10 @@ export function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            {/* Subscript badge */}
-            <img 
-              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-YJ8p4ikyDckYScIN9OL2YKVbY9gp5x.png" 
-              alt="Accenture × HSBC Proposal"
-              className="h-8 md:h-10 w-auto mb-4"
-            />
+            {/* Subscript */}
+            <p className="text-sm md:text-base text-white/70 uppercase tracking-widest mb-4 font-medium">
+              Accenture x HSBC Proposal
+            </p>
             
             {/* Main headline */}
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-[1.1] text-balance tracking-tight font-[family-name:var(--font-display)]">
