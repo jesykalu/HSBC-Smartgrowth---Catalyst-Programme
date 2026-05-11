@@ -14,12 +14,12 @@ export default function ProposalPage() {
     <main className="min-h-screen">
       <Header />
       <HeroSection />
+      <DemoIntroSection />
+      <PhoneDemoSection />
       <ProblemSection />
       <PointOfViewSection />
       <SolutionSection />
       <BenefitsSection />
-      <DemoIntroSection />
-      <PhoneDemoSection />
       <ImplementationSection />
       <ClosingSection />
     </main>

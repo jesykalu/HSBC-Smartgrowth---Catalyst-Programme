@@ -2,15 +2,79 @@
 
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { ChevronLeft, ChevronRight, Check, FileText, Scan, Shield, CreditCard, PiggyBank, TrendingUp, Sparkles } from "lucide-react"
+import { ChevronLeft, ChevronRight, Check, FileText, Scan, Shield, PiggyBank, TrendingUp, Sparkles, ChevronUp, Send, X, Info } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
-// Stage 1 screens
+// Chat messages for each screen
+const chatMessages: Record<number, string> = {
+  1: "Hi Jes! I can see you have some idle funds. Would you like me to help you make the most of them?",
+  2: "Based on your goal of saving for a home, I'd suggest looking at options that balance security with growth.",
+  3: "Your financial profile looks strong! You have a good savings pattern which opens up several options.",
+  4: "The Smart Split Strategy combines security with growth potential. Does this approach make sense for your goals?",
+  5: "This allocation protects £6,000 with guaranteed returns while giving £4,000 growth potential. Any questions?",
+  6: "Great progress! All compliance checks are complete. We just need to verify your identity.",
+  7: "Everything looks good! Take a moment to review the details before confirming.",
+  8: "Congratulations on setting up your plan! I'm here if you have any questions going forward.",
+}
+
+// Stage 1 screens with new goal screen and enhanced screen 5
 const stage1Screens = [
+  {
+    id: 0,
+    title: "Financial Goals",
+    content: ({ onGoalSelect, selectedGoal }: { onGoalSelect: (goal: string) => void; selectedGoal: string | null }) => (
+      <div className="p-4">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 mb-4">
+          <div className="flex items-start gap-3 mb-4">
+            <div className="w-10 h-10 rounded-full bg-[#DB0011]/10 flex items-center justify-center">
+              <Sparkles className="w-5 h-5 text-[#DB0011]" />
+            </div>
+            <div>
+              <div className="font-semibold text-gray-900">HSBC AI</div>
+              <div className="text-sm text-gray-500">Just now</div>
+            </div>
+          </div>
+          <p className="text-gray-700 leading-relaxed">
+            Hi Jes! Before we look at your finances, what matters most to you right now?
+          </p>
+        </div>
+        <div className="space-y-3">
+          {[
+            { id: "save", label: "Save more money", emoji: "💰" },
+            { id: "holiday", label: "Plan a holiday", emoji: "✈️" },
+            { id: "returns", label: "Get better returns", emoji: "📈" },
+            { id: "home", label: "Save for a home", emoji: "🏠" },
+          ].map((goal) => (
+            <button
+              key={goal.id}
+              onClick={() => onGoalSelect(goal.id)}
+              className={`w-full p-4 rounded-xl border-2 transition-all text-left flex items-center gap-3 ${
+                selectedGoal === goal.id
+                  ? "border-[#DB0011] bg-[#DB0011]/5"
+                  : "border-gray-100 bg-white hover:border-gray-200"
+              }`}
+            >
+              <span className="text-2xl">{goal.emoji}</span>
+              <span className="font-medium text-gray-900">{goal.label}</span>
+              {selectedGoal === goal.id && (
+                <Check className="w-5 h-5 text-[#DB0011] ml-auto" />
+              )}
+            </button>
+          ))}
+        </div>
+        {selectedGoal && (
+          <button className="w-full mt-6 py-3 rounded-xl bg-[#DB0011] text-white font-semibold flex items-center justify-center gap-2">
+            Next
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        )}
+      </div>
+    ),
+  },
   {
     id: 1,
     title: "Account Overview",
-    content: (
+    content: () => (
       <div className="p-4">
         <div className="text-sm text-gray-500 mb-1">Current Account</div>
         <div className="text-3xl font-bold text-gray-900 mb-4">£18,500</div>
@@ -28,7 +92,7 @@ const stage1Screens = [
   {
     id: 2,
     title: "AI Insight",
-    content: (
+    content: () => (
       <div className="p-4">
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
           <div className="flex items-start gap-3 mb-4">
@@ -54,7 +118,7 @@ const stage1Screens = [
   {
     id: 3,
     title: "Your Profile",
-    content: (
+    content: () => (
       <div className="p-4">
         <div className="text-lg font-semibold text-gray-900 mb-4">Your Financial Profile</div>
         <div className="space-y-3">
@@ -75,7 +139,7 @@ const stage1Screens = [
   {
     id: 4,
     title: "Recommendations",
-    content: (
+    content: () => (
       <div className="p-4">
         <div className="text-lg font-semibold text-gray-900 mb-4">Recommended Products</div>
         <div className="space-y-3">
@@ -106,7 +170,7 @@ const stage1Screens = [
   {
     id: 5,
     title: "Your Plan",
-    content: (
+    content: ({ showInfoCard, setShowInfoCard, onDiscuss }: { showInfoCard: boolean; setShowInfoCard: (show: boolean) => void; onDiscuss: () => void }) => (
       <div className="p-4">
         <div className="text-lg font-semibold text-gray-900 mb-4">Suggested Allocation</div>
         <div className="space-y-4">
@@ -129,18 +193,60 @@ const stage1Screens = [
             </div>
           </div>
         </div>
-        <button className="w-full mt-6 py-3 rounded-xl bg-[#DB0011] text-white font-semibold">Continue</button>
+        
+        {/* Info card when "Find out more" is clicked */}
+        <AnimatePresence>
+          {showInfoCard && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              className="mt-4 p-4 rounded-xl bg-blue-50 border border-blue-200 relative"
+            >
+              <button 
+                onClick={() => setShowInfoCard(false)}
+                className="absolute top-2 right-2 p-1 rounded-full hover:bg-blue-100"
+              >
+                <X className="w-4 h-4 text-blue-600" />
+              </button>
+              <div className="flex items-start gap-2 mb-2">
+                <Shield className="w-5 h-5 text-blue-600 mt-0.5" />
+                <div className="font-medium text-blue-900">FSCS Protection</div>
+              </div>
+              <p className="text-sm text-blue-700 leading-relaxed">
+                Your savings are protected up to £85,000 per institution under the Financial Services Compensation Scheme (FSCS). This government-backed protection applies to the first £85K of your savings.
+              </p>
+            </motion.div>
+          )}
+        </AnimatePresence>
+        
+        {/* Action buttons */}
+        <div className="mt-6 space-y-3">
+          <button 
+            onClick={() => setShowInfoCard(true)}
+            className="w-full py-3 rounded-xl bg-gray-100 text-gray-700 font-medium flex items-center justify-center gap-2 hover:bg-gray-200 transition-colors"
+          >
+            <Info className="w-4 h-4" />
+            Find out more
+          </button>
+          <button 
+            onClick={onDiscuss}
+            className="w-full py-3 rounded-xl bg-[#DB0011] text-white font-semibold flex items-center justify-center gap-2"
+          >
+            💬 I&apos;d like to discuss this
+          </button>
+        </div>
       </div>
     ),
   },
   {
     id: 6,
     title: "Verification",
-    content: (
+    content: () => (
       <div className="p-4">
         <div className="text-lg font-semibold text-gray-900 mb-4">Compliance Checks</div>
         <div className="space-y-2 mb-6">
-          {["Eligibility", "Suitability", "KYC", "CDD", "Fraud Screening", "Affordability"].map((check, i) => (
+          {["Eligibility", "Suitability", "KYC", "CDD", "Fraud Screening", "Affordability"].map((check) => (
             <div key={check} className="flex items-center gap-3 p-3 bg-green-50 rounded-xl">
               <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center">
                 <Check className="w-4 h-4 text-white" />
@@ -164,7 +270,7 @@ const stage1Screens = [
   {
     id: 7,
     title: "Summary",
-    content: (
+    content: () => (
       <div className="p-4">
         <div className="text-lg font-semibold text-gray-900 mb-4">Plan Summary</div>
         <div className="space-y-3">
@@ -196,7 +302,7 @@ const stage1Screens = [
   {
     id: 8,
     title: "Success",
-    content: (
+    content: () => (
       <div className="p-4 text-center">
         <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
           <Check className="w-10 h-10 text-green-600" />
@@ -218,251 +324,81 @@ const stage1Screens = [
   },
 ]
 
-// Stage 2 screens
-const stage2Screens = [
-  {
-    id: 1,
-    title: "Account Overview",
-    content: (
-      <div className="p-4">
-        <div className="text-sm text-gray-500 mb-1">Current Account</div>
-        <div className="text-3xl font-bold text-gray-900 mb-4">£18,500</div>
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
-          <div className="flex items-center gap-2 text-amber-700 font-medium mb-1">
-            <PiggyBank className="w-4 h-4" />
-            Available Savings Opportunity
-          </div>
-          <div className="text-2xl font-bold text-amber-800">£10,000</div>
-          <div className="text-sm text-amber-600">Idle funds detected</div>
-        </div>
-      </div>
-    ),
-  },
-  {
-    id: 2,
-    title: "AI Insight",
-    content: (
-      <div className="p-4">
-        <div className="bg-gradient-to-br from-[#DB0011]/5 to-amber-50 rounded-2xl shadow-sm border border-[#DB0011]/20 p-4">
-          <div className="flex items-start gap-3 mb-4">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#DB0011] to-[#FF1A2E] flex items-center justify-center">
-              <Sparkles className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <div className="font-semibold text-gray-900">HSBC AI Advisor</div>
-              <div className="text-sm text-gray-500">Personalised for you</div>
-            </div>
-          </div>
-          <p className="text-gray-700 leading-relaxed">
-            &quot;Jes, we&apos;ve analysed your financial profile and created a <span className="font-semibold text-[#DB0011]">tailored savings plan</span> just for you.&quot;
-          </p>
-          <div className="mt-4 flex gap-2">
-            <button className="flex-1 py-2 rounded-lg bg-[#DB0011] text-white font-medium text-sm">View my plan</button>
-            <button className="flex-1 py-2 rounded-lg bg-gray-100 text-gray-700 font-medium text-sm">Later</button>
-          </div>
-        </div>
-      </div>
-    ),
-  },
-  {
-    id: 3,
-    title: "Deep Profile",
-    content: (
-      <div className="p-4">
-        <div className="text-lg font-semibold text-gray-900 mb-4">Deep Financial Analysis</div>
-        <div className="space-y-3">
-          {[
-            { label: "Income Stability", value: "High", color: "bg-green-100 text-green-700" },
-            { label: "Risk Profile", value: "Moderate", color: "bg-blue-100 text-blue-700" },
-            { label: "Savings Velocity", value: "+£850/mo avg", color: "bg-purple-100 text-purple-700" },
-            { label: "Financial Goals", value: "Growth + Security", color: "bg-amber-100 text-amber-700" },
-          ].map((item) => (
-            <div key={item.label} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
-              <span className="text-gray-600">{item.label}</span>
-              <span className={`px-3 py-1 rounded-full text-sm font-medium ${item.color}`}>{item.value}</span>
-            </div>
-          ))}
-        </div>
-        <div className="mt-4 p-3 bg-[#DB0011]/5 rounded-xl border border-[#DB0011]/20">
-          <div className="text-sm text-[#DB0011] font-medium">AI Confidence: 94%</div>
-        </div>
-      </div>
-    ),
-  },
-  {
-    id: 4,
-    title: "Tailored Product",
-    content: (
-      <div className="p-4">
-        <div className="text-lg font-semibold text-gray-900 mb-4">Your Exclusive Product</div>
-        <div className="p-6 rounded-2xl bg-gradient-to-br from-[#DB0011] to-[#A3000D] text-white">
-          <div className="flex items-center gap-2 mb-4">
-            <CreditCard className="w-6 h-6" />
-            <span className="text-sm font-medium opacity-80">HSBC Exclusive</span>
-          </div>
-          <div className="text-2xl font-bold mb-2">Flex Growth Reserve</div>
-          <div className="text-sm opacity-80 mb-4">Dynamically tailored for your profile</div>
-          <div className="flex items-baseline gap-1">
-            <span className="text-4xl font-bold">4.35%</span>
-            <span className="text-sm opacity-80">AER Personalised Rate</span>
-          </div>
-        </div>
-        <div className="mt-4 space-y-2">
-          {["Custom interest tiers", "Flexible access", "Growth allocation"].map((feature) => (
-            <div key={feature} className="flex items-center gap-2 text-gray-700">
-              <Check className="w-4 h-4 text-[#DB0011]" />
-              <span>{feature}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-    ),
-  },
-  {
-    id: 5,
-    title: "Personalised Plan",
-    content: (
-      <div className="p-4">
-        <div className="text-lg font-semibold text-gray-900 mb-4">Your Tailored Allocation</div>
-        <div className="space-y-4">
-          <div className="p-4 rounded-xl bg-gradient-to-r from-blue-50 to-blue-100/50 border border-blue-200">
-            <div className="flex items-center justify-between mb-2">
-              <div>
-                <span className="font-medium text-blue-900">Protected Portion</span>
-                <div className="text-xs text-blue-600">Capital guaranteed</div>
+// Chat Panel Component
+function ChatPanel({ isOpen, onToggle, message, screenIndex }: { isOpen: boolean; onToggle: () => void; message: string; screenIndex: number }) {
+  const [inputValue, setInputValue] = useState("")
+  
+  if (screenIndex === 0) return null // Don't show on goals screen
+  
+  return (
+    <div className="absolute bottom-6 left-0 right-0 px-2">
+      <AnimatePresence>
+        {isOpen ? (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden"
+          >
+            <button 
+              onClick={onToggle}
+              className="w-full px-4 py-3 flex items-center justify-between bg-[#DB0011] text-white"
+            >
+              <span className="font-medium flex items-center gap-2">
+                💬 Chat with HSBC AI
+              </span>
+              <ChevronUp className="w-4 h-4 rotate-180" />
+            </button>
+            <div className="p-4 max-h-40 overflow-y-auto">
+              <div className="flex items-start gap-2 mb-3">
+                <div className="w-8 h-8 rounded-full bg-[#DB0011]/10 flex items-center justify-center flex-shrink-0">
+                  <Sparkles className="w-4 h-4 text-[#DB0011]" />
+                </div>
+                <div className="bg-gray-100 rounded-2xl rounded-tl-none p-3">
+                  <p className="text-sm text-gray-700">{message}</p>
+                </div>
               </div>
-              <span className="text-xl font-bold text-blue-700">£6,000</span>
             </div>
-            <div className="w-full h-2 bg-blue-200 rounded-full overflow-hidden">
-              <div className="h-full w-3/5 bg-gradient-to-r from-blue-500 to-blue-400 rounded-full" />
+            <div className="p-3 border-t border-gray-100 flex gap-2">
+              <input
+                type="text"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                placeholder="Ask me anything…"
+                className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-xl focus:outline-none focus:border-[#DB0011]"
+              />
+              <button className="p-2 bg-[#DB0011] text-white rounded-xl">
+                <Send className="w-4 h-4" />
+              </button>
             </div>
-          </div>
-          <div className="p-4 rounded-xl bg-gradient-to-r from-green-50 to-green-100/50 border border-green-200">
-            <div className="flex items-center justify-between mb-2">
-              <div>
-                <span className="font-medium text-green-900">Growth Portion</span>
-                <div className="text-xs text-green-600">6–8% target return</div>
-              </div>
-              <span className="text-xl font-bold text-green-700">£4,000</span>
-            </div>
-            <div className="w-full h-2 bg-green-200 rounded-full overflow-hidden">
-              <div className="h-full w-2/5 bg-gradient-to-r from-green-500 to-green-400 rounded-full" />
-            </div>
-          </div>
-        </div>
-        <div className="mt-4 p-3 bg-[#DB0011]/5 rounded-xl text-center">
-          <div className="text-sm text-gray-600">Personalised Rate</div>
-          <div className="text-2xl font-bold text-[#DB0011]">4.35% AER</div>
-        </div>
-        <button className="w-full mt-4 py-3 rounded-xl bg-[#DB0011] text-white font-semibold">Continue</button>
-      </div>
-    ),
-  },
-  {
-    id: 6,
-    title: "Advanced Checks",
-    content: (
-      <div className="p-4">
-        <div className="text-lg font-semibold text-gray-900 mb-4">Enhanced Verification</div>
-        <div className="space-y-2 mb-6">
-          {[
-            "Identity Verification",
-            "KYC Refresh",
-            "CDD Enhanced",
-            "Risk Validation",
-            "Product Governance",
-            "Pricing Fairness Check",
-          ].map((check) => (
-            <div key={check} className="flex items-center gap-3 p-3 bg-green-50 rounded-xl">
-              <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center">
-                <Check className="w-4 h-4 text-white" />
-              </div>
-              <span className="text-gray-700">{check}</span>
-            </div>
-          ))}
-        </div>
-        <div className="p-4 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 border border-gray-200 text-center">
-          <Scan className="w-12 h-12 text-[#DB0011] mx-auto mb-2" />
-          <div className="font-medium text-gray-900">Face ID Verification</div>
-          <div className="text-sm text-gray-500">Biometric authentication</div>
-        </div>
-        <div className="mt-4 p-3 bg-green-50 rounded-xl flex items-center gap-2">
-          <Shield className="w-5 h-5 text-green-600" />
-          <span className="text-green-700 text-sm font-medium">All enhanced checks complete.</span>
-        </div>
-      </div>
-    ),
-  },
-  {
-    id: 7,
-    title: "Tailored Summary",
-    content: (
-      <div className="p-4">
-        <div className="text-lg font-semibold text-gray-900 mb-4">Tailored Plan Summary</div>
-        <div className="p-4 rounded-xl bg-gradient-to-br from-[#DB0011]/5 to-amber-50 border border-[#DB0011]/20 mb-4">
-          <div className="text-sm text-gray-500 mb-1">Product</div>
-          <div className="font-bold text-gray-900">HSBC Flex Growth Reserve</div>
-        </div>
-        <div className="space-y-3">
-          <div className="p-3 bg-gray-50 rounded-xl flex justify-between">
-            <span className="text-gray-600">Total</span>
-            <span className="font-bold">£10,000</span>
-          </div>
-          <div className="p-3 bg-gray-50 rounded-xl flex justify-between">
-            <span className="text-gray-600">Protected</span>
-            <span className="font-semibold">£6,000 @ 4.35% AER</span>
-          </div>
-          <div className="p-3 bg-gray-50 rounded-xl flex justify-between">
-            <span className="text-gray-600">Growth</span>
-            <span className="font-semibold">£4,000 @ 6–8%</span>
-          </div>
-          <div className="p-3 bg-gray-50 rounded-xl">
-            <div className="text-sm text-gray-500 mb-1">Access & Restrictions</div>
-            <div className="text-sm text-gray-700">Flexible access • Protected portion: 90-day notice</div>
-          </div>
-        </div>
-        <button className="w-full mt-4 py-3 rounded-xl bg-gray-100 text-gray-700 font-medium flex items-center justify-center gap-2">
-          <FileText className="w-4 h-4" />
-          Download tailored terms
-        </button>
-        <button className="w-full mt-3 py-3 rounded-xl bg-[#DB0011] text-white font-semibold">Activate Plan</button>
-      </div>
-    ),
-  },
-  {
-    id: 8,
-    title: "Success",
-    content: (
-      <div className="p-4 text-center">
-        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-green-100 to-green-200 flex items-center justify-center mx-auto mb-4">
-          <Check className="w-10 h-10 text-green-600" />
-        </div>
-        <div className="text-2xl font-bold text-gray-900 mb-2">Your tailored plan is active</div>
-        <div className="text-gray-500 mb-6">Welcome to smarter banking, Jes!</div>
-        <div className="space-y-3 text-left">
-          <div className="p-3 bg-gray-50 rounded-xl flex justify-between">
-            <span className="text-gray-600">Total Invested</span>
-            <span className="font-bold text-gray-900">£10,000</span>
-          </div>
-          <div className="p-3 bg-gray-50 rounded-xl flex justify-between">
-            <span className="text-gray-600">Personalised Rate</span>
-            <span className="font-bold text-[#DB0011]">4.35% AER</span>
-          </div>
-          <div className="p-3 bg-gray-50 rounded-xl flex justify-between">
-            <span className="text-gray-600">Growth Target</span>
-            <span className="font-bold text-green-600">6–8% return</span>
-          </div>
-        </div>
-        <button className="w-full mt-6 py-3 rounded-xl bg-gray-100 text-gray-700 font-medium flex items-center justify-center gap-2">
-          <FileText className="w-4 h-4" />
-          Download terms
-        </button>
-      </div>
-    ),
-  },
-]
+          </motion.div>
+        ) : (
+          <motion.button
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onToggle}
+            className="w-full px-4 py-3 bg-white rounded-2xl shadow-lg border border-gray-200 flex items-center justify-between"
+          >
+            <span className="font-medium text-gray-700 flex items-center gap-2">
+              💬 Chat with HSBC AI
+            </span>
+            <ChevronUp className="w-4 h-4 text-gray-400" />
+          </motion.button>
+        )}
+      </AnimatePresence>
+    </div>
+  )
+}
 
-function PhoneMockup({ children, stage }: { children: React.ReactNode; stage: 1 | 2 }) {
+function PhoneMockup({ children, showChatPanel, chatPanelOpen, onChatToggle, chatMessage, screenIndex }: { 
+  children: React.ReactNode; 
+  showChatPanel?: boolean;
+  chatPanelOpen?: boolean;
+  onChatToggle?: () => void;
+  chatMessage?: string;
+  screenIndex?: number;
+}) {
   return (
     <div className="relative mx-auto w-[280px] h-[600px]">
       {/* iPhone 17 Max titanium frame */}
@@ -508,13 +444,18 @@ function PhoneMockup({ children, stage }: { children: React.ReactNode; stage: 1 
         {/* Header */}
         <div className="h-14 bg-[#DB0011] flex items-center px-4">
           <div className="text-white font-bold text-lg tracking-tight">HSBC</div>
-          <div className="ml-auto px-2 py-1 bg-white/20 rounded-md text-white text-xs font-medium">
-            Stage {stage}
-          </div>
         </div>
         {/* Content */}
-        <div className="h-[calc(100%-7rem)] overflow-y-auto bg-gray-50">
+        <div className="h-[calc(100%-7rem)] overflow-y-auto bg-gray-50 relative">
           {children}
+          {showChatPanel && onChatToggle && (
+            <ChatPanel 
+              isOpen={chatPanelOpen || false} 
+              onToggle={onChatToggle} 
+              message={chatMessage || ""} 
+              screenIndex={screenIndex || 0}
+            />
+          )}
         </div>
         {/* Home indicator */}
         <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-32 h-1 bg-black/20 rounded-full" />
@@ -530,13 +471,89 @@ function PhoneMockup({ children, stage }: { children: React.ReactNode; stage: 1 
   )
 }
 
+// Static phone preview component for hero section
+export function PhonePreview() {
+  return (
+    <div className="relative mx-auto w-[240px] h-[520px]">
+      {/* iPhone frame */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#3a3a3c] via-[#48484a] to-[#3a3a3c] rounded-[2.8rem] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]" />
+      <div className="absolute inset-[2px] bg-gradient-to-b from-[#636366] via-[#8e8e93] to-[#636366] rounded-[2.7rem]" />
+      <div className="absolute inset-[4px] bg-black rounded-[2.6rem]" />
+      <div className="absolute inset-[6px] bg-white rounded-[2.4rem] overflow-hidden">
+        {/* Status bar */}
+        <div className="h-12 bg-white relative flex items-end justify-between px-6 pb-1">
+          <div className="absolute top-2.5 left-1/2 -translate-x-1/2 w-[80px] h-[26px] bg-black rounded-full" />
+          <span className="text-[10px] font-semibold text-gray-900">9:41</span>
+          <div className="flex items-center gap-1">
+            <div className="flex items-end gap-[2px] h-2.5">
+              <div className="w-[2px] h-[3px] bg-gray-900 rounded-sm" />
+              <div className="w-[2px] h-[5px] bg-gray-900 rounded-sm" />
+              <div className="w-[2px] h-[7px] bg-gray-900 rounded-sm" />
+              <div className="w-[2px] h-[9px] bg-gray-900 rounded-sm" />
+            </div>
+            <div className="w-5 h-2.5 border border-gray-900 rounded-[2px] relative">
+              <div className="absolute inset-[1px] right-[2px] bg-gray-900 rounded-[1px]" />
+            </div>
+          </div>
+        </div>
+        {/* Header */}
+        <div className="h-12 bg-[#DB0011] flex items-center px-4">
+          <div className="text-white font-bold text-base tracking-tight">HSBC</div>
+        </div>
+        {/* Content - Account Overview screen */}
+        <div className="p-3 bg-gray-50 h-[calc(100%-6rem)]">
+          <div className="text-xs text-gray-500 mb-0.5">Current Account</div>
+          <div className="text-2xl font-bold text-gray-900 mb-3">£18,500</div>
+          <div className="bg-amber-50 border border-amber-200 rounded-xl p-3">
+            <div className="flex items-center gap-1.5 text-amber-700 font-medium mb-0.5 text-xs">
+              <PiggyBank className="w-3 h-3" />
+              Available Savings Opportunity
+            </div>
+            <div className="text-xl font-bold text-amber-800">£10,000</div>
+            <div className="text-xs text-amber-600">Idle funds detected</div>
+          </div>
+        </div>
+        {/* Home indicator */}
+        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-24 h-1 bg-black/20 rounded-full" />
+      </div>
+    </div>
+  )
+}
+
 export function PhoneDemoSection() {
   const [stage1Index, setStage1Index] = useState(0)
-  const [stage2Index, setStage2Index] = useState(0)
+  const [selectedGoal, setSelectedGoal] = useState<string | null>(null)
+  const [chatPanelOpen, setChatPanelOpen] = useState(false)
+  const [showInfoCard, setShowInfoCard] = useState(false)
+
+  const handleGoalSelect = (goal: string) => {
+    setSelectedGoal(goal)
+  }
+
+  const handleDiscuss = () => {
+    setChatPanelOpen(true)
+  }
+
+  const renderScreenContent = () => {
+    const screen = stage1Screens[stage1Index]
+    if (stage1Index === 0) {
+      // Goals screen
+      const GoalsContent = screen.content as ({ onGoalSelect, selectedGoal }: { onGoalSelect: (goal: string) => void; selectedGoal: string | null }) => JSX.Element
+      return <GoalsContent onGoalSelect={handleGoalSelect} selectedGoal={selectedGoal} />
+    } else if (stage1Index === 5) {
+      // Your Plan screen with info card and discuss button
+      const PlanContent = screen.content as ({ showInfoCard, setShowInfoCard, onDiscuss }: { showInfoCard: boolean; setShowInfoCard: (show: boolean) => void; onDiscuss: () => void }) => JSX.Element
+      return <PlanContent showInfoCard={showInfoCard} setShowInfoCard={setShowInfoCard} onDiscuss={handleDiscuss} />
+    } else {
+      // Regular screens
+      const RegularContent = screen.content as () => JSX.Element
+      return <RegularContent />
+    }
+  }
 
   return (
-    <section className="py-24 px-6 bg-gradient-to-br from-background via-muted/20 to-background overflow-hidden">
-      <div className="max-w-7xl mx-auto">
+    <section id="phone-demo" className="py-24 px-6 bg-gradient-to-br from-background via-muted/20 to-background overflow-hidden">
+      <div className="max-w-4xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -545,145 +562,83 @@ export function PhoneDemoSection() {
           className="text-center mb-16"
         >
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4 tracking-tight font-[family-name:var(--font-display)]">
-            Side-by-Side Comparison
+            See It In Action
           </h2>
-          <div className="w-24 h-1 bg-primary mx-auto rounded-full mb-4" />
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            Compare the two stages of transformation — from smart recommendations to elastic, personalised products.
-          </p>
+          <div className="w-24 h-1 bg-primary mx-auto rounded-full" />
         </motion.div>
 
-        <div className="grid md:grid-cols-2 gap-8 lg:gap-16">
-          {/* Stage 1 */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+        {/* Single centered phone */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="flex flex-col items-center"
+        >
+          <div className="text-center mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary mb-4">
+              <span className="text-sm font-semibold uppercase tracking-widest">Interactive Demo</span>
+            </div>
+            <h3 className="text-xl font-bold text-foreground tracking-tight font-[family-name:var(--font-display)]">Smart Recommendations</h3>
+            <p className="text-sm text-muted-foreground mt-1">Experience the AI-powered journey</p>
+          </div>
+
+          <PhoneMockup 
+            showChatPanel={true}
+            chatPanelOpen={chatPanelOpen}
+            onChatToggle={() => setChatPanelOpen(!chatPanelOpen)}
+            chatMessage={chatMessages[stage1Index] || "How can I help you today?"}
+            screenIndex={stage1Index}
           >
-            <div className="text-center mb-6">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary mb-4">
-                <span className="text-sm font-semibold uppercase tracking-widest">Stage 1</span>
-              </div>
-              <h3 className="text-xl font-bold text-foreground tracking-tight font-[family-name:var(--font-display)]">Smart Recommendations</h3>
-              <p className="text-sm text-muted-foreground mt-1">Existing products, intelligent matching</p>
-            </div>
-
-            <PhoneMockup stage={1}>
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={stage1Index}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  {stage1Screens[stage1Index].content}
-                </motion.div>
-              </AnimatePresence>
-            </PhoneMockup>
-
-            <div className="flex items-center justify-center gap-4 mt-6">
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => setStage1Index((i) => Math.max(0, i - 1))}
-                disabled={stage1Index === 0}
-                className="rounded-full"
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={stage1Index}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.3 }}
+                className={stage1Index !== 0 ? "pb-20" : ""}
               >
-                <ChevronLeft className="w-4 h-4" />
-              </Button>
-              <div className="flex items-center gap-2">
-                {stage1Screens.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setStage1Index(i)}
-                    className={`w-2 h-2 rounded-full transition-all ${
-                      i === stage1Index ? "bg-primary w-6" : "bg-muted-foreground/30"
-                    }`}
-                  />
-                ))}
-              </div>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => setStage1Index((i) => Math.min(stage1Screens.length - 1, i + 1))}
-                disabled={stage1Index === stage1Screens.length - 1}
-                className="rounded-full"
-              >
-                <ChevronRight className="w-4 h-4" />
-              </Button>
-            </div>
-            <p className="text-center text-sm text-muted-foreground mt-2">
-              {stage1Screens[stage1Index].title} ({stage1Index + 1}/{stage1Screens.length})
-            </p>
-          </motion.div>
+                {renderScreenContent()}
+              </motion.div>
+            </AnimatePresence>
+          </PhoneMockup>
 
-          {/* Stage 2 */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            <div className="text-center mb-6">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/20 text-accent mb-4">
-                <span className="text-sm font-semibold uppercase tracking-widest">Stage 2</span>
-              </div>
-              <h3 className="text-xl font-bold text-foreground tracking-tight font-[family-name:var(--font-display)]">Elastic Financial Products</h3>
-              <p className="text-sm text-muted-foreground mt-1">Dynamically tailored, true personalisation</p>
+          <div className="flex items-center justify-center gap-4 mt-6">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => setStage1Index((i) => Math.max(0, i - 1))}
+              disabled={stage1Index === 0}
+              className="rounded-full"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </Button>
+            <div className="flex items-center gap-2">
+              {stage1Screens.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setStage1Index(i)}
+                  className={`w-2 h-2 rounded-full transition-all ${
+                    i === stage1Index ? "bg-primary w-6" : "bg-muted-foreground/30"
+                  }`}
+                />
+              ))}
             </div>
-
-            <PhoneMockup stage={2}>
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={stage2Index}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  {stage2Screens[stage2Index].content}
-                </motion.div>
-              </AnimatePresence>
-            </PhoneMockup>
-
-            <div className="flex items-center justify-center gap-4 mt-6">
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => setStage2Index((i) => Math.max(0, i - 1))}
-                disabled={stage2Index === 0}
-                className="rounded-full"
-              >
-                <ChevronLeft className="w-4 h-4" />
-              </Button>
-              <div className="flex items-center gap-2">
-                {stage2Screens.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setStage2Index(i)}
-                    className={`w-2 h-2 rounded-full transition-all ${
-                      i === stage2Index ? "bg-accent w-6" : "bg-muted-foreground/30"
-                    }`}
-                  />
-                ))}
-              </div>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => setStage2Index((i) => Math.min(stage2Screens.length - 1, i + 1))}
-                disabled={stage2Index === stage2Screens.length - 1}
-                className="rounded-full"
-              >
-                <ChevronRight className="w-4 h-4" />
-              </Button>
-            </div>
-            <p className="text-center text-sm text-muted-foreground mt-2">
-              {stage2Screens[stage2Index].title} ({stage2Index + 1}/{stage2Screens.length})
-            </p>
-          </motion.div>
-        </div>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => setStage1Index((i) => Math.min(stage1Screens.length - 1, i + 1))}
+              disabled={stage1Index === stage1Screens.length - 1}
+              className="rounded-full"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </Button>
+          </div>
+          <p className="text-center text-sm text-muted-foreground mt-2">
+            {stage1Screens[stage1Index].title} ({stage1Index + 1}/{stage1Screens.length})
+          </p>
+        </motion.div>
       </div>
     </section>
   )
