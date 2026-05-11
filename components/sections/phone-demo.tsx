@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useMemo } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Check, PiggyBank, TrendingUp, ChevronRight, ChevronLeft, Play, MessageCircle, ArrowLeft, Calendar, Coins, Lock, Shield, FileText, Users, Sparkles, CreditCard, Plane, BarChart3, ArrowUpDown, ShoppingBag, Wallet } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -769,7 +769,6 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
   const isLarge = scale === "large" || scale === "xlarge"
   const isXLarge = scale === "xlarge"
   const [currentStep, setCurrentStep] = useState(0)
-  const [chatMessages, setChatMessages] = useState<Array<{ id: number; type: "bot" | "user"; text?: string }>>([])
   const [chipSelections, setChipSelections] = useState<Record<number, number | null>>({})
   const [visitedProducts, setVisitedProducts] = useState<Set<string>>(new Set())
   const [currentProductView, setCurrentProductView] = useState<"fixedSaver" | "isa" | null>(null)
@@ -974,27 +973,22 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
     setCurrentProductView(null)
   }
   
-  // Handle Next button - advances step and rebuilds messages
+  // Handle Next button - just advances step, messages computed directly
   const handleNext = () => {
     if (currentStep < totalSteps - 1) {
-      const nextStep = currentStep + 1
-      setCurrentStep(nextStep)
-      
-      // Rebuild messages for new step, passing current chip selections
-      const { messages } = buildMessagesForStep(nextStep, chipSelections)
-      setChatMessages(messages)
+      setCurrentStep(currentStep + 1)
       setTimeout(scrollToBottom, 100)
     }
   }
   
-  // Handle Prev button - goes back and rebuilds messages
+  // Handle Prev button - goes back and clears future chip selections
   const handlePrev = () => {
     if (currentStep > 0) {
       const prevStep = currentStep - 1
       setCurrentStep(prevStep)
       setCurrentProductView(null)
       
-      // Clear chip selections for steps after the target first
+      // Clear chip selections for steps after the target
       const newSelections = { ...chipSelections }
       Object.keys(newSelections).forEach(key => {
         if (parseInt(key) > prevStep) {
@@ -1003,18 +997,18 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
       })
       setChipSelections(newSelections)
       
-      // Rebuild messages for previous step with updated selections
-      const { messages } = buildMessagesForStep(prevStep, newSelections)
-      setChatMessages(messages)
-      
       setTimeout(scrollToBottom, 100)
     }
   }
   
+  // Compute messages directly based on currentStep and chipSelections (memoized)
+  const computedMessages = useMemo(() => {
+    return buildMessagesForStep(currentStep, chipSelections).messages
+  }, [currentStep, chipSelections])
+  
   // Handle replay
   const handleReplay = () => {
     setCurrentStep(0)
-    setChatMessages([])
     setChipSelections({})
     setVisitedProducts(new Set())
     setCurrentProductView(null)
@@ -1075,8 +1069,8 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
           <PhoneShell phase={phase} isLarge={isLarge} isXLarge={isXLarge}>
             <div ref={scrollRef} className="h-full overflow-y-auto py-3">
               <AnimatePresence mode="popLayout">
-                {chatMessages.map((msg, index) => {
-                  const isLast = index === chatMessages.length - 1
+                {computedMessages.map((msg, index) => {
+                  const isLast = index === computedMessages.length - 1
                   
                   // Financial Snapshot card - show after the intro message
                   if (msg.type === "bot" && msg.text?.includes("starting from the right place")) {
