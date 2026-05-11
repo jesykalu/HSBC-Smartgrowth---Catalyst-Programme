@@ -47,8 +47,8 @@ export function HeroSection() {
             className="flex justify-center lg:justify-end"
           >
             <div className="relative">
-              {/* Glow effect behind phone */}
-              <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full scale-150" />
+              {/* Glow effect behind phone - pointer-events-none so buttons work */}
+              <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full scale-150 pointer-events-none" />
               <PhoneDemoSection heroMode={true} />
             </div>
           </motion.div>

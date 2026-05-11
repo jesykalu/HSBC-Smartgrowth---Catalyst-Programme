@@ -555,13 +555,20 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
         </PhoneMockup>
         
         {/* Navigation controls - Play/Replay and Pause side by side */}
-        <div className="mt-6 flex items-center gap-3">
+        <div className="mt-6 flex items-center gap-3 relative z-50">
           {/* Play/Replay button - enabled when paused or complete */}
           <Button
-            onClick={isComplete ? handleReplay : () => setIsPaused(false)}
+            type="button"
+            onClick={() => {
+              if (isComplete) {
+                handleReplay()
+              } else {
+                setIsPaused(false)
+              }
+            }}
             variant="outline"
             size="sm"
-            className="rounded-full px-4"
+            className="rounded-full px-4 bg-white"
             disabled={!isPaused && !isComplete}
           >
             <Play className="w-4 h-4 mr-1" />
@@ -570,6 +577,7 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
           
           {/* Pause button - enabled when playing (not paused and not complete) */}
           <Button
+            type="button"
             onClick={() => {
               if (timerRef.current) {
                 clearTimeout(timerRef.current)
@@ -580,7 +588,7 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
             }}
             variant="outline"
             size="sm"
-            className="rounded-full px-4"
+            className="rounded-full px-4 bg-white"
             disabled={isPaused || isComplete}
           >
             <Pause className="w-4 h-4 mr-1" />
