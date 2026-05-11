@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Check, FileText, Shield, PiggyBank, TrendingUp, Sparkles, Play } from "lucide-react"
+import { Check, FileText, Shield, PiggyBank, TrendingUp, Sparkles, Play, ChevronLeft, ChevronRight, Pause } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 // Message types
@@ -468,6 +468,7 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
   const [isTyping, setIsTyping] = useState(false)
   const [isComplete, setIsComplete] = useState(false)
   const [hasStarted, setHasStarted] = useState(false)
+  const [isPaused, setIsPaused] = useState(false)
   const scrollRef = useRef<HTMLDivElement>(null)
   const timerRef = useRef<NodeJS.Timeout | null>(null)
 
@@ -483,14 +484,15 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
 
   // Progress through conversation
   useEffect(() => {
-    if (!hasStarted) return
+    if (!hasStarted || isPaused) return
     if (currentIndex >= conversationScript.length) {
       setIsComplete(true)
       return
     }
 
     const message = conversationScript[currentIndex]
-    const delay = message.delay || 1500
+    const stepDelay = 4000 // 4 seconds between steps
+    const typingDelay = 1500 // 1.5 seconds for typing indicator
 
     // Show typing indicator for bot messages
     if (message.type === "bot" && message.text) {
@@ -499,12 +501,12 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
         setIsTyping(false)
         setVisibleMessages(prev => [...prev, message])
         setCurrentIndex(prev => prev + 1)
-      }, 800)
+      }, typingDelay)
     } else {
       timerRef.current = setTimeout(() => {
         setVisibleMessages(prev => [...prev, message])
         setCurrentIndex(prev => prev + 1)
-      }, delay)
+      }, message.card ? 500 : stepDelay) // Cards show quickly, messages wait 4s
     }
 
     return () => {
@@ -512,7 +514,7 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
         clearTimeout(timerRef.current)
       }
     }
-  }, [currentIndex, hasStarted])
+  }, [currentIndex, hasStarted, isPaused])
 
   // Auto-scroll to bottom
   useEffect(() => {
@@ -529,8 +531,60 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
     setCurrentIndex(0)
     setIsTyping(false)
     setIsComplete(false)
+    setIsPaused(false)
     setHasStarted(true)
   }
+
+  const handlePrev = () => {
+    if (currentIndex <= 1 && visibleMessages.length <= 1) return
+    
+    // Cancel current timer
+    if (timerRef.current) {
+      clearTimeout(timerRef.current)
+      timerRef.current = null
+    }
+    setIsTyping(false)
+    
+    // Go back one step
+    const newIndex = Math.max(0, visibleMessages.length - 1)
+    setVisibleMessages(prev => prev.slice(0, -1))
+    setCurrentIndex(newIndex)
+    setIsComplete(false)
+  }
+
+  const handleNext = () => {
+    if (currentIndex >= conversationScript.length) return
+    
+    // Cancel current timer
+    if (timerRef.current) {
+      clearTimeout(timerRef.current)
+      timerRef.current = null
+    }
+    setIsTyping(false)
+    
+    // Advance immediately
+    const message = conversationScript[currentIndex]
+    setVisibleMessages(prev => [...prev, message])
+    setCurrentIndex(prev => prev + 1)
+  }
+
+  const handlePauseResume = () => {
+    if (isPaused) {
+      // Resume - the useEffect will pick up from currentIndex
+      setIsPaused(false)
+    } else {
+      // Pause - cancel any pending timer
+      if (timerRef.current) {
+        clearTimeout(timerRef.current)
+        timerRef.current = null
+      }
+      setIsTyping(false)
+      setIsPaused(true)
+    }
+  }
+
+  const totalSteps = conversationScript.length
+  const currentStep = visibleMessages.length
 
   // Hero mode - compact version without section wrapper
   if (heroMode) {
@@ -551,22 +605,74 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
           </div>
         </PhoneMockup>
         
-        {isComplete && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mt-6"
-          >
+        {/* Navigation controls */}
+        <div className="mt-6 flex flex-col items-center gap-3">
+          {/* Prev / Step counter / Next */}
+          <div className="flex items-center gap-4">
             <Button
-              onClick={handleReplay}
+              onClick={handlePrev}
               variant="outline"
-              className="rounded-full px-6"
+              size="sm"
+              className="rounded-full px-4"
+              disabled={currentStep === 0}
             >
-              <Play className="w-4 h-4 mr-2" />
-              Replay
+              <ChevronLeft className="w-4 h-4 mr-1" />
+              Prev
             </Button>
-          </motion.div>
-        )}
+            
+            <span className="text-sm text-muted-foreground min-w-[60px] text-center">
+              {currentStep} / {totalSteps}
+            </span>
+            
+            <Button
+              onClick={handleNext}
+              variant="outline"
+              size="sm"
+              className="rounded-full px-4"
+              disabled={currentIndex >= totalSteps}
+            >
+              Next
+              <ChevronRight className="w-4 h-4 ml-1" />
+            </Button>
+          </div>
+          
+          {/* Pause/Resume control */}
+          <Button
+            onClick={handlePauseResume}
+            variant="outline"
+            size="sm"
+            className="rounded-full px-4"
+          >
+            {isPaused ? (
+              <>
+                <Play className="w-4 h-4 mr-1" />
+                Resume
+              </>
+            ) : (
+              <>
+                <Pause className="w-4 h-4 mr-1" />
+                Pause
+              </>
+            )}
+          </Button>
+          
+          {/* Replay button when complete */}
+          {isComplete && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
+              <Button
+                onClick={handleReplay}
+                variant="outline"
+                className="rounded-full px-6"
+              >
+                <Play className="w-4 h-4 mr-2" />
+                Replay
+              </Button>
+            </motion.div>
+          )}
+        </div>
       </div>
     )
   }
@@ -610,22 +716,74 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
             </div>
           </PhoneMockup>
           
-          {isComplete && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mt-6"
-            >
+          {/* Navigation controls */}
+          <div className="mt-6 flex flex-col items-center gap-3">
+            {/* Prev / Step counter / Next */}
+            <div className="flex items-center gap-4">
               <Button
-                onClick={handleReplay}
+                onClick={handlePrev}
                 variant="outline"
-                className="rounded-full px-6"
+                size="sm"
+                className="rounded-full px-4"
+                disabled={currentStep === 0}
               >
-                <Play className="w-4 h-4 mr-2" />
-                Replay
+                <ChevronLeft className="w-4 h-4 mr-1" />
+                Prev
               </Button>
-            </motion.div>
-          )}
+              
+              <span className="text-sm text-muted-foreground min-w-[60px] text-center">
+                {currentStep} / {totalSteps}
+              </span>
+              
+              <Button
+                onClick={handleNext}
+                variant="outline"
+                size="sm"
+                className="rounded-full px-4"
+                disabled={currentIndex >= totalSteps}
+              >
+                Next
+                <ChevronRight className="w-4 h-4 ml-1" />
+              </Button>
+            </div>
+            
+            {/* Pause/Resume control */}
+            <Button
+              onClick={handlePauseResume}
+              variant="outline"
+              size="sm"
+              className="rounded-full px-4"
+            >
+              {isPaused ? (
+                <>
+                  <Play className="w-4 h-4 mr-1" />
+                  Resume
+                </>
+              ) : (
+                <>
+                  <Pause className="w-4 h-4 mr-1" />
+                  Pause
+                </>
+              )}
+            </Button>
+            
+            {/* Replay button when complete */}
+            {isComplete && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+              >
+                <Button
+                  onClick={handleReplay}
+                  variant="outline"
+                  className="rounded-full px-6"
+                >
+                  <Play className="w-4 h-4 mr-2" />
+                  Replay
+                </Button>
+              </motion.div>
+            )}
+          </div>
         </motion.div>
       </div>
     </section>
