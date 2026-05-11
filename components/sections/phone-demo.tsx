@@ -798,9 +798,9 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
   }
   
   // Build messages for a given step (no timers, immediate rendering)
-  const buildMessagesForStep = (targetStep: number) => {
+  // Uses currentChipSelections to properly include user answers
+  const buildMessagesForStep = (targetStep: number, currentChipSelections: Record<number, number | null> = {}) => {
     const newMessages: Array<{ id: number; type: "bot" | "user"; text?: string }> = []
-    const newChipSelections: Record<number, number | null> = {}
     
     for (let i = 0; i <= targetStep; i++) {
       const s = demoSteps[i]
@@ -811,7 +811,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
           newMessages.push({
             id: newMessages.length + 1,
             type: "bot",
-            text: "Hi Jes 👋 I noticed you have **£10,000** in idle funds in your current account. Based on your spending patterns and existing products, I think I can help put that money to work. Want to explore your options?"
+            text: "Hi Jes! I noticed you have **£10,000** in idle funds in your current account. Based on your spending patterns and existing products, I think I can help put that money to work. Want to explore your options?"
           })
           break
           
@@ -827,13 +827,13 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
           newMessages.push({
             id: newMessages.length + 1,
             type: "bot",
-            text: "Before I make any recommendations, let me share what I already know about you — so we're starting from the right place 😊"
+            text: "Before I make any recommendations, let me share what I already know about you — so we're starting from the right place."
           })
           // The Financial Snapshot card is rendered inline via special handling
           newMessages.push({
             id: newMessages.length + 1,
             type: "bot",
-            text: "You're clearly a disciplined saver, Jes — that £320 a month going into savings consistently is great to see. The LISA is a smart move too. Now let's put that £10,000 to work in a way that fits how you actually live 💪"
+            text: "You're clearly a disciplined saver, Jes — that £320 a month going into savings consistently is great to see. The LISA is a smart move too. Now let's put that £10,000 to work in a way that fits how you actually live."
           })
           break
           
@@ -854,10 +854,10 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
           break
           
         case "question2":
-          // Add selected chip answer if exists
-          if (newChipSelections[7] !== undefined) {
+          // Add selected chip answer from question1 if exists
+          if (currentChipSelections[6] !== undefined && currentChipSelections[6] !== null) {
             const opts = ["Yes, within 6 months", "Maybe, 6–12 months", "No plans"]
-            newMessages.push({ id: newMessages.length + 1, type: "user", text: opts[newChipSelections[7] as number] })
+            newMessages.push({ id: newMessages.length + 1, type: "user", text: opts[currentChipSelections[6]] })
           }
           newMessages.push({
             id: newMessages.length + 1,
@@ -867,9 +867,9 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
           break
           
         case "question3":
-          if (newChipSelections[8] !== undefined) {
+          if (currentChipSelections[7] !== undefined && currentChipSelections[7] !== null) {
             const opts = ["Regularly (monthly)", "Occasionally", "Rarely / lock it away"]
-            newMessages.push({ id: newMessages.length + 1, type: "user", text: opts[newChipSelections[8] as number] })
+            newMessages.push({ id: newMessages.length + 1, type: "user", text: opts[currentChipSelections[7]] })
           }
           newMessages.push({
             id: newMessages.length + 1,
@@ -879,9 +879,9 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
           break
           
         case "profileSummary":
-          if (newChipSelections[9] !== undefined) {
+          if (currentChipSelections[8] !== undefined && currentChipSelections[8] !== null) {
             const opts = ["Play it safe", "Balanced approach", "Happy to take risks"]
-            newMessages.push({ id: newMessages.length + 1, type: "user", text: opts[newChipSelections[9] as number] })
+            newMessages.push({ id: newMessages.length + 1, type: "user", text: opts[currentChipSelections[8]] })
           }
           newMessages.push({
             id: newMessages.length + 1,
@@ -891,9 +891,9 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
           break
           
         case "allocation":
-          if (newChipSelections[10] !== undefined) {
-            const opts = ["Yes, that's me ✓", "Not quite"]
-            newMessages.push({ id: newMessages.length + 1, type: "user", text: opts[newChipSelections[10] as number] })
+          if (currentChipSelections[9] !== undefined && currentChipSelections[9] !== null) {
+            const opts = ["Yes, that's me", "Not quite"]
+            newMessages.push({ id: newMessages.length + 1, type: "user", text: opts[currentChipSelections[9]] })
           }
           newMessages.push({
             id: newMessages.length + 1,
@@ -906,7 +906,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
           newMessages.push({
             id: newMessages.length + 1,
             type: "bot",
-            text: "Running your compliance checks now…"
+            text: "Running your compliance checks now..."
           })
           break
           
@@ -914,7 +914,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
           newMessages.push({
             id: newMessages.length + 1,
             type: "bot",
-            text: "🔒 Identity already verified via Face ID earlier. All checks passed."
+            text: "Identity already verified via Face ID earlier. All checks passed."
           })
           break
           
@@ -938,13 +938,13 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
           newMessages.push({
             id: newMessages.length + 1,
             type: "bot",
-            text: "🎉 Done, Jes! Your savings plan is now active. Your £10,000 is officially working for you. I'll check in with you in 30 days. Great choice!"
+            text: "Done, Jes! Your savings plan is now active. Your £10,000 is officially working for you. I'll check in with you in 30 days. Great choice!"
           })
           break
       }
     }
     
-    return { messages: newMessages, selections: newChipSelections }
+    return { messages: newMessages }
   }
   
   // Handle chip selection - ONLY highlights, does NOT advance
@@ -980,8 +980,8 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
       const nextStep = currentStep + 1
       setCurrentStep(nextStep)
       
-      // Rebuild messages for new step
-      const { messages } = buildMessagesForStep(nextStep)
+      // Rebuild messages for new step, passing current chip selections
+      const { messages } = buildMessagesForStep(nextStep, chipSelections)
       setChatMessages(messages)
       setTimeout(scrollToBottom, 100)
     }
@@ -994,21 +994,18 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
       setCurrentStep(prevStep)
       setCurrentProductView(null)
       
-      // Rebuild messages for previous step
-      const { messages } = buildMessagesForStep(prevStep)
-      setChatMessages(messages)
-      
-      // Clear chip selections for steps after the target
-      setChipSelections(prev => {
-        const newSelections = { ...prev }
-        // Clear selections for steps > prevStep
-        Object.keys(newSelections).forEach(key => {
-          if (parseInt(key) > prevStep) {
-            delete newSelections[parseInt(key)]
-          }
-        })
-        return newSelections
+      // Clear chip selections for steps after the target first
+      const newSelections = { ...chipSelections }
+      Object.keys(newSelections).forEach(key => {
+        if (parseInt(key) > prevStep) {
+          delete newSelections[parseInt(key)]
+        }
       })
+      setChipSelections(newSelections)
+      
+      // Rebuild messages for previous step with updated selections
+      const { messages } = buildMessagesForStep(prevStep, newSelections)
+      setChatMessages(messages)
       
       setTimeout(scrollToBottom, 100)
     }
@@ -1090,12 +1087,25 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
                     )
                   }
                   
-                  // Travel plans question with chips (step 7)
+                  // Travel plans question with chips (step index 6)
                   if (msg.type === "bot" && msg.text?.includes("travel plans")) {
                     return (
                       <ChatMessage key={msg.id} type="bot" text={msg.text} isNew={isLast}>
                         <ReplyChips 
                           options={["Yes, within 6 months", "Maybe, 6–12 months", "No plans"]}
+                          selectedIndex={chipSelections[6] ?? null}
+                          onSelect={(idx) => handleChipSelect(6, idx)}
+                        />
+                      </ChatMessage>
+                    )
+                  }
+                  
+                  // Access/withdraw question with chips (step index 7)
+                  if (msg.type === "bot" && msg.text?.includes("access or withdraw")) {
+                    return (
+                      <ChatMessage key={msg.id} type="bot" text={msg.text} isNew={isLast}>
+                        <ReplyChips 
+                          options={["Regularly (monthly)", "Occasionally", "Rarely / lock it away"]}
                           selectedIndex={chipSelections[7] ?? null}
                           onSelect={(idx) => handleChipSelect(7, idx)}
                         />
@@ -1103,12 +1113,12 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
                     )
                   }
                   
-                  // Access/withdraw question with chips (step 8)
-                  if (msg.type === "bot" && msg.text?.includes("access or withdraw")) {
+                  // Investment risk question with chips (step index 8)
+                  if (msg.type === "bot" && msg.text?.includes("investment risk")) {
                     return (
                       <ChatMessage key={msg.id} type="bot" text={msg.text} isNew={isLast}>
                         <ReplyChips 
-                          options={["Regularly (monthly)", "Occasionally", "Rarely / lock it away"]}
+                          options={["Play it safe", "Balanced approach", "Happy to take risks"]}
                           selectedIndex={chipSelections[8] ?? null}
                           onSelect={(idx) => handleChipSelect(8, idx)}
                         />
@@ -1116,20 +1126,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
                     )
                   }
                   
-                  // Investment risk question with chips (step 9)
-                  if (msg.type === "bot" && msg.text?.includes("investment risk")) {
-                    return (
-                      <ChatMessage key={msg.id} type="bot" text={msg.text} isNew={isLast}>
-                        <ReplyChips 
-                          options={["Play it safe", "Balanced approach", "Happy to take risks"]}
-                          selectedIndex={chipSelections[9] ?? null}
-                          onSelect={(idx) => handleChipSelect(9, idx)}
-                        />
-                      </ChatMessage>
-                    )
-                  }
-                  
-                  // Profile summary with card and confirmation chips (step 10)
+                  // Profile summary with card and confirmation chips (step index 9)
                   if (msg.type === "bot" && msg.text?.includes("built for your profile")) {
                     return (
                       <ChatMessage key={msg.id} type="bot" text={msg.text} isNew={isLast}>
@@ -1138,9 +1135,9 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
                           Does this look right to you?
                         </div>
                         <ReplyChips 
-                          options={["Yes, that's me ✓", "Not quite"]}
-                          selectedIndex={chipSelections[10] ?? null}
-                          onSelect={(idx) => handleChipSelect(10, idx)}
+                          options={["Yes, that's me", "Not quite"]}
+                          selectedIndex={chipSelections[9] ?? null}
+                          onSelect={(idx) => handleChipSelect(9, idx)}
                         />
                       </ChatMessage>
                     )
