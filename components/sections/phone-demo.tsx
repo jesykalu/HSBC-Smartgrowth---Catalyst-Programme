@@ -629,14 +629,14 @@ function PhoneShell({
   const dimensions = isXLarge 
     ? "w-[400px] h-[860px]" 
     : isLarge 
-      ? "w-[340px] h-[720px]" 
+      ? "w-[300px] h-[640px]" 
       : "w-[280px] h-[600px]"
-  const outerRadius = isXLarge ? "rounded-[4rem]" : isLarge ? "rounded-[3.6rem]" : "rounded-[3.2rem]"
-  const innerRadius1 = isXLarge ? "rounded-[3.9rem]" : isLarge ? "rounded-[3.5rem]" : "rounded-[3.1rem]"
-  const innerRadius2 = isXLarge ? "rounded-[3.8rem]" : isLarge ? "rounded-[3.4rem]" : "rounded-[3rem]"
-  const screenRadius = isXLarge ? "rounded-[3.6rem]" : isLarge ? "rounded-[3.2rem]" : "rounded-[2.8rem]"
-  const statusBarHeight = isXLarge ? "h-20" : isLarge ? "h-16" : "h-14"
-  const headerHeight = isXLarge ? "h-20" : isLarge ? "h-16" : "h-14"
+  const outerRadius = isXLarge ? "rounded-[4rem]" : isLarge ? "rounded-[3.2rem]" : "rounded-[3.2rem]"
+  const innerRadius1 = isXLarge ? "rounded-[3.9rem]" : isLarge ? "rounded-[3.1rem]" : "rounded-[3.1rem]"
+  const innerRadius2 = isXLarge ? "rounded-[3.8rem]" : isLarge ? "rounded-[3rem]" : "rounded-[3rem]"
+  const screenRadius = isXLarge ? "rounded-[3.6rem]" : isLarge ? "rounded-[2.8rem]" : "rounded-[2.8rem]"
+  const statusBarHeight = isXLarge ? "h-20" : isLarge ? "h-14" : "h-14"
+  const headerHeight = isXLarge ? "h-20" : isLarge ? "h-14" : "h-14"
   const dynamicIslandWidth = isXLarge ? "w-[140px] h-[44px]" : isLarge ? "w-[120px] h-[38px]" : "w-[100px] h-[32px]"
   const timeTextSize = isXLarge ? "text-base" : isLarge ? "text-sm" : "text-xs"
   const hsbcTextSize = isXLarge ? "text-2xl" : isLarge ? "text-xl" : "text-lg"
@@ -1192,7 +1192,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
   }
 
   if (heroMode) {
-    const navWidth = isLarge ? "w-[340px]" : "w-[280px]"
+    const navWidth = isLarge ? "w-[300px]" : "w-[280px]"
     
     return (
       <div className="flex flex-col items-center overflow-visible">
