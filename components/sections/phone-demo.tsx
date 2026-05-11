@@ -1002,7 +1002,8 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
   }
   
   // Compute messages directly based on currentStep and chipSelections
-  const computedMessages = buildMessagesForStep(currentStep, chipSelections).messages
+  const result = buildMessagesForStep(currentStep, chipSelections)
+  const computedMessages = result.messages
   
   // Handle replay
   const handleReplay = () => {
@@ -1065,7 +1066,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
       case "done":
         return (
           <PhoneShell phase={phase} isLarge={isLarge} isXLarge={isXLarge}>
-            <div key={`chat-step-${currentStep}`} ref={scrollRef} className="h-full overflow-y-auto py-3">
+            <div key={`step-${currentStep}`} ref={scrollRef} className="h-full overflow-y-auto py-3">
               <AnimatePresence mode="popLayout">
                 {computedMessages.map((msg, index) => {
                   const isLast = index === computedMessages.length - 1
@@ -1192,56 +1193,77 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
 
   if (heroMode) {
     const navWidth = isXLarge ? "w-[400px]" : isLarge ? "w-[340px]" : "w-[280px]"
+    
+    // Click handlers for hero mode navigation
+    const onPrevClick = () => {
+      if (currentStep > 0) {
+        setCurrentStep(currentStep - 1)
+        setTimeout(scrollToBottom, 150)
+      }
+    }
+    
+    const onNextClick = () => {
+      if (currentStep < totalSteps - 1) {
+        setCurrentStep(currentStep + 1)
+        setTimeout(scrollToBottom, 150)
+      }
+    }
+    
     return (
       <div className="flex flex-col items-center overflow-visible">
         {renderContent()}
         
         {/* Navigation bar - always visible */}
-        <div className={`mt-4 flex items-center justify-between gap-4 ${navWidth} relative z-50`}>
+        <div className={`mt-4 flex items-center justify-between gap-4 ${navWidth} relative z-[100]`}>
           {/* Prev button */}
-          <Button
+          <button
             type="button"
-            onClick={handlePrev}
-            variant="outline"
-            size="sm"
-            className={`rounded-full px-3 bg-white ${isPrevDisabled ? "opacity-50 pointer-events-none" : ""}`}
-            disabled={isPrevDisabled}
+            onClick={onPrevClick}
+            disabled={currentStep === 0}
+            className={`rounded-full px-4 py-2 text-sm font-medium border bg-white shadow-sm transition-all ${
+              currentStep === 0 ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-50 cursor-pointer"
+            }`}
           >
-            <ChevronLeft className="w-4 h-4 mr-1" />
-            Prev
-          </Button>
+            <span className="flex items-center">
+              <ChevronLeft className="w-4 h-4 mr-1" />
+              Prev
+            </span>
+          </button>
           
           {/* Step counter */}
-          <span className="text-sm text-muted-foreground">
+          <span className="text-sm text-white font-medium bg-black/50 px-3 py-1 rounded-full">
             {currentStep + 1} / {totalSteps}
           </span>
           
           {/* Next button */}
-          <Button
+          <button
             type="button"
-            onClick={handleNext}
-            size="sm"
-            className={`rounded-full px-3 bg-[#DB0011] text-white hover:bg-[#b8000e] ${isNextDisabled ? "opacity-50 pointer-events-none" : ""}`}
-            disabled={isNextDisabled}
+            onClick={onNextClick}
+            disabled={currentStep >= totalSteps - 1}
+            className={`rounded-full px-4 py-2 text-sm font-medium bg-[#DB0011] text-white shadow-sm transition-all ${
+              currentStep >= totalSteps - 1 ? "opacity-50 cursor-not-allowed" : "hover:bg-[#b8000e] cursor-pointer"
+            }`}
           >
-            Next
-            <ChevronRight className="w-4 h-4 ml-1" />
-          </Button>
+            <span className="flex items-center">
+              Next
+              <ChevronRight className="w-4 h-4 ml-1" />
+            </span>
+          </button>
         </div>
         
         {/* Replay button - only on final step */}
         {isComplete && (
           <div className="mt-3">
-            <Button
+            <button
               type="button"
               onClick={handleReplay}
-              variant="outline"
-              size="sm"
-              className="rounded-full px-4 bg-white"
+              className="rounded-full px-4 py-2 text-sm font-medium border bg-white shadow-sm hover:bg-gray-50"
             >
-              <Play className="w-4 h-4 mr-1" />
-              Replay
-            </Button>
+              <span className="flex items-center">
+                <Play className="w-4 h-4 mr-1" />
+                Replay
+              </span>
+            </button>
           </div>
         )}
       </div>
