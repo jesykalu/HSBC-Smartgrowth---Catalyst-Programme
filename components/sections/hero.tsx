@@ -53,7 +53,7 @@ export function HeroSection() {
               onClick={scrollToSolution}
               className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-lg rounded-full shadow-lg shadow-primary/25 transition-all hover:shadow-xl hover:shadow-primary/30 hover:scale-105"
             >
-              See the solution
+              See the Demo
               <ArrowDown className="ml-2 w-5 h-5 animate-bounce" />
             </Button>
           </div>
