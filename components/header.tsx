@@ -30,8 +30,6 @@ export function Header() {
           {/* Logo */}
           <div className="flex items-center gap-3">
             <div className="text-xl font-bold text-primary tracking-tight font-[family-name:var(--font-display)]">Accenture</div>
-            <span className="text-muted-foreground">×</span>
-            <div className="text-xl font-bold text-[#DB0011] tracking-tight font-[family-name:var(--font-display)]">HSBC</div>
           </div>
 
           {/* Navigation indicator */}
