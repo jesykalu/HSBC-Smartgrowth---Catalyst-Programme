@@ -3,26 +3,6 @@
 import { motion } from "framer-motion"
 import { PhoneDemoSection } from "./phone-demo"
 
-// Accenture logo SVG - the ">" chevron
-function AccentureLogo() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="flex-shrink-0">
-      <path d="M4 2L16 10L4 18V2Z" fill="#A100FF" />
-    </svg>
-  )
-}
-
-// HSBC logo SVG - red square with white triangles
-function HSBCLogo() {
-  return (
-    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" className="flex-shrink-0">
-      <rect width="28" height="28" fill="#DB0011" />
-      <polygon points="0,0 14,0 0,14" fill="white" />
-      <polygon points="28,28 14,28 28,14" fill="white" />
-    </svg>
-  )
-}
-
 export function HeroSection() {
   return (
     <section className="relative min-h-screen flex items-center overflow-visible">
@@ -43,25 +23,7 @@ export function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            {/* Logo lockup badge */}
-            <div className="inline-flex items-center gap-0 px-4 py-2 rounded-full bg-white/10 text-white mb-8 backdrop-blur-sm border border-white/20">
-              {/* Accenture logo */}
-              <div className="flex items-center gap-2">
-                <AccentureLogo />
-                <span className="text-sm font-semibold tracking-tight text-white lowercase">accenture</span>
-              </div>
-              
-              {/* Divider */}
-              <div className="w-px h-6 bg-white/30 mx-3" />
-              
-              {/* HSBC logo */}
-              <div className="flex items-center gap-2">
-                <HSBCLogo />
-                <span className="text-sm font-bold tracking-tight text-white uppercase">HSBC</span>
-              </div>
-            </div>
-
-            {/* Main headline - shortened */}
+            {/* Main headline */}
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-[1.1] text-balance mb-8 tracking-tight font-[family-name:var(--font-display)]">
               <span className="text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]">Your customers are already using AI to move their money.</span>{" "}
               <span className="text-primary drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]">
