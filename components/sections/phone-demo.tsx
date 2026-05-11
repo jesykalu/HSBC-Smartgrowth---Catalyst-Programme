@@ -6,7 +6,7 @@ import { Check, PiggyBank, TrendingUp, ChevronLeft, ChevronRight, Play, Pause, M
 import { Button } from "@/components/ui/button"
 
 // Phase types
-type Phase = "lockscreen" | "faceid" | "chat" | "productDetail" | "done"
+type Phase = "lockscreen" | "faceid" | "chat" | "productDetail_fixedSaver" | "productDetail_isa" | "done"
 
 // Step definition
 interface Step {
@@ -27,16 +27,12 @@ const demoSteps: Step[] = [
   { id: 7, phase: "chat", action: "question2", autoSelectIndex: 1 },
   { id: 8, phase: "chat", action: "question3", autoSelectIndex: 0 },
   { id: 9, phase: "chat", action: "profileSummary", autoSelectIndex: 0 },
-  { id: 10, phase: "chat", action: "allocation" },
-  { id: 11, phase: "chat", action: "tapProduct" },
-  { id: 12, phase: "productDetail", action: "showProduct" },
-  { id: 13, phase: "productDetail", action: "returnToChat" },
-  { id: 14, phase: "chat", action: "proceedPrompt", autoSelectIndex: 0 },
-  { id: 15, phase: "chat", action: "compliance" },
-  { id: 16, phase: "chat", action: "identityConfirmed" },
-  { id: 17, phase: "chat", action: "planSummary" },
-  { id: 18, phase: "chat", action: "userConfirm" },
-  { id: 19, phase: "done", action: "success" },
+  { id: 10, phase: "chat", action: "allocation" }, // Product exploration happens here via handlers
+  { id: 11, phase: "chat", action: "compliance" },
+  { id: 12, phase: "chat", action: "identityConfirmed" },
+  { id: 13, phase: "chat", action: "planSummary" },
+  { id: 14, phase: "chat", action: "userConfirm" },
+  { id: 15, phase: "done", action: "success" },
 ]
 
 // Helper to render bold text
@@ -130,15 +126,32 @@ function DonutChart() {
 }
 
 // Product cards for allocation
-function ProductCards({ onTapProduct }: { onTapProduct?: () => void }) {
+function ProductCards({ 
+  onTapFixedSaver, 
+  onTapISA,
+  visitedProducts = new Set() 
+}: { 
+  onTapFixedSaver?: () => void
+  onTapISA?: () => void
+  visitedProducts?: Set<string>
+}) {
+  const fixedSaverVisited = visitedProducts.has("fixedSaver")
+  const isaVisited = visitedProducts.has("isa")
+  
   return (
     <div className="space-y-2 mt-2">
       <motion.div 
-        className="bg-blue-50 border border-blue-200 rounded-xl p-3 cursor-pointer hover:bg-blue-100 transition-colors"
+        className="bg-blue-50 border border-blue-200 rounded-xl p-3 cursor-pointer hover:bg-blue-100 transition-colors relative"
         whileTap={{ scale: 0.98 }}
-        onClick={onTapProduct}
+        onClick={onTapFixedSaver}
       >
-        <div className="flex items-center gap-2 mb-1">
+        {fixedSaverVisited && (
+          <div className="absolute top-2 right-2 flex items-center gap-1 px-1.5 py-0.5 bg-green-100 text-green-700 rounded-full text-[10px] font-medium">
+            <Check className="w-3 h-3" />
+            Viewed
+          </div>
+        )}
+        <div className="flex items-center gap-2 mb-2">
           <div className="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center">
             <PiggyBank className="w-4 h-4 text-white" />
           </div>
@@ -146,12 +159,23 @@ function ProductCards({ onTapProduct }: { onTapProduct?: () => void }) {
             <div className="font-medium text-blue-900 text-sm">Fixed Saver</div>
             <div className="text-xs text-blue-700">£6,000 · 4.10% AER</div>
           </div>
-          <span className="text-[10px] px-2 py-0.5 bg-blue-200 text-blue-700 rounded-full">Tap to explore</span>
         </div>
-        <div className="text-xs text-blue-600 mt-1">Learn more →</div>
+        <button className="w-full py-1.5 px-3 bg-blue-500 text-white rounded-lg text-xs font-medium hover:bg-blue-600 transition-colors">
+          Learn more →
+        </button>
       </motion.div>
-      <div className="bg-green-50 border border-green-200 rounded-xl p-3">
-        <div className="flex items-center gap-2 mb-1">
+      <motion.div 
+        className="bg-green-50 border border-green-200 rounded-xl p-3 cursor-pointer hover:bg-green-100 transition-colors relative"
+        whileTap={{ scale: 0.98 }}
+        onClick={onTapISA}
+      >
+        {isaVisited && (
+          <div className="absolute top-2 right-2 flex items-center gap-1 px-1.5 py-0.5 bg-green-100 text-green-700 rounded-full text-[10px] font-medium">
+            <Check className="w-3 h-3" />
+            Viewed
+          </div>
+        )}
+        <div className="flex items-center gap-2 mb-2">
           <div className="w-8 h-8 rounded-lg bg-green-500 flex items-center justify-center">
             <TrendingUp className="w-4 h-4 text-white" />
           </div>
@@ -159,10 +183,11 @@ function ProductCards({ onTapProduct }: { onTapProduct?: () => void }) {
             <div className="font-medium text-green-900 text-sm">Investment ISA</div>
             <div className="text-xs text-green-700">£4,000 · 5–7% return</div>
           </div>
-          <span className="text-[10px] px-2 py-0.5 bg-green-200 text-green-700 rounded-full">Tap to explore</span>
         </div>
-        <div className="text-xs text-green-600 mt-1">Learn more →</div>
-      </div>
+        <button className="w-full py-1.5 px-3 bg-green-500 text-white rounded-lg text-xs font-medium hover:bg-green-600 transition-colors">
+          Learn more →
+        </button>
+      </motion.div>
     </div>
   )
 }
@@ -429,8 +454,8 @@ function FaceIDScreen({ isAuthenticated }: { isAuthenticated: boolean }) {
   )
 }
 
-// Product Detail Screen Component
-function ProductDetailScreen({ onReturn, showPulse }: { onReturn: () => void; showPulse: boolean }) {
+// Fixed Saver Detail Screen Component
+function FixedSaverDetailScreen({ onReturn, showPulse }: { onReturn: () => void; showPulse: boolean }) {
   const scrollRef = useRef<HTMLDivElement>(null)
   
   useEffect(() => {
@@ -501,6 +526,94 @@ function ProductDetailScreen({ onReturn, showPulse }: { onReturn: () => void; sh
           <div className="text-xs font-medium text-gray-900 mb-1">Regulatory Information</div>
           <p className="text-[10px] text-gray-500 leading-relaxed">
             This product is regulated by the FCA. Your eligible deposits are protected up to £85,000 under the FSCS.
+          </p>
+        </div>
+      </div>
+      
+      {/* Floating chat button */}
+      <motion.button
+        onClick={onReturn}
+        className="absolute bottom-4 right-4 w-14 h-14 rounded-full bg-[#DB0011] text-white flex items-center justify-center shadow-lg"
+        animate={showPulse ? { scale: [1, 1.1, 1] } : {}}
+        transition={{ duration: 0.5 }}
+      >
+        <MessageCircle className="w-6 h-6" />
+      </motion.button>
+    </div>
+  )
+}
+
+// Investment ISA Detail Screen Component
+function ISADetailScreen({ onReturn, showPulse }: { onReturn: () => void; showPulse: boolean }) {
+  const scrollRef = useRef<HTMLDivElement>(null)
+  
+  useEffect(() => {
+    if (scrollRef.current) {
+      const timer = setTimeout(() => {
+        scrollRef.current?.scrollTo({
+          top: 150,
+          behavior: "smooth"
+        })
+      }, 500)
+      return () => clearTimeout(timer)
+    }
+  }, [])
+
+  const details = [
+    { icon: FileText, label: "Wrapper", value: "Stocks & Shares ISA" },
+    { icon: Coins, label: "Annual allowance", value: "Up to £20,000 per tax year" },
+    { icon: TrendingUp, label: "Investment type", value: "Diversified funds" },
+    { icon: Lock, label: "Withdrawals", value: "Flexible — anytime" },
+    { icon: Shield, label: "FSCS Protection", value: "Up to £85,000 on cash held" },
+    { icon: FileText, label: "Returns", value: "Variable, not guaranteed" },
+    { icon: Users, label: "Eligibility", value: "UK residents 18+, not held another ISA this tax year" },
+  ]
+
+  return (
+    <div className="h-full flex flex-col bg-white relative">
+      {/* Back button */}
+      <button 
+        onClick={onReturn}
+        className="flex items-center gap-1 px-4 py-2 text-[#DB0011] text-sm font-medium"
+      >
+        <ArrowLeft className="w-4 h-4" />
+        Back
+      </button>
+      
+      {/* Product hero */}
+      <div className="bg-gradient-to-br from-green-500 to-green-600 px-4 py-6 text-center">
+        <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center mx-auto mb-2">
+          <TrendingUp className="w-6 h-6 text-white" />
+        </div>
+        <div className="text-white font-bold text-lg">Investment ISA</div>
+        <div className="text-white/90 text-2xl font-bold mt-1">5–7% projected return</div>
+      </div>
+      
+      {/* Details list */}
+      <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-3 space-y-2">
+        {details.map((item) => (
+          <div key={item.label} className="flex items-center gap-3 py-2 border-b border-gray-100">
+            <item.icon className="w-4 h-4 text-gray-400" />
+            <span className="text-xs text-gray-600 w-24">{item.label}</span>
+            <span className="text-xs text-gray-900 flex-1">{item.value}</span>
+          </div>
+        ))}
+        
+        {/* Terms section */}
+        <div className="pt-3">
+          <div className="text-xs font-medium text-gray-900 mb-1">Terms & Conditions</div>
+          <p className="text-[10px] text-gray-500 leading-relaxed">
+            The value of your investment can go down as well as up and you may get back less than you originally invested. 
+            Past performance is not a reliable indicator of future results…
+            <span className="text-[#DB0011]"> read more</span>
+          </p>
+        </div>
+        
+        {/* Regulatory info */}
+        <div className="pt-3 pb-16">
+          <div className="text-xs font-medium text-gray-900 mb-1">Regulatory Information</div>
+          <p className="text-[10px] text-gray-500 leading-relaxed">
+            This product is regulated by the FCA. Returns are not guaranteed and the value of your investment may go down as well as up.
           </p>
         </div>
       </div>
@@ -620,7 +733,8 @@ function PhoneShell({
             {/* Content area */}
             <div className={`overflow-hidden bg-gray-50 ${
               phase === "faceid" ? "h-[calc(100%-3.5rem)]" : 
-              phase === "productDetail" ? "h-[calc(100%-3.5rem)]" :
+              phase === "productDetail_fixedSaver" ? "h-[calc(100%-3.5rem)]" :
+              phase === "productDetail_isa" ? "h-[calc(100%-3.5rem)]" :
               "h-[calc(100%-7rem)]"
             }`}>
               {children}
@@ -702,13 +816,24 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
   const [chipSelections, setChipSelections] = useState<Record<number, number | null>>({})
   const [complianceCount, setComplianceCount] = useState(0)
   const [productPulse, setProductPulse] = useState(false)
+  const [visitedProducts, setVisitedProducts] = useState<Set<string>>(new Set())
+  const [currentProductView, setCurrentProductView] = useState<"fixedSaver" | "isa" | null>(null)
+  const [showContinueButton, setShowContinueButton] = useState(false)
+  const [isOnProductDetail, setIsOnProductDetail] = useState(false)
   
   const scrollRef = useRef<HTMLDivElement>(null)
   const timerRef = useRef<NodeJS.Timeout | null>(null)
   
   const totalSteps = demoSteps.length
   const step = demoSteps[currentStep] || demoSteps[0]
-  const phase = step?.phase || "lockscreen"
+  
+  // Determine phase - check if we're viewing a product detail
+  const getPhase = (): Phase => {
+    if (currentProductView === "fixedSaver") return "productDetail_fixedSaver"
+    if (currentProductView === "isa") return "productDetail_isa"
+    return step?.phase || "lockscreen"
+  }
+  const phase = getPhase()
   
   // Auto-scroll chat
   useEffect(() => {
@@ -807,28 +932,6 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
         }])
         break
         
-      case "tapProduct":
-        // Simulate user tapping product card
-        break
-        
-      case "showProduct":
-        // Product detail view is shown
-        break
-        
-      case "returnToChat":
-        setProductPulse(true)
-        setTimeout(() => setProductPulse(false), 500)
-        break
-        
-      case "proceedPrompt":
-        setChatMessages(prev => [...prev, {
-          id: prev.length + 1,
-          type: "bot",
-          text: "Hope that was helpful! The Fixed Saver locks your money for 12 months but gives you a guaranteed 4.10% return. Ready to proceed with the allocation, or would you like to explore the ISA first?"
-        }])
-        setTimeout(() => setChipSelections(prev => ({ ...prev, 14: 0 })), 2000)
-        break
-        
       case "compliance":
         setChatMessages(prev => [...prev, {
           id: prev.length + 1,
@@ -876,13 +979,92 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
     }
   }
   
+  // Navigate to Fixed Saver product detail
+  const handleTapFixedSaver = () => {
+    if (timerRef.current) clearTimeout(timerRef.current)
+    setIsOnProductDetail(true)
+    setCurrentProductView("fixedSaver")
+  }
+  
+  // Navigate to ISA product detail
+  const handleTapISA = () => {
+    if (timerRef.current) clearTimeout(timerRef.current)
+    setIsOnProductDetail(true)
+    setCurrentProductView("isa")
+  }
+  
+  // Return from product detail
+  const handleReturnFromProduct = () => {
+    if (currentProductView) {
+      setVisitedProducts(prev => {
+        const updated = new Set(prev)
+        updated.add(currentProductView)
+        return updated
+      })
+    }
+    setCurrentProductView(null)
+    setIsOnProductDetail(false)
+    
+    // Check if both products have been visited
+    const updatedVisited = new Set(visitedProducts)
+    if (currentProductView) updatedVisited.add(currentProductView)
+    
+    if (updatedVisited.size >= 2) {
+      setShowContinueButton(true)
+    }
+  }
+  
+  // Continue to next step after viewing products
+  const handleContinue = () => {
+    if (timerRef.current) clearTimeout(timerRef.current)
+    setShowContinueButton(false)
+    setCurrentStep(prev => prev + 1)
+  }
+  
   // Auto-advance logic
   useEffect(() => {
     if (isPaused) return
+    if (isOnProductDetail) return // Don't auto-advance while viewing product detail
     if (currentStep >= totalSteps) return
     
     const s = demoSteps[currentStep]
     const isBotMessage = s.phase === "chat" && s.action !== "userReply1" && s.action !== "userConfirm" && s.action !== "tapProduct"
+    
+    // Special handling for allocation step (Step 10) - auto-explore products
+    if (s.action === "allocation") {
+      setIsTyping(true)
+      timerRef.current = setTimeout(() => {
+        setIsTyping(false)
+        processStep(currentStep)
+        
+        // Start automated product exploration sequence
+        timerRef.current = setTimeout(() => {
+          // Visit Fixed Saver first
+          handleTapFixedSaver()
+          
+          // Return after 3 seconds
+          timerRef.current = setTimeout(() => {
+            handleReturnFromProduct()
+            
+            // Visit ISA after returning
+            timerRef.current = setTimeout(() => {
+              handleTapISA()
+              
+              // Return after 3 seconds
+              timerRef.current = setTimeout(() => {
+                handleReturnFromProduct()
+                
+                // Show continue button and auto-tap after 1.5 seconds
+                timerRef.current = setTimeout(() => {
+                  handleContinue()
+                }, 1500)
+              }, 3000)
+            }, 500)
+          }, 3000)
+        }, 2000)
+      }, 1200)
+      return
+    }
     
     // Show typing indicator for bot messages
     if (isBotMessage && currentStep > 3) {
@@ -908,7 +1090,7 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current)
     }
-  }, [currentStep, isPaused, totalSteps])
+  }, [currentStep, isPaused, totalSteps, isOnProductDetail])
   
   // Start demo
   useEffect(() => {
@@ -966,6 +1148,10 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
     setChipSelections({})
     setComplianceCount(0)
     setProductPulse(false)
+    setVisitedProducts(new Set())
+    setCurrentProductView(null)
+    setShowContinueButton(false)
+    setIsOnProductDetail(false)
     
     setTimeout(() => {
       setShowNotification(true)
@@ -999,13 +1185,39 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
           </PhoneShell>
         )
         
-      case "productDetail":
+      case "productDetail_fixedSaver":
         return (
           <PhoneShell phase={phase}>
-            <ProductDetailScreen 
-              onReturn={() => setCurrentStep(prev => prev + 1)} 
-              showPulse={productPulse}
-            />
+            <motion.div
+              initial={{ x: 300, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: 300, opacity: 0 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="h-full"
+            >
+              <FixedSaverDetailScreen 
+                onReturn={handleReturnFromProduct} 
+                showPulse={productPulse}
+              />
+            </motion.div>
+          </PhoneShell>
+        )
+        
+      case "productDetail_isa":
+        return (
+          <PhoneShell phase={phase}>
+            <motion.div
+              initial={{ x: 300, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: 300, opacity: 0 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="h-full"
+            >
+              <ISADetailScreen 
+                onReturn={handleReturnFromProduct} 
+                showPulse={productPulse}
+              />
+            </motion.div>
           </PhoneShell>
         )
         
@@ -1071,18 +1283,28 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
                     return (
                       <ChatMessage key={msg.id} type="bot" text={msg.text} isNew={isLast}>
                         <DonutChart />
-                        <ProductCards />
-                      </ChatMessage>
-                    )
-                  }
-                  
-                  if (msg.type === "bot" && msg.text?.includes("Hope that was helpful")) {
-                    return (
-                      <ChatMessage key={msg.id} type="bot" text={msg.text} isNew={isLast}>
-                        <ReplyChips 
-                          options={["Proceed with this plan ✓", "Show me the ISA"]}
-                          selectedIndex={chipSelections[14] ?? null}
+                        <ProductCards 
+                          onTapFixedSaver={handleTapFixedSaver}
+                          onTapISA={handleTapISA}
+                          visitedProducts={visitedProducts}
                         />
+                        {/* Continue button - appears when both products visited */}
+                        {showContinueButton && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="mt-3"
+                          >
+                            <motion.button
+                              onClick={handleContinue}
+                              className="w-full py-2 px-4 bg-[#DB0011] text-white rounded-xl text-sm font-medium hover:bg-[#b8000e] transition-colors flex items-center justify-center gap-1"
+                              animate={{ scale: [1, 1.02, 1] }}
+                              transition={{ duration: 1.5, repeat: Infinity }}
+                            >
+                              Continue →
+                            </motion.button>
+                          </motion.div>
+                        )}
                       </ChatMessage>
                     )
                   }
@@ -1166,10 +1388,10 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
             size="sm"
             className="rounded-full px-4 bg-white"
           >
-            {isPaused ? (
+            {isPaused || isOnProductDetail ? (
               <>
                 <Play className="w-4 h-4 mr-1" />
-                Play
+                {isOnProductDetail ? "Paused" : "Play"}
               </>
             ) : (
               <>
@@ -1257,10 +1479,10 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
               size="sm"
               className="rounded-full px-4"
             >
-              {isPaused ? (
+              {isPaused || isOnProductDetail ? (
                 <>
                   <Play className="w-4 h-4 mr-1" />
-                  Play
+                  {isOnProductDetail ? "Paused" : "Play"}
                 </>
               ) : (
                 <>
