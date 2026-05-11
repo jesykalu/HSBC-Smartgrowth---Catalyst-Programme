@@ -569,44 +569,31 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
           </div>
         </PhoneMockup>
         
-        {/* Navigation controls */}
-        <div className="mt-6 flex flex-col items-center gap-3">
-          {/* Pause/Resume control */}
+        {/* Navigation controls - Play/Replay and Pause side by side */}
+        <div className="mt-6 flex items-center gap-3">
+          {/* Play/Replay button */}
+          <Button
+            onClick={isComplete ? handleReplay : handlePauseResume}
+            variant="outline"
+            size="sm"
+            className="rounded-full px-4"
+            disabled={!isPaused && !isComplete}
+          >
+            <Play className="w-4 h-4 mr-1" />
+            {isComplete ? "Replay" : "Play"}
+          </Button>
+          
+          {/* Pause button */}
           <Button
             onClick={handlePauseResume}
             variant="outline"
             size="sm"
             className="rounded-full px-4"
+            disabled={isPaused || isComplete}
           >
-            {isPaused ? (
-              <>
-                <Play className="w-4 h-4 mr-1" />
-                Resume
-              </>
-            ) : (
-              <>
-                <Pause className="w-4 h-4 mr-1" />
-                Pause
-              </>
-            )}
+            <Pause className="w-4 h-4 mr-1" />
+            Pause
           </Button>
-          
-          {/* Replay button when complete */}
-          {isComplete && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-            >
-              <Button
-                onClick={handleReplay}
-                variant="outline"
-                className="rounded-full px-6"
-              >
-                <Play className="w-4 h-4 mr-2" />
-                Replay
-              </Button>
-            </motion.div>
-          )}
         </div>
       </div>
     )
@@ -651,44 +638,31 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
             </div>
           </PhoneMockup>
           
-          {/* Navigation controls */}
-          <div className="mt-6 flex flex-col items-center gap-3">
-            {/* Pause/Resume control */}
+          {/* Navigation controls - Play/Replay and Pause side by side */}
+          <div className="mt-6 flex items-center gap-3">
+            {/* Play/Replay button */}
+            <Button
+              onClick={isComplete ? handleReplay : handlePauseResume}
+              variant="outline"
+              size="sm"
+              className="rounded-full px-4"
+              disabled={!isPaused && !isComplete}
+            >
+              <Play className="w-4 h-4 mr-1" />
+              {isComplete ? "Replay" : "Play"}
+            </Button>
+            
+            {/* Pause button */}
             <Button
               onClick={handlePauseResume}
               variant="outline"
               size="sm"
               className="rounded-full px-4"
+              disabled={isPaused || isComplete}
             >
-              {isPaused ? (
-                <>
-                  <Play className="w-4 h-4 mr-1" />
-                  Resume
-                </>
-              ) : (
-                <>
-                  <Pause className="w-4 h-4 mr-1" />
-                  Pause
-                </>
-              )}
+              <Pause className="w-4 h-4 mr-1" />
+              Pause
             </Button>
-            
-            {/* Replay button when complete */}
-            {isComplete && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-              >
-                <Button
-                  onClick={handleReplay}
-                  variant="outline"
-                  className="rounded-full px-6"
-                >
-                  <Play className="w-4 h-4 mr-2" />
-                  Replay
-                </Button>
-              </motion.div>
-            )}
           </div>
         </motion.div>
       </div>
