@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef, useMemo } from "react"
+import { useState, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Check, PiggyBank, TrendingUp, ChevronRight, ChevronLeft, Play, MessageCircle, ArrowLeft, Calendar, Coins, Lock, Shield, FileText, Users, Sparkles, CreditCard, Plane, BarChart3, ArrowUpDown, ShoppingBag, Wallet } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -1001,10 +1001,8 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
     }
   }
   
-  // Compute messages directly based on currentStep and chipSelections (memoized)
-  const computedMessages = useMemo(() => {
-    return buildMessagesForStep(currentStep, chipSelections).messages
-  }, [currentStep, chipSelections])
+  // Compute messages directly based on currentStep and chipSelections
+  const computedMessages = buildMessagesForStep(currentStep, chipSelections).messages
   
   // Handle replay
   const handleReplay = () => {
@@ -1067,7 +1065,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
       case "done":
         return (
           <PhoneShell phase={phase} isLarge={isLarge} isXLarge={isXLarge}>
-            <div ref={scrollRef} className="h-full overflow-y-auto py-3">
+            <div key={`chat-step-${currentStep}`} ref={scrollRef} className="h-full overflow-y-auto py-3">
               <AnimatePresence mode="popLayout">
                 {computedMessages.map((msg, index) => {
                   const isLast = index === computedMessages.length - 1
