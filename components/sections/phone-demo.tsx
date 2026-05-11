@@ -1192,22 +1192,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
   }
 
   if (heroMode) {
-    const navWidth = isXLarge ? "w-[400px]" : isLarge ? "w-[340px]" : "w-[280px]"
-    
-    // Click handlers for hero mode navigation
-    const onPrevClick = () => {
-      if (currentStep > 0) {
-        setCurrentStep(currentStep - 1)
-        setTimeout(scrollToBottom, 150)
-      }
-    }
-    
-    const onNextClick = () => {
-      if (currentStep < totalSteps - 1) {
-        setCurrentStep(currentStep + 1)
-        setTimeout(scrollToBottom, 150)
-      }
-    }
+    const navWidth = isLarge ? "w-[340px]" : "w-[280px]"
     
     return (
       <div className="flex flex-col items-center overflow-visible">
@@ -1218,10 +1203,10 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
           {/* Prev button */}
           <button
             type="button"
-            onClick={onPrevClick}
-            disabled={currentStep === 0}
+            onClick={() => setCurrentStep(prev => Math.max(prev - 1, 0))}
+            disabled={isPrevDisabled}
             className={`rounded-full px-4 py-2 text-sm font-medium border bg-white shadow-sm transition-all ${
-              currentStep === 0 ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-50 cursor-pointer"
+              isPrevDisabled ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-50 cursor-pointer"
             }`}
           >
             <span className="flex items-center">
@@ -1238,10 +1223,10 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
           {/* Next button */}
           <button
             type="button"
-            onClick={onNextClick}
-            disabled={currentStep >= totalSteps - 1}
+            onClick={() => setCurrentStep(prev => Math.min(prev + 1, totalSteps - 1))}
+            disabled={isNextDisabled}
             className={`rounded-full px-4 py-2 text-sm font-medium bg-[#DB0011] text-white shadow-sm transition-all ${
-              currentStep >= totalSteps - 1 ? "opacity-50 cursor-not-allowed" : "hover:bg-[#b8000e] cursor-pointer"
+              isNextDisabled ? "opacity-50 cursor-not-allowed" : "hover:bg-[#b8000e] cursor-pointer"
             }`}
           >
             <span className="flex items-center">

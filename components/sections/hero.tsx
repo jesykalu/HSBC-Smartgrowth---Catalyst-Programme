@@ -48,7 +48,7 @@ export function HeroSection() {
             <div className="relative overflow-visible">
               {/* Glow effect behind phone - pointer-events-none so buttons work */}
               <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full scale-150 pointer-events-none" />
-              <PhoneDemoSection heroMode={true} scale="xlarge" />
+              <PhoneDemoSection heroMode={true} scale="default" />
             </div>
           </motion.div>
         </div>
