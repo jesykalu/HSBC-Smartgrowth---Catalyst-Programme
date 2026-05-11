@@ -10,7 +10,7 @@
   --card-foreground: oklch(0.15 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.15 0 0);
-  --primary: oklch(0.45 0.28 285);
+  --primary: oklch(0.65 0.25 285);
   --primary-foreground: oklch(1 0 0);
   --secondary: oklch(0.97 0.01 285);
   --secondary-foreground: oklch(0.15 0 0);
@@ -22,8 +22,8 @@
   --destructive-foreground: oklch(1 0 0);
   --border: oklch(0.92 0 0);
   --input: oklch(0.92 0 0);
-  --ring: oklch(0.45 0.28 285);
-  --chart-1: oklch(0.45 0.28 285);
+  --ring: oklch(0.65 0.25 285);
+  --chart-1: oklch(0.65 0.25 285);
   --chart-2: oklch(0.55 0.22 25);
   --chart-3: oklch(0.6 0.15 200);
   --chart-4: oklch(0.7 0.15 150);
@@ -31,17 +31,17 @@
   --radius: 0.75rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.45 0.28 285);
+  --sidebar-primary: oklch(0.65 0.25 285);
   --sidebar-primary-foreground: oklch(0.985 0 0);
   --sidebar-accent: oklch(0.97 0.01 285);
   --sidebar-accent-foreground: oklch(0.15 0 0);
   --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.45 0.28 285);
+  --sidebar-ring: oklch(0.65 0.25 285);
   
   /* Custom Accenture & HSBC colors */
-  --accenture-purple: #6A00FF;
-  --accenture-purple-light: #8B3DFF;
-  --accenture-purple-dark: #4A00B3;
+  --accenture-purple: #A855F7;
+  --accenture-purple-light: #C084FC;
+  --accenture-purple-dark: #9333EA;
   --hsbc-red: #DB0011;
   --hsbc-red-light: #FF1A2E;
   --hsbc-red-dark: #A3000D;
