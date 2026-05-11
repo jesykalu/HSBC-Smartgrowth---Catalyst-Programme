@@ -1,15 +1,10 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
-import { ArrowDown, Sparkles } from "lucide-react"
+import { Sparkles } from "lucide-react"
 import { motion } from "framer-motion"
-import { PhonePreview } from "./phone-demo"
+import { PhoneDemoSection } from "./phone-demo"
 
 export function HeroSection() {
-  const scrollToDemo = () => {
-    document.getElementById("phone-demo")?.scrollIntoView({ behavior: "smooth" })
-  }
-
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden">
       {/* Background image */}
@@ -42,21 +37,9 @@ export function HeroSection() {
                 The question is — will it be your AI guiding them, or someone else&apos;s?
               </span>
             </h1>
-
-            {/* CTA Button */}
-            <div className="mt-8">
-              <Button
-                size="lg"
-                onClick={scrollToDemo}
-                className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-lg rounded-full shadow-lg shadow-primary/25 transition-all hover:shadow-xl hover:shadow-primary/30 hover:scale-105"
-              >
-                See the Demo
-                <ArrowDown className="ml-2 w-5 h-5 animate-bounce" />
-              </Button>
-            </div>
           </motion.div>
 
-          {/* Right column - Phone preview */}
+          {/* Right column - Interactive phone demo */}
           <motion.div
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
@@ -66,7 +49,7 @@ export function HeroSection() {
             <div className="relative">
               {/* Glow effect behind phone */}
               <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full scale-150" />
-              <PhonePreview />
+              <PhoneDemoSection heroMode={true} />
             </div>
           </motion.div>
         </div>

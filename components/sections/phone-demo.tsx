@@ -1,404 +1,350 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { ChevronLeft, ChevronRight, Check, FileText, Scan, Shield, PiggyBank, TrendingUp, Sparkles, ChevronUp, Send, X, Info } from "lucide-react"
+import { Check, FileText, Shield, PiggyBank, TrendingUp, Sparkles, Play } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
-// Chat messages for each screen
-const chatMessages: Record<number, string> = {
-  1: "Hi Jes! I can see you have some idle funds. Would you like me to help you make the most of them?",
-  2: "Based on your goal of saving for a home, I'd suggest looking at options that balance security with growth.",
-  3: "Your financial profile looks strong! You have a good savings pattern which opens up several options.",
-  4: "The Smart Split Strategy combines security with growth potential. Does this approach make sense for your goals?",
-  5: "This allocation protects £6,000 with guaranteed returns while giving £4,000 growth potential. Any questions?",
-  6: "Great progress! All compliance checks are complete. We just need to verify your identity.",
-  7: "Everything looks good! Take a moment to review the details before confirming.",
-  8: "Congratulations on setting up your plan! I'm here if you have any questions going forward.",
+// Message types
+type MessageType = "bot" | "user"
+
+interface ChatMessage {
+  id: number
+  type: MessageType
+  text?: string
+  card?: "profile" | "recommendations" | "allocation" | "terms" | "compliance" | "summary"
+  delay?: number // time before this message appears after the previous one
 }
 
-// Stage 1 screens with new goal screen and enhanced screen 5
-const stage1Screens = [
-  {
-    id: 0,
-    title: "Financial Goals",
-    content: ({ onGoalSelect, selectedGoal }: { onGoalSelect: (goal: string) => void; selectedGoal: string | null }) => (
-      <div className="p-4">
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 mb-4">
-          <div className="flex items-start gap-3 mb-4">
-            <div className="w-10 h-10 rounded-full bg-[#DB0011]/10 flex items-center justify-center">
-              <Sparkles className="w-5 h-5 text-[#DB0011]" />
-            </div>
-            <div>
-              <div className="font-semibold text-gray-900">HSBC AI</div>
-              <div className="text-sm text-gray-500">Just now</div>
-            </div>
-          </div>
-          <p className="text-gray-700 leading-relaxed">
-            Hi Jes! Before we look at your finances, what matters most to you right now?
-          </p>
-        </div>
-        <div className="space-y-3">
-          {[
-            { id: "save", label: "Save more money", emoji: "💰" },
-            { id: "holiday", label: "Plan a holiday", emoji: "✈️" },
-            { id: "returns", label: "Get better returns", emoji: "📈" },
-            { id: "home", label: "Save for a home", emoji: "🏠" },
-          ].map((goal) => (
-            <button
-              key={goal.id}
-              onClick={() => onGoalSelect(goal.id)}
-              className={`w-full p-4 rounded-xl border-2 transition-all text-left flex items-center gap-3 ${
-                selectedGoal === goal.id
-                  ? "border-[#DB0011] bg-[#DB0011]/5"
-                  : "border-gray-100 bg-white hover:border-gray-200"
-              }`}
-            >
-              <span className="text-2xl">{goal.emoji}</span>
-              <span className="font-medium text-gray-900">{goal.label}</span>
-              {selectedGoal === goal.id && (
-                <Check className="w-5 h-5 text-[#DB0011] ml-auto" />
-              )}
-            </button>
-          ))}
-        </div>
-        {selectedGoal && (
-          <button className="w-full mt-6 py-3 rounded-xl bg-[#DB0011] text-white font-semibold flex items-center justify-center gap-2">
-            Next
-            <ChevronRight className="w-4 h-4" />
-          </button>
-        )}
-      </div>
-    ),
-  },
+// Full conversation script
+const conversationScript: ChatMessage[] = [
   {
     id: 1,
-    title: "Account Overview",
-    content: () => (
-      <div className="p-4">
-        <div className="text-sm text-gray-500 mb-1">Current Account</div>
-        <div className="text-3xl font-bold text-gray-900 mb-4">£18,500</div>
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
-          <div className="flex items-center gap-2 text-amber-700 font-medium mb-1">
-            <PiggyBank className="w-4 h-4" />
-            Available Savings Opportunity
-          </div>
-          <div className="text-2xl font-bold text-amber-800">£10,000</div>
-          <div className="text-sm text-amber-600">Idle funds detected</div>
-        </div>
-      </div>
-    ),
+    type: "bot",
+    text: "Hi Jes 👋 We've detected that you have **£10,000** in idle funds sitting in your current account. Based on your spending habits and existing savings products, we think we can put that money to work for you. Would you like to explore your options?",
+    delay: 1500,
   },
   {
     id: 2,
-    title: "AI Insight",
-    content: () => (
-      <div className="p-4">
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
-          <div className="flex items-start gap-3 mb-4">
-            <div className="w-10 h-10 rounded-full bg-[#DB0011]/10 flex items-center justify-center">
-              <Sparkles className="w-5 h-5 text-[#DB0011]" />
-            </div>
-            <div>
-              <div className="font-semibold text-gray-900">HSBC Insights</div>
-              <div className="text-sm text-gray-500">Just now</div>
-            </div>
-          </div>
-          <p className="text-gray-700 leading-relaxed">
-            &quot;Jes, we&apos;ve noticed you have <span className="font-semibold text-[#DB0011]">£10,000</span> in unused savings. Would you like to grow this money?&quot;
-          </p>
-          <div className="mt-4 flex gap-2">
-            <button className="flex-1 py-2 rounded-lg bg-[#DB0011] text-white font-medium text-sm">Yes, show me</button>
-            <button className="flex-1 py-2 rounded-lg bg-gray-100 text-gray-700 font-medium text-sm">Not now</button>
-          </div>
-        </div>
-      </div>
-    ),
+    type: "user",
+    text: "Yes, show me what's available.",
+    delay: 1500,
   },
   {
     id: 3,
-    title: "Your Profile",
-    content: () => (
-      <div className="p-4">
-        <div className="text-lg font-semibold text-gray-900 mb-4">Your Financial Profile</div>
-        <div className="space-y-3">
-          {[
-            { label: "Risk Appetite", value: "Low–Medium", color: "bg-blue-100 text-blue-700" },
-            { label: "Spending Behaviour", value: "Travel, Retail", color: "bg-purple-100 text-purple-700" },
-            { label: "Savings Pattern", value: "Strong Surplus", color: "bg-green-100 text-green-700" },
-          ].map((item) => (
-            <div key={item.label} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
-              <span className="text-gray-600">{item.label}</span>
-              <span className={`px-3 py-1 rounded-full text-sm font-medium ${item.color}`}>{item.value}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-    ),
+    type: "bot",
+    text: "Great! Here's what we know about you:",
+    delay: 1500,
   },
   {
     id: 4,
-    title: "Recommendations",
-    content: () => (
-      <div className="p-4">
-        <div className="text-lg font-semibold text-gray-900 mb-4">Recommended Products</div>
-        <div className="space-y-3">
-          {[
-            { name: "Fixed Saver", rate: "4.10% AER", icon: PiggyBank, recommended: false },
-            { name: "Investment ISA", rate: "5–7% return", icon: TrendingUp, recommended: false },
-            { name: "Smart Split Strategy", rate: "Optimised", icon: Sparkles, recommended: true },
-          ].map((product) => (
-            <div key={product.name} className={`p-4 rounded-xl border-2 transition-all ${product.recommended ? 'border-[#DB0011] bg-[#DB0011]/5' : 'border-gray-100 bg-white'}`}>
-              <div className="flex items-center gap-3">
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${product.recommended ? 'bg-[#DB0011]/10' : 'bg-gray-100'}`}>
-                  <product.icon className={`w-5 h-5 ${product.recommended ? 'text-[#DB0011]' : 'text-gray-600'}`} />
-                </div>
-                <div className="flex-1">
-                  <div className="font-semibold text-gray-900">{product.name}</div>
-                  <div className="text-sm text-gray-500">{product.rate}</div>
-                </div>
-                {product.recommended && (
-                  <span className="px-2 py-1 rounded-full bg-[#DB0011] text-white text-xs font-medium">Recommended</span>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    ),
+    type: "bot",
+    card: "profile",
+    delay: 500,
   },
   {
     id: 5,
-    title: "Your Plan",
-    content: ({ showInfoCard, setShowInfoCard, onDiscuss }: { showInfoCard: boolean; setShowInfoCard: (show: boolean) => void; onDiscuss: () => void }) => (
-      <div className="p-4">
-        <div className="text-lg font-semibold text-gray-900 mb-4">Suggested Allocation</div>
-        <div className="space-y-4">
-          <div className="p-4 rounded-xl bg-blue-50 border border-blue-100">
-            <div className="flex items-center justify-between mb-2">
-              <span className="font-medium text-blue-900">Fixed Saver</span>
-              <span className="text-xl font-bold text-blue-700">£6,000</span>
-            </div>
-            <div className="w-full h-2 bg-blue-200 rounded-full overflow-hidden">
-              <div className="h-full w-3/5 bg-blue-500 rounded-full" />
-            </div>
-          </div>
-          <div className="p-4 rounded-xl bg-green-50 border border-green-100">
-            <div className="flex items-center justify-between mb-2">
-              <span className="font-medium text-green-900">Investment ISA</span>
-              <span className="text-xl font-bold text-green-700">£4,000</span>
-            </div>
-            <div className="w-full h-2 bg-green-200 rounded-full overflow-hidden">
-              <div className="h-full w-2/5 bg-green-500 rounded-full" />
-            </div>
-          </div>
-        </div>
-        
-        {/* Info card when "Find out more" is clicked */}
-        <AnimatePresence>
-          {showInfoCard && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 10 }}
-              className="mt-4 p-4 rounded-xl bg-blue-50 border border-blue-200 relative"
-            >
-              <button 
-                onClick={() => setShowInfoCard(false)}
-                className="absolute top-2 right-2 p-1 rounded-full hover:bg-blue-100"
-              >
-                <X className="w-4 h-4 text-blue-600" />
-              </button>
-              <div className="flex items-start gap-2 mb-2">
-                <Shield className="w-5 h-5 text-blue-600 mt-0.5" />
-                <div className="font-medium text-blue-900">FSCS Protection</div>
-              </div>
-              <p className="text-sm text-blue-700 leading-relaxed">
-                Your savings are protected up to £85,000 per institution under the Financial Services Compensation Scheme (FSCS). This government-backed protection applies to the first £85K of your savings.
-              </p>
-            </motion.div>
-          )}
-        </AnimatePresence>
-        
-        {/* Action buttons */}
-        <div className="mt-6 space-y-3">
-          <button 
-            onClick={() => setShowInfoCard(true)}
-            className="w-full py-3 rounded-xl bg-gray-100 text-gray-700 font-medium flex items-center justify-center gap-2 hover:bg-gray-200 transition-colors"
-          >
-            <Info className="w-4 h-4" />
-            Find out more
-          </button>
-          <button 
-            onClick={onDiscuss}
-            className="w-full py-3 rounded-xl bg-[#DB0011] text-white font-semibold flex items-center justify-center gap-2"
-          >
-            💬 I&apos;d like to discuss this
-          </button>
-        </div>
-      </div>
-    ),
+    type: "bot",
+    text: "Based on your profile, here are the products we'd recommend:",
+    delay: 1500,
   },
   {
     id: 6,
-    title: "Verification",
-    content: () => (
-      <div className="p-4">
-        <div className="text-lg font-semibold text-gray-900 mb-4">Compliance Checks</div>
-        <div className="space-y-2 mb-6">
-          {["Eligibility", "Suitability", "KYC", "CDD", "Fraud Screening", "Affordability"].map((check) => (
-            <div key={check} className="flex items-center gap-3 p-3 bg-green-50 rounded-xl">
-              <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center">
-                <Check className="w-4 h-4 text-white" />
-              </div>
-              <span className="text-gray-700">{check}</span>
-            </div>
-          ))}
-        </div>
-        <div className="p-4 rounded-xl bg-gray-50 border border-gray-100 text-center">
-          <Scan className="w-12 h-12 text-[#DB0011] mx-auto mb-2" />
-          <div className="font-medium text-gray-900">Confirm your identity</div>
-          <div className="text-sm text-gray-500">Face ID verification</div>
-        </div>
-        <div className="mt-4 p-3 bg-green-50 rounded-xl flex items-center gap-2">
-          <Shield className="w-5 h-5 text-green-600" />
-          <span className="text-green-700 text-sm font-medium">Identity verified. All checks complete.</span>
-        </div>
-      </div>
-    ),
+    type: "bot",
+    card: "recommendations",
+    delay: 500,
   },
   {
     id: 7,
-    title: "Summary",
-    content: () => (
-      <div className="p-4">
-        <div className="text-lg font-semibold text-gray-900 mb-4">Plan Summary</div>
-        <div className="space-y-3">
-          <div className="p-3 bg-gray-50 rounded-xl">
-            <div className="flex justify-between items-center">
-              <span className="text-gray-600">Fixed Saver</span>
-              <span className="font-semibold">£6,000 @ 4.10% AER</span>
-            </div>
-          </div>
-          <div className="p-3 bg-gray-50 rounded-xl">
-            <div className="flex justify-between items-center">
-              <span className="text-gray-600">Investment ISA</span>
-              <span className="font-semibold">£4,000 @ 5–7% return</span>
-            </div>
-          </div>
-          <div className="p-3 bg-gray-50 rounded-xl">
-            <div className="text-sm text-gray-500 mb-1">Access conditions</div>
-            <div className="text-sm text-gray-700">Fixed term: 12 months • ISA: Flexible</div>
-          </div>
-        </div>
-        <button className="w-full mt-6 py-3 rounded-xl bg-gray-100 text-gray-700 font-medium flex items-center justify-center gap-2">
-          <FileText className="w-4 h-4" />
-          Download terms and agreement
-        </button>
-        <button className="w-full mt-3 py-3 rounded-xl bg-[#DB0011] text-white font-semibold">Confirm Plan</button>
-      </div>
-    ),
+    type: "bot",
+    text: "We suggest splitting your £10,000 like this:",
+    delay: 1500,
   },
   {
     id: 8,
-    title: "Success",
-    content: () => (
-      <div className="p-4 text-center">
-        <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
-          <Check className="w-10 h-10 text-green-600" />
-        </div>
-        <div className="text-2xl font-bold text-gray-900 mb-2">Your plan is now active</div>
-        <div className="text-gray-500 mb-6">Congratulations, Jes!</div>
-        <div className="space-y-3 text-left">
-          <div className="p-3 bg-gray-50 rounded-xl flex justify-between">
-            <span className="text-gray-600">Total Invested</span>
-            <span className="font-bold text-gray-900">£10,000</span>
-          </div>
-          <div className="p-3 bg-gray-50 rounded-xl flex justify-between">
-            <span className="text-gray-600">Blended Return</span>
-            <span className="font-bold text-green-600">~4.9% avg</span>
-          </div>
-        </div>
-      </div>
-    ),
+    type: "bot",
+    card: "allocation",
+    delay: 500,
+  },
+  {
+    id: 9,
+    type: "bot",
+    text: "📋 Important: Your savings are protected up to **£85,000** under the FSCS (Financial Services Compensation Scheme). Tap below if you'd like to read the full terms.",
+    delay: 1500,
+  },
+  {
+    id: 10,
+    type: "bot",
+    card: "terms",
+    delay: 500,
+  },
+  {
+    id: 11,
+    type: "bot",
+    text: "✅ Running compliance checks…",
+    delay: 1500,
+  },
+  {
+    id: 12,
+    type: "bot",
+    card: "compliance",
+    delay: 500,
+  },
+  {
+    id: 13,
+    type: "bot",
+    text: "🔒 Identity verified via Face ID. All checks passed.",
+    delay: 1500,
+  },
+  {
+    id: 14,
+    type: "bot",
+    text: "Here's your plan summary before we confirm:",
+    delay: 1500,
+  },
+  {
+    id: 15,
+    type: "bot",
+    card: "summary",
+    delay: 500,
+  },
+  {
+    id: 16,
+    type: "user",
+    text: "Looks good — confirm my plan.",
+    delay: 1500,
+  },
+  {
+    id: 17,
+    type: "bot",
+    text: "🎉 Your plan is now active, Jes! Total invested: £10,000. Estimated blended return: ~4.9% avg. Your HSBC savings are working for you.",
+    delay: 1500,
   },
 ]
 
-// Chat Panel Component
-function ChatPanel({ isOpen, onToggle, message, screenIndex }: { isOpen: boolean; onToggle: () => void; message: string; screenIndex: number }) {
-  const [inputValue, setInputValue] = useState("")
-  
-  if (screenIndex === 0) return null // Don't show on goals screen
-  
+// Helper to render bold text
+function renderText(text: string) {
+  const parts = text.split(/(\*\*.*?\*\*)/g)
+  return parts.map((part, i) => {
+    if (part.startsWith("**") && part.endsWith("**")) {
+      return <strong key={i} className="font-semibold">{part.slice(2, -2)}</strong>
+    }
+    return part
+  })
+}
+
+// Typing indicator component
+function TypingIndicator() {
   return (
-    <div className="absolute bottom-6 left-0 right-0 px-2">
-      <AnimatePresence>
-        {isOpen ? (
+    <div className="flex items-center gap-1 px-4 py-3">
+      <div className="w-8 h-8 rounded-full bg-[#DB0011] flex items-center justify-center flex-shrink-0">
+        <span className="text-white text-xs font-bold">H</span>
+      </div>
+      <div className="ml-2 bg-gray-100 rounded-2xl rounded-bl-none px-4 py-3">
+        <div className="flex items-center gap-1">
           <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden"
-          >
-            <button 
-              onClick={onToggle}
-              className="w-full px-4 py-3 flex items-center justify-between bg-[#DB0011] text-white"
-            >
-              <span className="font-medium flex items-center gap-2">
-                💬 Chat with HSBC AI
-              </span>
-              <ChevronUp className="w-4 h-4 rotate-180" />
-            </button>
-            <div className="p-4 max-h-40 overflow-y-auto">
-              <div className="flex items-start gap-2 mb-3">
-                <div className="w-8 h-8 rounded-full bg-[#DB0011]/10 flex items-center justify-center flex-shrink-0">
-                  <Sparkles className="w-4 h-4 text-[#DB0011]" />
-                </div>
-                <div className="bg-gray-100 rounded-2xl rounded-tl-none p-3">
-                  <p className="text-sm text-gray-700">{message}</p>
-                </div>
-              </div>
-            </div>
-            <div className="p-3 border-t border-gray-100 flex gap-2">
-              <input
-                type="text"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                placeholder="Ask me anything…"
-                className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-xl focus:outline-none focus:border-[#DB0011]"
-              />
-              <button className="p-2 bg-[#DB0011] text-white rounded-xl">
-                <Send className="w-4 h-4" />
-              </button>
-            </div>
-          </motion.div>
-        ) : (
-          <motion.button
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={onToggle}
-            className="w-full px-4 py-3 bg-white rounded-2xl shadow-lg border border-gray-200 flex items-center justify-between"
-          >
-            <span className="font-medium text-gray-700 flex items-center gap-2">
-              💬 Chat with HSBC AI
-            </span>
-            <ChevronUp className="w-4 h-4 text-gray-400" />
-          </motion.button>
-        )}
-      </AnimatePresence>
+            className="w-2 h-2 bg-gray-400 rounded-full"
+            animate={{ y: [0, -4, 0] }}
+            transition={{ duration: 0.6, repeat: Infinity, delay: 0 }}
+          />
+          <motion.div
+            className="w-2 h-2 bg-gray-400 rounded-full"
+            animate={{ y: [0, -4, 0] }}
+            transition={{ duration: 0.6, repeat: Infinity, delay: 0.15 }}
+          />
+          <motion.div
+            className="w-2 h-2 bg-gray-400 rounded-full"
+            animate={{ y: [0, -4, 0] }}
+            transition={{ duration: 0.6, repeat: Infinity, delay: 0.3 }}
+          />
+        </div>
+      </div>
     </div>
   )
 }
 
-function PhoneMockup({ children, showChatPanel, chatPanelOpen, onChatToggle, chatMessage, screenIndex }: { 
-  children: React.ReactNode; 
-  showChatPanel?: boolean;
-  chatPanelOpen?: boolean;
-  onChatToggle?: () => void;
-  chatMessage?: string;
-  screenIndex?: number;
-}) {
+// Profile card component
+function ProfileCard() {
+  return (
+    <div className="bg-white rounded-xl border border-gray-100 p-3 mt-2 space-y-2">
+      {[
+        { label: "Risk Appetite", value: "Low–Medium", color: "bg-blue-100 text-blue-700" },
+        { label: "Spending Behaviour", value: "Travel, Retail", color: "bg-purple-100 text-purple-700" },
+        { label: "Savings Pattern", value: "Strong Surplus", color: "bg-green-100 text-green-700" },
+      ].map((item) => (
+        <div key={item.label} className="flex items-center justify-between">
+          <span className="text-xs text-gray-600">{item.label}</span>
+          <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${item.color}`}>{item.value}</span>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+// Recommendations card component
+function RecommendationsCard() {
+  return (
+    <div className="bg-white rounded-xl border border-gray-100 p-3 mt-2 space-y-2">
+      {[
+        { name: "Fixed Saver", rate: "4.10% AER", icon: PiggyBank, recommended: false },
+        { name: "Investment ISA", rate: "5–7% return", icon: TrendingUp, recommended: false },
+        { name: "Smart Split Strategy", rate: "Optimised", icon: Sparkles, recommended: true },
+      ].map((product) => (
+        <div key={product.name} className={`p-2 rounded-lg border ${product.recommended ? 'border-[#DB0011] bg-[#DB0011]/5' : 'border-gray-100'}`}>
+          <div className="flex items-center gap-2">
+            <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${product.recommended ? 'bg-[#DB0011]/10' : 'bg-gray-100'}`}>
+              <product.icon className={`w-4 h-4 ${product.recommended ? 'text-[#DB0011]' : 'text-gray-600'}`} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="font-medium text-gray-900 text-sm">{product.name}</div>
+              <div className="text-xs text-gray-500">{product.rate}</div>
+            </div>
+            {product.recommended && (
+              <span className="px-1.5 py-0.5 rounded-full bg-[#DB0011] text-white text-[10px] font-medium">Rec</span>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+// Allocation card component
+function AllocationCard() {
+  return (
+    <div className="bg-white rounded-xl border border-gray-100 p-3 mt-2 space-y-3">
+      <div className="p-2 rounded-lg bg-blue-50">
+        <div className="flex items-center justify-between mb-1">
+          <span className="font-medium text-blue-900 text-sm">Fixed Saver</span>
+          <span className="font-bold text-blue-700 text-sm">£6,000</span>
+        </div>
+        <div className="w-full h-1.5 bg-blue-200 rounded-full overflow-hidden">
+          <div className="h-full w-3/5 bg-blue-500 rounded-full" />
+        </div>
+      </div>
+      <div className="p-2 rounded-lg bg-green-50">
+        <div className="flex items-center justify-between mb-1">
+          <span className="font-medium text-green-900 text-sm">Investment ISA</span>
+          <span className="font-bold text-green-700 text-sm">£4,000</span>
+        </div>
+        <div className="w-full h-1.5 bg-green-200 rounded-full overflow-hidden">
+          <div className="h-full w-2/5 bg-green-500 rounded-full" />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// Terms button card
+function TermsCard() {
+  return (
+    <div className="mt-2">
+      <button className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 text-gray-700 rounded-full text-xs font-medium hover:bg-gray-200 transition-colors">
+        <FileText className="w-3 h-3" />
+        Download terms & info
+      </button>
+    </div>
+  )
+}
+
+// Compliance card with staggered checks
+function ComplianceCard() {
+  const checks = ["Eligibility", "Suitability", "KYC", "CDD", "Fraud Screening", "Affordability"]
+  const [visibleChecks, setVisibleChecks] = useState<number>(0)
+
+  useEffect(() => {
+    if (visibleChecks < checks.length) {
+      const timer = setTimeout(() => {
+        setVisibleChecks(v => v + 1)
+      }, 300)
+      return () => clearTimeout(timer)
+    }
+  }, [visibleChecks, checks.length])
+
+  return (
+    <div className="bg-white rounded-xl border border-gray-100 p-3 mt-2 space-y-1.5">
+      {checks.map((check, i) => (
+        <motion.div
+          key={check}
+          initial={{ opacity: 0, x: -10 }}
+          animate={{ opacity: i < visibleChecks ? 1 : 0, x: i < visibleChecks ? 0 : -10 }}
+          className="flex items-center gap-2 p-1.5 bg-green-50 rounded-lg"
+        >
+          <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
+            <Check className="w-3 h-3 text-white" />
+          </div>
+          <span className="text-gray-700 text-xs">{check}</span>
+        </motion.div>
+      ))}
+    </div>
+  )
+}
+
+// Summary card
+function SummaryCard() {
+  return (
+    <div className="bg-white rounded-xl border border-gray-100 p-3 mt-2 space-y-2">
+      <div className="flex justify-between items-center text-sm">
+        <span className="text-gray-600">Fixed Saver</span>
+        <span className="font-medium">£6,000 @ 4.10% AER</span>
+      </div>
+      <div className="flex justify-between items-center text-sm">
+        <span className="text-gray-600">Investment ISA</span>
+        <span className="font-medium">£4,000 @ 5–7%</span>
+      </div>
+      <div className="pt-2 border-t border-gray-100">
+        <span className="text-xs text-gray-500">12-month fixed term</span>
+      </div>
+    </div>
+  )
+}
+
+// Chat bubble component
+function ChatBubble({ message, isNew }: { message: ChatMessage; isNew: boolean }) {
+  const isBot = message.type === "bot"
+
+  return (
+    <motion.div
+      initial={isNew ? { opacity: 0, y: 8 } : false}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      className={`flex items-start gap-2 px-3 py-1.5 ${isBot ? "" : "flex-row-reverse"}`}
+    >
+      {/* Avatar */}
+      <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 ${
+        isBot ? "bg-[#DB0011]" : "bg-gray-400"
+      }`}>
+        <span className="text-white text-[10px] font-bold">{isBot ? "H" : "J"}</span>
+      </div>
+
+      {/* Message content */}
+      <div className={`max-w-[75%] ${isBot ? "" : "text-right"}`}>
+        <div className={`inline-block rounded-2xl px-3 py-2 ${
+          isBot 
+            ? "bg-gray-100 rounded-bl-none text-left" 
+            : "bg-[#DB0011] text-white rounded-br-none"
+        }`}>
+          {message.text && (
+            <p className={`text-sm leading-relaxed ${isBot ? "text-gray-800" : "text-white"}`}>
+              {renderText(message.text)}
+            </p>
+          )}
+        </div>
+        
+        {/* Inline cards */}
+        {message.card === "profile" && <ProfileCard />}
+        {message.card === "recommendations" && <RecommendationsCard />}
+        {message.card === "allocation" && <AllocationCard />}
+        {message.card === "terms" && <TermsCard />}
+        {message.card === "compliance" && <ComplianceCard />}
+        {message.card === "summary" && <SummaryCard />}
+      </div>
+    </motion.div>
+  )
+}
+
+// Phone mockup component
+function PhoneMockup({ children }: { children: React.ReactNode }) {
   return (
     <div className="relative mx-auto w-[280px] h-[600px]">
       {/* iPhone 17 Max titanium frame */}
@@ -446,16 +392,8 @@ function PhoneMockup({ children, showChatPanel, chatPanelOpen, onChatToggle, cha
           <div className="text-white font-bold text-lg tracking-tight">HSBC</div>
         </div>
         {/* Content */}
-        <div className="h-[calc(100%-7rem)] overflow-y-auto bg-gray-50 relative">
+        <div className="h-[calc(100%-7rem)] overflow-hidden bg-gray-50">
           {children}
-          {showChatPanel && onChatToggle && (
-            <ChatPanel 
-              isOpen={chatPanelOpen || false} 
-              onToggle={onChatToggle} 
-              message={chatMessage || ""} 
-              screenIndex={screenIndex || 0}
-            />
-          )}
         </div>
         {/* Home indicator */}
         <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-32 h-1 bg-black/20 rounded-full" />
@@ -471,7 +409,7 @@ function PhoneMockup({ children, showChatPanel, chatPanelOpen, onChatToggle, cha
   )
 }
 
-// Static phone preview component for hero section
+// Static phone preview component (kept for reference)
 export function PhonePreview() {
   return (
     <div className="relative mx-auto w-[240px] h-[520px]">
@@ -520,37 +458,120 @@ export function PhonePreview() {
   )
 }
 
-export function PhoneDemoSection() {
-  const [stage1Index, setStage1Index] = useState(0)
-  const [selectedGoal, setSelectedGoal] = useState<string | null>(null)
-  const [chatPanelOpen, setChatPanelOpen] = useState(false)
-  const [showInfoCard, setShowInfoCard] = useState(false)
+interface PhoneDemoSectionProps {
+  heroMode?: boolean
+}
 
-  const handleGoalSelect = (goal: string) => {
-    setSelectedGoal(goal)
-  }
+export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
+  const [visibleMessages, setVisibleMessages] = useState<ChatMessage[]>([])
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [isTyping, setIsTyping] = useState(false)
+  const [isComplete, setIsComplete] = useState(false)
+  const [hasStarted, setHasStarted] = useState(false)
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const timerRef = useRef<NodeJS.Timeout | null>(null)
 
-  const handleDiscuss = () => {
-    setChatPanelOpen(true)
-  }
-
-  const renderScreenContent = () => {
-    const screen = stage1Screens[stage1Index]
-    if (stage1Index === 0) {
-      // Goals screen
-      const GoalsContent = screen.content as ({ onGoalSelect, selectedGoal }: { onGoalSelect: (goal: string) => void; selectedGoal: string | null }) => JSX.Element
-      return <GoalsContent onGoalSelect={handleGoalSelect} selectedGoal={selectedGoal} />
-    } else if (stage1Index === 5) {
-      // Your Plan screen with info card and discuss button
-      const PlanContent = screen.content as ({ showInfoCard, setShowInfoCard, onDiscuss }: { showInfoCard: boolean; setShowInfoCard: (show: boolean) => void; onDiscuss: () => void }) => JSX.Element
-      return <PlanContent showInfoCard={showInfoCard} setShowInfoCard={setShowInfoCard} onDiscuss={handleDiscuss} />
-    } else {
-      // Regular screens
-      const RegularContent = screen.content as () => JSX.Element
-      return <RegularContent />
+  // Auto-start the demo
+  useEffect(() => {
+    if (!hasStarted) {
+      const startTimer = setTimeout(() => {
+        setHasStarted(true)
+      }, 1000)
+      return () => clearTimeout(startTimer)
     }
+  }, [hasStarted])
+
+  // Progress through conversation
+  useEffect(() => {
+    if (!hasStarted) return
+    if (currentIndex >= conversationScript.length) {
+      setIsComplete(true)
+      return
+    }
+
+    const message = conversationScript[currentIndex]
+    const delay = message.delay || 1500
+
+    // Show typing indicator for bot messages
+    if (message.type === "bot" && message.text) {
+      setIsTyping(true)
+      timerRef.current = setTimeout(() => {
+        setIsTyping(false)
+        setVisibleMessages(prev => [...prev, message])
+        setCurrentIndex(prev => prev + 1)
+      }, 800)
+    } else {
+      timerRef.current = setTimeout(() => {
+        setVisibleMessages(prev => [...prev, message])
+        setCurrentIndex(prev => prev + 1)
+      }, delay)
+    }
+
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current)
+      }
+    }
+  }, [currentIndex, hasStarted])
+
+  // Auto-scroll to bottom
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTo({
+        top: scrollRef.current.scrollHeight,
+        behavior: "smooth"
+      })
+    }
+  }, [visibleMessages, isTyping])
+
+  const handleReplay = () => {
+    setVisibleMessages([])
+    setCurrentIndex(0)
+    setIsTyping(false)
+    setIsComplete(false)
+    setHasStarted(true)
   }
 
+  // Hero mode - compact version without section wrapper
+  if (heroMode) {
+    return (
+      <div className="flex flex-col items-center">
+        <PhoneMockup>
+          <div ref={scrollRef} className="h-full overflow-y-auto py-3">
+            <AnimatePresence mode="popLayout">
+              {visibleMessages.map((message, index) => (
+                <ChatBubble 
+                  key={message.id} 
+                  message={message} 
+                  isNew={index === visibleMessages.length - 1}
+                />
+              ))}
+            </AnimatePresence>
+            {isTyping && <TypingIndicator />}
+          </div>
+        </PhoneMockup>
+        
+        {isComplete && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mt-6"
+          >
+            <Button
+              onClick={handleReplay}
+              variant="outline"
+              className="rounded-full px-6"
+            >
+              <Play className="w-4 h-4 mr-2" />
+              Replay
+            </Button>
+          </motion.div>
+        )}
+      </div>
+    )
+  }
+
+  // Full section version (kept for reference, but no longer used on page)
   return (
     <section id="phone-demo" className="py-24 px-6 bg-gradient-to-br from-background via-muted/20 to-background overflow-hidden">
       <div className="max-w-4xl mx-auto">
@@ -567,7 +588,6 @@ export function PhoneDemoSection() {
           <div className="w-24 h-1 bg-primary mx-auto rounded-full" />
         </motion.div>
 
-        {/* Single centered phone */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -575,69 +595,37 @@ export function PhoneDemoSection() {
           transition={{ duration: 0.6 }}
           className="flex flex-col items-center"
         >
-          <div className="text-center mb-6">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary mb-4">
-              <span className="text-sm font-semibold uppercase tracking-widest">Interactive Demo</span>
+          <PhoneMockup>
+            <div ref={scrollRef} className="h-full overflow-y-auto py-3">
+              <AnimatePresence mode="popLayout">
+                {visibleMessages.map((message, index) => (
+                  <ChatBubble 
+                    key={message.id} 
+                    message={message} 
+                    isNew={index === visibleMessages.length - 1}
+                  />
+                ))}
+              </AnimatePresence>
+              {isTyping && <TypingIndicator />}
             </div>
-            <h3 className="text-xl font-bold text-foreground tracking-tight font-[family-name:var(--font-display)]">Smart Recommendations</h3>
-            <p className="text-sm text-muted-foreground mt-1">Experience the AI-powered journey</p>
-          </div>
-
-          <PhoneMockup 
-            showChatPanel={true}
-            chatPanelOpen={chatPanelOpen}
-            onChatToggle={() => setChatPanelOpen(!chatPanelOpen)}
-            chatMessage={chatMessages[stage1Index] || "How can I help you today?"}
-            screenIndex={stage1Index}
-          >
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={stage1Index}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3 }}
-                className={stage1Index !== 0 ? "pb-20" : ""}
-              >
-                {renderScreenContent()}
-              </motion.div>
-            </AnimatePresence>
           </PhoneMockup>
-
-          <div className="flex items-center justify-center gap-4 mt-6">
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => setStage1Index((i) => Math.max(0, i - 1))}
-              disabled={stage1Index === 0}
-              className="rounded-full"
+          
+          {isComplete && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-6"
             >
-              <ChevronLeft className="w-4 h-4" />
-            </Button>
-            <div className="flex items-center gap-2">
-              {stage1Screens.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setStage1Index(i)}
-                  className={`w-2 h-2 rounded-full transition-all ${
-                    i === stage1Index ? "bg-primary w-6" : "bg-muted-foreground/30"
-                  }`}
-                />
-              ))}
-            </div>
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => setStage1Index((i) => Math.min(stage1Screens.length - 1, i + 1))}
-              disabled={stage1Index === stage1Screens.length - 1}
-              className="rounded-full"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </Button>
-          </div>
-          <p className="text-center text-sm text-muted-foreground mt-2">
-            {stage1Screens[stage1Index].title} ({stage1Index + 1}/{stage1Screens.length})
-          </p>
+              <Button
+                onClick={handleReplay}
+                variant="outline"
+                className="rounded-full px-6"
+              >
+                <Play className="w-4 h-4 mr-2" />
+                Replay
+              </Button>
+            </motion.div>
+          )}
         </motion.div>
       </div>
     </section>
