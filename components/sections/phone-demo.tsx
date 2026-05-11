@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Check, PiggyBank, TrendingUp, ChevronRight, ChevronLeft, Play, MessageCircle, ArrowLeft, Calendar, Coins, Lock, Shield, FileText, Users } from "lucide-react"
+import { Check, PiggyBank, TrendingUp, ChevronRight, ChevronLeft, Play, MessageCircle, ArrowLeft, Calendar, Coins, Lock, Shield, FileText, Users, Sparkles, CreditCard, Plane, BarChart3, ArrowUpDown, ShoppingBag, Wallet } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 // Phase types
@@ -15,22 +15,24 @@ interface Step {
   action: string
 }
 
-// All steps in the demo
+// All steps in the demo - updated with new Financial Snapshot steps
 const demoSteps: Step[] = [
   { id: 1, phase: "lockscreen", action: "notification" },
   { id: 2, phase: "faceid", action: "authenticate" },
   { id: 3, phase: "chat", action: "greeting" },
   { id: 4, phase: "chat", action: "userReply1" },
-  { id: 5, phase: "chat", action: "question1" },
-  { id: 6, phase: "chat", action: "question2" },
-  { id: 7, phase: "chat", action: "question3" },
-  { id: 8, phase: "chat", action: "profileSummary" },
-  { id: 9, phase: "chat", action: "allocation" },
-  { id: 10, phase: "chat", action: "compliance" },
-  { id: 11, phase: "chat", action: "identityConfirmed" },
-  { id: 12, phase: "chat", action: "planSummary" },
-  { id: 13, phase: "chat", action: "userConfirm" },
-  { id: 14, phase: "done", action: "success" },
+  { id: 5, phase: "chat", action: "financialSnapshot" },      // NEW - Bot presents profile
+  { id: 6, phase: "chat", action: "userAckSnapshot" },        // NEW - User acknowledgement
+  { id: 7, phase: "chat", action: "question1" },
+  { id: 8, phase: "chat", action: "question2" },
+  { id: 9, phase: "chat", action: "question3" },
+  { id: 10, phase: "chat", action: "profileSummary" },
+  { id: 11, phase: "chat", action: "allocation" },
+  { id: 12, phase: "chat", action: "compliance" },
+  { id: 13, phase: "chat", action: "identityConfirmed" },
+  { id: 14, phase: "chat", action: "planSummary" },
+  { id: 15, phase: "chat", action: "userConfirm" },
+  { id: 16, phase: "done", action: "success" },
 ]
 
 // Helper to render bold text
@@ -160,7 +162,7 @@ function ProductCards({
   )
 }
 
-// Reply chips component - now tappable to send user reply
+// Reply chips component - clicking only highlights, does NOT auto-advance
 function ReplyChips({ 
   options, 
   selectedIndex,
@@ -186,6 +188,45 @@ function ReplyChips({
           {option}
         </motion.button>
       ))}
+    </div>
+  )
+}
+
+// Financial Snapshot Card - NEW component
+function FinancialSnapshotCard() {
+  const data = [
+    { icon: PiggyBank, label: "Current savings products", value: "LISA · Easy Access Saver" },
+    { icon: CreditCard, label: "Avg. monthly spend", value: "£1,840 / month" },
+    { icon: Plane, label: "Large purchases (last 6 months)", value: "None detected" },
+    { icon: BarChart3, label: "Savings rate", value: "~18% of monthly income" },
+    { icon: ArrowUpDown, label: "Avg. monthly transfers to savings", value: "£320 / month" },
+    { icon: ShoppingBag, label: "Top spending categories", value: "Groceries, Transport, Subscriptions" },
+    { icon: Wallet, label: "Idle funds (uninvested)", value: "£10,000" },
+  ]
+
+  return (
+    <div className="bg-gradient-to-b from-white to-gray-50 rounded-xl border border-gray-100 shadow-sm p-4 mt-2">
+      {/* Header */}
+      <div className="flex items-center gap-2 mb-3">
+        <Sparkles className="w-4 h-4 text-primary" />
+        <span className="font-bold text-gray-900 text-sm">Your Financial Snapshot</span>
+      </div>
+      
+      {/* Data rows */}
+      <div className="space-y-0">
+        {data.map((item, index) => (
+          <div key={item.label}>
+            <div className="flex items-center justify-between py-2">
+              <div className="flex items-center gap-2">
+                <item.icon className="w-3.5 h-3.5 text-gray-400" />
+                <span className="text-xs text-gray-500">{item.label}</span>
+              </div>
+              <span className="text-xs text-gray-900 font-medium text-right max-w-[45%]">{item.value}</span>
+            </div>
+            {index < data.length - 1 && <div className="h-px bg-gray-100" />}
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
@@ -268,8 +309,8 @@ function SuccessCard() {
   )
 }
 
-// Lock Screen Component - tappable notification
-function LockScreen({ showNotification, onTapNotification }: { showNotification: boolean; onTapNotification: () => void }) {
+// Lock Screen Component - notification is static, visible immediately
+function LockScreen({ showNotification }: { showNotification: boolean }) {
   return (
     <div className="absolute inset-0 bg-gradient-to-b from-[#1a1a2e] via-[#16213e] to-[#0f0f23] flex flex-col">
       {/* Time display */}
@@ -278,49 +319,27 @@ function LockScreen({ showNotification, onTapNotification }: { showNotification:
         <div className="text-white/70 text-sm mt-1">Monday, 12 May</div>
       </div>
       
-      {/* Notification */}
-      <AnimatePresence>
-        {showNotification && (
-          <motion.div
-            initial={{ y: -100, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ type: "spring", damping: 20, stiffness: 300 }}
-            className="mx-4 mt-8 cursor-pointer"
-            onClick={onTapNotification}
-          >
-            <motion.div 
-              className="bg-white/95 backdrop-blur-xl rounded-2xl p-3 shadow-lg"
-              animate={{ scale: [1, 1.02, 1] }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            >
-              <div className="flex items-start gap-3">
-                <div className="w-10 h-10 rounded-xl bg-[#DB0011] flex items-center justify-center flex-shrink-0">
-                  <span className="text-white text-xs font-bold">HSBC</span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between">
-                    <span className="font-semibold text-gray-900 text-sm">HSBC</span>
-                    <span className="text-xs text-gray-500">now</span>
-                  </div>
-                  <p className="text-xs text-gray-700 mt-0.5 leading-relaxed">
-                    💡 Jes, you have £10,000 sitting idle. We&apos;ve found savings products that could make your money work harder.
-                  </p>
-                </div>
+      {/* Notification - static, no animation delay */}
+      {showNotification && (
+        <div className="mx-4 mt-8">
+          <div className="bg-white/95 backdrop-blur-xl rounded-2xl p-3 shadow-lg">
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-xl bg-[#DB0011] flex items-center justify-center flex-shrink-0">
+                <span className="text-white text-xs font-bold">HSBC</span>
               </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-      
-      {/* Tap hint */}
-      <motion.div 
-        className="absolute bottom-24 left-0 right-0 text-center"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5 }}
-      >
-        <span className="text-white/50 text-xs">Tap notification to open</span>
-      </motion.div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between">
+                  <span className="font-semibold text-gray-900 text-sm">HSBC</span>
+                  <span className="text-xs text-gray-500">now</span>
+                </div>
+                <p className="text-xs text-gray-700 mt-0.5 leading-relaxed">
+                  Jes, you have £10,000 sitting idle. We&apos;ve found savings products that could make your money work harder.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       
       {/* Home indicator */}
       <div className="absolute bottom-3 left-1/2 -translate-x-1/2 w-32 h-1 bg-white/30 rounded-full" />
@@ -328,21 +347,12 @@ function LockScreen({ showNotification, onTapNotification }: { showNotification:
   )
 }
 
-// Face ID Screen Component - tap to authenticate
-function FaceIDScreen({ isAuthenticated, onTapAuthenticate, onContinue }: { 
-  isAuthenticated: boolean
-  onTapAuthenticate: () => void
-  onContinue: () => void
-}) {
+// Face ID Screen Component - shows authenticated state immediately, no tap required
+function FaceIDScreen() {
   return (
     <div className="h-full flex flex-col items-center justify-center bg-white px-6">
-      {/* Face ID icon */}
-      <motion.div
-        className="w-20 h-20 relative mb-6 cursor-pointer"
-        animate={!isAuthenticated ? { scale: [1, 1.05, 1] } : {}}
-        transition={{ duration: 1.5, repeat: isAuthenticated ? 0 : Infinity }}
-        onClick={!isAuthenticated ? onTapAuthenticate : undefined}
-      >
+      {/* Face ID icon - already authenticated */}
+      <div className="w-20 h-20 relative mb-6">
         <svg viewBox="0 0 80 80" className="w-full h-full">
           {/* Face outline */}
           <rect
@@ -352,91 +362,61 @@ function FaceIDScreen({ isAuthenticated, onTapAuthenticate, onContinue }: {
             height="60"
             rx="16"
             fill="none"
-            stroke={isAuthenticated ? "#22C55E" : "#DB0011"}
+            stroke="#22C55E"
             strokeWidth="3"
           />
           {/* Corner scan lines */}
           <path
             d="M10 25 L10 16 Q10 10 16 10 L25 10"
             fill="none"
-            stroke={isAuthenticated ? "#22C55E" : "#DB0011"}
+            stroke="#22C55E"
             strokeWidth="4"
             strokeLinecap="round"
           />
           <path
             d="M55 10 L64 10 Q70 10 70 16 L70 25"
             fill="none"
-            stroke={isAuthenticated ? "#22C55E" : "#DB0011"}
+            stroke="#22C55E"
             strokeWidth="4"
             strokeLinecap="round"
           />
           <path
             d="M70 55 L70 64 Q70 70 64 70 L55 70"
             fill="none"
-            stroke={isAuthenticated ? "#22C55E" : "#DB0011"}
+            stroke="#22C55E"
             strokeWidth="4"
             strokeLinecap="round"
           />
           <path
             d="M25 70 L16 70 Q10 70 10 64 L10 55"
             fill="none"
-            stroke={isAuthenticated ? "#22C55E" : "#DB0011"}
+            stroke="#22C55E"
             strokeWidth="4"
             strokeLinecap="round"
           />
           {/* Eyes */}
-          <circle cx="30" cy="35" r="3" fill={isAuthenticated ? "#22C55E" : "#DB0011"} />
-          <circle cx="50" cy="35" r="3" fill={isAuthenticated ? "#22C55E" : "#DB0011"} />
+          <circle cx="30" cy="35" r="3" fill="#22C55E" />
+          <circle cx="50" cy="35" r="3" fill="#22C55E" />
           {/* Nose */}
-          <line x1="40" y1="40" x2="40" y2="48" stroke={isAuthenticated ? "#22C55E" : "#DB0011"} strokeWidth="2" strokeLinecap="round" />
+          <line x1="40" y1="40" x2="40" y2="48" stroke="#22C55E" strokeWidth="2" strokeLinecap="round" />
           {/* Mouth */}
           <path
             d="M32 55 Q40 60 48 55"
             fill="none"
-            stroke={isAuthenticated ? "#22C55E" : "#DB0011"}
+            stroke="#22C55E"
             strokeWidth="2"
             strokeLinecap="round"
           />
         </svg>
-      </motion.div>
+      </div>
       
-      {/* Status text */}
-      <AnimatePresence mode="wait">
-        {!isAuthenticated ? (
-          <motion.div
-            key="tap-to-auth"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="text-center"
-          >
-            <div className="text-gray-500 text-sm">Tap to authenticate</div>
-          </motion.div>
-        ) : (
-          <motion.div
-            key="authenticated"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center"
-          >
-            <div className="text-green-600 text-sm font-medium flex items-center gap-1 justify-center">
-              Face ID recognised <Check className="w-4 h-4" />
-            </div>
-            <div className="text-gray-500 text-xs mt-1">Welcome back, Jes</div>
-            
-            {/* Continue button */}
-            <motion.button
-              onClick={onContinue}
-              className="mt-4 px-6 py-2 bg-[#DB0011] text-white rounded-full text-sm font-medium hover:bg-[#b8000e] transition-colors"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-            >
-              Continue →
-            </motion.button>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Status text - already authenticated */}
+      <div className="text-center">
+        <div className="text-green-600 text-sm font-medium flex items-center gap-1 justify-center">
+          Face ID recognised <Check className="w-4 h-4" />
+        </div>
+        <div className="text-gray-500 text-xs mt-1">Welcome back, Jes</div>
+      </div>
     </div>
   )
 }
@@ -631,21 +611,6 @@ function ChatMessage({ type, text, children, isNew = false }: ChatMessageProps) 
   )
 }
 
-// User reply chip - tappable to send message
-function UserReplyChip({ text, onTap }: { text: string; onTap: () => void }) {
-  return (
-    <div className="flex justify-end px-3 py-1.5">
-      <motion.button
-        onClick={onTap}
-        className="px-4 py-2 bg-[#DB0011] text-white rounded-full text-sm font-medium hover:bg-[#b8000e] transition-colors"
-        whileTap={{ scale: 0.95 }}
-      >
-        {text}
-      </motion.button>
-    </div>
-  )
-}
-
 // Phone mockup shell component
 function PhoneShell({ 
   phase, 
@@ -804,13 +769,10 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
   const isLarge = scale === "large" || scale === "xlarge"
   const isXLarge = scale === "xlarge"
   const [currentStep, setCurrentStep] = useState(0)
-  const [showNotification, setShowNotification] = useState(true)
-  const [faceIdAuthenticated, setFaceIdAuthenticated] = useState(false)
   const [chatMessages, setChatMessages] = useState<Array<{ id: number; type: "bot" | "user"; text?: string }>>([])
   const [chipSelections, setChipSelections] = useState<Record<number, number | null>>({})
   const [visitedProducts, setVisitedProducts] = useState<Set<string>>(new Set())
   const [currentProductView, setCurrentProductView] = useState<"fixedSaver" | "isa" | null>(null)
-  const [pendingUserReply, setPendingUserReply] = useState<string | null>(null)
   
   const scrollRef = useRef<HTMLDivElement>(null)
   
@@ -835,166 +797,159 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
     }
   }
   
-  // Process step and add appropriate messages
-  const processStep = (stepIndex: number) => {
-    const s = demoSteps[stepIndex]
-    if (!s) return
+  // Build messages for a given step (no timers, immediate rendering)
+  const buildMessagesForStep = (targetStep: number) => {
+    const newMessages: Array<{ id: number; type: "bot" | "user"; text?: string }> = []
+    const newChipSelections: Record<number, number | null> = {}
     
-    switch (s.action) {
-      case "greeting":
-        setChatMessages([{
-          id: 1,
-          type: "bot",
-          text: "Hi Jes 👋 I noticed you have **£10,000** in idle funds in your current account. Based on your spending patterns and existing products, I think I can help put that money to work. Want to explore your options?"
-        }])
-        setPendingUserReply("Yes, show me what's available.")
-        break
-        
-      case "userReply1":
-        setChatMessages(prev => [...prev, {
-          id: prev.length + 1,
-          type: "user",
-          text: "Yes, show me what's available."
-        }])
-        setPendingUserReply(null)
-        break
-        
-      case "question1":
-        setChatMessages(prev => [...prev, {
-          id: prev.length + 1,
-          type: "bot",
-          text: "Great! Just a couple of quick questions so I can tailor the right products for you. First — do you have any **travel plans or large expenses** coming up in the next 12 months?"
-        }])
-        break
-        
-      case "question2":
-        setChatMessages(prev => [...prev, {
-          id: prev.length + 1,
-          type: "bot",
-          text: "Got it. And how often do you think you'd need to **access or withdraw** from these savings?"
-        }])
-        break
-        
-      case "question3":
-        setChatMessages(prev => [...prev, {
-          id: prev.length + 1,
-          type: "bot",
-          text: "Last one — how would you describe your attitude to **investment risk**?"
-        }])
-        break
-        
-      case "profileSummary":
-        setChatMessages(prev => [...prev, {
-          id: prev.length + 1,
-          type: "bot",
-          text: "Perfect, thanks Jes. Here's what I've built for your profile:"
-        }])
-        break
-        
-      case "allocation":
-        setChatMessages(prev => [...prev, {
-          id: prev.length + 1,
-          type: "bot",
-          text: "Based on your profile, here's how I'd suggest allocating your £10,000:"
-        }])
-        break
-        
-      case "compliance":
-        setChatMessages(prev => [...prev, {
-          id: prev.length + 1,
-          type: "bot",
-          text: "Running your compliance checks now…"
-        }])
-        break
-        
-      case "identityConfirmed":
-        setChatMessages(prev => [...prev, {
-          id: prev.length + 1,
-          type: "bot",
-          text: "🔒 Identity already verified via Face ID earlier. All checks passed."
-        }])
-        break
-        
-      case "planSummary":
-        setChatMessages(prev => [...prev, {
-          id: prev.length + 1,
-          type: "bot",
-          text: "Here's your final plan before we confirm:"
-        }])
-        setPendingUserReply("Looks great — confirm my plan.")
-        break
-        
-      case "userConfirm":
-        setChatMessages(prev => [...prev, {
-          id: prev.length + 1,
-          type: "user",
-          text: "Looks great — confirm my plan."
-        }])
-        setPendingUserReply(null)
-        break
-        
-      case "success":
-        setChatMessages(prev => [...prev, {
-          id: prev.length + 1,
-          type: "bot",
-          text: "🎉 Done, Jes! Your savings plan is now active. Your £10,000 is officially working for you. I'll check in with you in 30 days. Great choice!"
-        }])
-        break
+    for (let i = 0; i <= targetStep; i++) {
+      const s = demoSteps[i]
+      if (!s || s.phase === "lockscreen" || s.phase === "faceid") continue
+      
+      switch (s.action) {
+        case "greeting":
+          newMessages.push({
+            id: newMessages.length + 1,
+            type: "bot",
+            text: "Hi Jes 👋 I noticed you have **£10,000** in idle funds in your current account. Based on your spending patterns and existing products, I think I can help put that money to work. Want to explore your options?"
+          })
+          break
+          
+        case "userReply1":
+          newMessages.push({
+            id: newMessages.length + 1,
+            type: "user",
+            text: "Yes, show me what's available."
+          })
+          break
+          
+        case "financialSnapshot":
+          newMessages.push({
+            id: newMessages.length + 1,
+            type: "bot",
+            text: "Before I make any recommendations, let me share what I already know about you — so we're starting from the right place 😊"
+          })
+          // The Financial Snapshot card is rendered inline via special handling
+          newMessages.push({
+            id: newMessages.length + 1,
+            type: "bot",
+            text: "You're clearly a disciplined saver, Jes — that £320 a month going into savings consistently is great to see. The LISA is a smart move too. Now let's put that £10,000 to work in a way that fits how you actually live 💪"
+          })
+          break
+          
+        case "userAckSnapshot":
+          newMessages.push({
+            id: newMessages.length + 1,
+            type: "user",
+            text: "Thanks — let's see what you'd recommend"
+          })
+          break
+          
+        case "question1":
+          newMessages.push({
+            id: newMessages.length + 1,
+            type: "bot",
+            text: "Great! Just a couple of quick questions so I can tailor the right products for you. First — do you have any **travel plans or large expenses** coming up in the next 12 months?"
+          })
+          break
+          
+        case "question2":
+          // Add selected chip answer if exists
+          if (newChipSelections[7] !== undefined) {
+            const opts = ["Yes, within 6 months", "Maybe, 6–12 months", "No plans"]
+            newMessages.push({ id: newMessages.length + 1, type: "user", text: opts[newChipSelections[7] as number] })
+          }
+          newMessages.push({
+            id: newMessages.length + 1,
+            type: "bot",
+            text: "Got it. And how often do you think you'd need to **access or withdraw** from these savings?"
+          })
+          break
+          
+        case "question3":
+          if (newChipSelections[8] !== undefined) {
+            const opts = ["Regularly (monthly)", "Occasionally", "Rarely / lock it away"]
+            newMessages.push({ id: newMessages.length + 1, type: "user", text: opts[newChipSelections[8] as number] })
+          }
+          newMessages.push({
+            id: newMessages.length + 1,
+            type: "bot",
+            text: "Last one — how would you describe your attitude to **investment risk**?"
+          })
+          break
+          
+        case "profileSummary":
+          if (newChipSelections[9] !== undefined) {
+            const opts = ["Play it safe", "Balanced approach", "Happy to take risks"]
+            newMessages.push({ id: newMessages.length + 1, type: "user", text: opts[newChipSelections[9] as number] })
+          }
+          newMessages.push({
+            id: newMessages.length + 1,
+            type: "bot",
+            text: "Perfect, thanks Jes. Here's what I've built for your profile:"
+          })
+          break
+          
+        case "allocation":
+          if (newChipSelections[10] !== undefined) {
+            const opts = ["Yes, that's me ✓", "Not quite"]
+            newMessages.push({ id: newMessages.length + 1, type: "user", text: opts[newChipSelections[10] as number] })
+          }
+          newMessages.push({
+            id: newMessages.length + 1,
+            type: "bot",
+            text: "Based on your profile, here's how I'd suggest allocating your £10,000:"
+          })
+          break
+          
+        case "compliance":
+          newMessages.push({
+            id: newMessages.length + 1,
+            type: "bot",
+            text: "Running your compliance checks now…"
+          })
+          break
+          
+        case "identityConfirmed":
+          newMessages.push({
+            id: newMessages.length + 1,
+            type: "bot",
+            text: "🔒 Identity already verified via Face ID earlier. All checks passed."
+          })
+          break
+          
+        case "planSummary":
+          newMessages.push({
+            id: newMessages.length + 1,
+            type: "bot",
+            text: "Here's your final plan before we confirm:"
+          })
+          break
+          
+        case "userConfirm":
+          newMessages.push({
+            id: newMessages.length + 1,
+            type: "user",
+            text: "Looks great — confirm my plan."
+          })
+          break
+          
+        case "success":
+          newMessages.push({
+            id: newMessages.length + 1,
+            type: "bot",
+            text: "🎉 Done, Jes! Your savings plan is now active. Your £10,000 is officially working for you. I'll check in with you in 30 days. Great choice!"
+          })
+          break
+      }
     }
     
-    setTimeout(scrollToBottom, 100)
+    return { messages: newMessages, selections: newChipSelections }
   }
   
-  // Handle tapping the lock screen notification
-  const handleTapNotification = () => {
-    setCurrentStep(1) // Move to Face ID step
-  }
-  
-  // Handle tapping to authenticate Face ID
-  const handleTapAuthenticate = () => {
-    setFaceIdAuthenticated(true)
-  }
-  
-  // Handle continuing after Face ID
-  const handleFaceIdContinue = () => {
-    setCurrentStep(2) // Move to chat
-    processStep(2)
-  }
-  
-  // Handle chip selection - advances to next step
+  // Handle chip selection - ONLY highlights, does NOT advance
   const handleChipSelect = (stepId: number, index: number) => {
     setChipSelections(prev => ({ ...prev, [stepId]: index }))
-    
-    // Add user reply based on selection
-    const chipOptions: Record<number, string[]> = {
-      5: ["Yes, within 6 months", "Maybe, 6–12 months", "No plans"],
-      6: ["Regularly (monthly)", "Occasionally", "Rarely / lock it away"],
-      7: ["Play it safe", "Balanced approach", "Happy to take risks"],
-      8: ["Yes, that's me ✓", "Not quite"],
-    }
-    
-    const options = chipOptions[stepId]
-    if (options && options[index]) {
-      setChatMessages(prev => [...prev, {
-        id: prev.length + 1,
-        type: "user",
-        text: options[index]
-      }])
-    }
-    
-    // Advance to next step
-    setTimeout(() => {
-      const nextStep = currentStep + 1
-      setCurrentStep(nextStep)
-      processStep(nextStep)
-    }, 300)
-  }
-  
-  // Handle tapping user reply chip
-  const handleTapUserReply = () => {
-    const nextStep = currentStep + 1
-    setCurrentStep(nextStep)
-    processStep(nextStep)
   }
   
   // Navigate to Fixed Saver product detail
@@ -1019,107 +974,56 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
     setCurrentProductView(null)
   }
   
-  // Handle Next button
+  // Handle Next button - advances step and rebuilds messages
   const handleNext = () => {
     if (currentStep < totalSteps - 1) {
       const nextStep = currentStep + 1
       setCurrentStep(nextStep)
-      processStep(nextStep)
+      
+      // Rebuild messages for new step
+      const { messages } = buildMessagesForStep(nextStep)
+      setChatMessages(messages)
+      setTimeout(scrollToBottom, 100)
+    }
+  }
+  
+  // Handle Prev button - goes back and rebuilds messages
+  const handlePrev = () => {
+    if (currentStep > 0) {
+      const prevStep = currentStep - 1
+      setCurrentStep(prevStep)
+      setCurrentProductView(null)
+      
+      // Rebuild messages for previous step
+      const { messages } = buildMessagesForStep(prevStep)
+      setChatMessages(messages)
+      
+      // Clear chip selections for steps after the target
+      setChipSelections(prev => {
+        const newSelections = { ...prev }
+        // Clear selections for steps > prevStep
+        Object.keys(newSelections).forEach(key => {
+          if (parseInt(key) > prevStep) {
+            delete newSelections[parseInt(key)]
+          }
+        })
+        return newSelections
+      })
+      
+      setTimeout(scrollToBottom, 100)
     }
   }
   
   // Handle replay
   const handleReplay = () => {
     setCurrentStep(0)
-    setShowNotification(true)
-    setFaceIdAuthenticated(false)
     setChatMessages([])
     setChipSelections({})
     setVisitedProducts(new Set())
     setCurrentProductView(null)
-    setPendingUserReply(null)
   }
   
   const isComplete = currentStep >= totalSteps - 1
-  
-  // Handle Prev button - rebuild state from beginning to target step
-  const handlePrev = () => {
-    if (currentStep > 0) {
-      const targetStep = currentStep - 1
-      
-      // Reset all state
-      setShowNotification(targetStep >= 0)
-      setFaceIdAuthenticated(targetStep >= 1)
-      setChatMessages([])
-      setChipSelections({})
-      setPendingUserReply(null)
-      setCurrentProductView(null)
-      
-      // Rebuild state by processing all steps up to target
-      const rebuildState = () => {
-        const newMessages: Array<{id: number; type: "bot" | "user"; text: string}> = []
-        const newChipSelections: Record<number, number> = {}
-        
-        for (let i = 2; i <= targetStep; i++) {
-          const step = demoSteps[i]
-          if (!step) continue
-          
-          switch (step.action) {
-            case "greeting":
-              newMessages.push({ id: newMessages.length + 1, type: "bot", text: "Hi Jes! 👋 I noticed you have £10,000 sitting in your current account. Would you like me to show you some smarter options for that money?" })
-              break
-            case "userReply1":
-              newMessages.push({ id: newMessages.length + 1, type: "user", text: "Sure, show me." })
-              break
-            case "question1":
-              newMessages.push({ id: newMessages.length + 1, type: "bot", text: "Great! Let me ask a few quick questions to tailor the best options for you. First: Do you expect to need this money in the next 12 months?" })
-              break
-            case "question2":
-              newMessages.push({ id: newMessages.length + 1, type: "user", text: "Maybe, 6–12 months" })
-              newChipSelections[5] = 1
-              newMessages.push({ id: newMessages.length + 1, type: "bot", text: "Got it. How often do you typically dip into your savings?" })
-              break
-            case "question3":
-              newMessages.push({ id: newMessages.length + 1, type: "user", text: "Occasionally" })
-              newChipSelections[6] = 1
-              newMessages.push({ id: newMessages.length + 1, type: "bot", text: "And what's your comfort level with investment risk?" })
-              break
-            case "profileSummary":
-              newMessages.push({ id: newMessages.length + 1, type: "user", text: "Balanced approach" })
-              newChipSelections[7] = 1
-              newMessages.push({ id: newMessages.length + 1, type: "bot", text: "Based on your answers, here's your profile. Does this sound like you?" })
-              break
-            case "allocation":
-              newMessages.push({ id: newMessages.length + 1, type: "user", text: "Yes, that's me ✓" })
-              newChipSelections[8] = 0
-              newMessages.push({ id: newMessages.length + 1, type: "bot", text: "Based on your profile, here's how I'd suggest allocating your £10,000:" })
-              break
-            case "compliance":
-              newMessages.push({ id: newMessages.length + 1, type: "bot", text: "Running your compliance checks now…" })
-              break
-            case "identityConfirmed":
-              newMessages.push({ id: newMessages.length + 1, type: "bot", text: "🔒 Identity already verified via Face ID earlier. All checks passed." })
-              break
-            case "planSummary":
-              newMessages.push({ id: newMessages.length + 1, type: "bot", text: "Here's your final plan before we confirm:" })
-              break
-            case "userConfirm":
-              newMessages.push({ id: newMessages.length + 1, type: "user", text: "Looks great — confirm my plan." })
-              break
-            case "success":
-              newMessages.push({ id: newMessages.length + 1, type: "bot", text: "🎉 Done, Jes! Your savings plan is now active. Your £10,000 is officially working for you. I'll check in with you in 30 days. Great choice!" })
-              break
-          }
-        }
-        
-        setChatMessages(newMessages)
-        setChipSelections(newChipSelections)
-      }
-      
-      rebuildState()
-      setCurrentStep(targetStep)
-    }
-  }
   
   // Determine disabled states for nav buttons
   const isPrevDisabled = currentStep === 0
@@ -1131,21 +1035,14 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
       case "lockscreen":
         return (
           <PhoneShell phase={phase} isLockScreen isLarge={isLarge} isXLarge={isXLarge}>
-            <LockScreen 
-              showNotification={showNotification} 
-              onTapNotification={handleTapNotification}
-            />
+            <LockScreen showNotification={true} />
           </PhoneShell>
         )
         
       case "faceid":
         return (
           <PhoneShell phase={phase} isLarge={isLarge} isXLarge={isXLarge}>
-            <FaceIDScreen 
-              isAuthenticated={faceIdAuthenticated} 
-              onTapAuthenticate={handleTapAuthenticate}
-              onContinue={handleFaceIdContinue}
-            />
+            <FaceIDScreen />
           </PhoneShell>
         )
         
@@ -1153,10 +1050,8 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
         return (
           <PhoneShell phase={phase} isLarge={isLarge} isXLarge={isXLarge}>
             <motion.div
-              initial={{ x: 300, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: 300, opacity: 0 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               className="h-full"
             >
               <FixedSaverDetailScreen onReturn={handleReturnFromProduct} />
@@ -1168,10 +1063,8 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
         return (
           <PhoneShell phase={phase} isLarge={isLarge} isXLarge={isXLarge}>
             <motion.div
-              initial={{ x: 300, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: 300, opacity: 0 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               className="h-full"
             >
               <ISADetailScreen onReturn={handleReturnFromProduct} />
@@ -1188,49 +1081,55 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
                 {chatMessages.map((msg, index) => {
                   const isLast = index === chatMessages.length - 1
                   
-                  // Render based on step action
+                  // Financial Snapshot card - show after the intro message
+                  if (msg.type === "bot" && msg.text?.includes("starting from the right place")) {
+                    return (
+                      <ChatMessage key={msg.id} type="bot" text={msg.text} isNew={isLast}>
+                        <FinancialSnapshotCard />
+                      </ChatMessage>
+                    )
+                  }
+                  
+                  // Travel plans question with chips (step 7)
                   if (msg.type === "bot" && msg.text?.includes("travel plans")) {
                     return (
                       <ChatMessage key={msg.id} type="bot" text={msg.text} isNew={isLast}>
-                        {chipSelections[5] === undefined && (
-                          <ReplyChips 
-                            options={["Yes, within 6 months", "Maybe, 6–12 months", "No plans"]}
-                            selectedIndex={chipSelections[5] ?? null}
-                            onSelect={(idx) => handleChipSelect(5, idx)}
-                          />
-                        )}
+                        <ReplyChips 
+                          options={["Yes, within 6 months", "Maybe, 6–12 months", "No plans"]}
+                          selectedIndex={chipSelections[7] ?? null}
+                          onSelect={(idx) => handleChipSelect(7, idx)}
+                        />
                       </ChatMessage>
                     )
                   }
                   
+                  // Access/withdraw question with chips (step 8)
                   if (msg.type === "bot" && msg.text?.includes("access or withdraw")) {
                     return (
                       <ChatMessage key={msg.id} type="bot" text={msg.text} isNew={isLast}>
-                        {chipSelections[6] === undefined && (
-                          <ReplyChips 
-                            options={["Regularly (monthly)", "Occasionally", "Rarely / lock it away"]}
-                            selectedIndex={chipSelections[6] ?? null}
-                            onSelect={(idx) => handleChipSelect(6, idx)}
-                          />
-                        )}
+                        <ReplyChips 
+                          options={["Regularly (monthly)", "Occasionally", "Rarely / lock it away"]}
+                          selectedIndex={chipSelections[8] ?? null}
+                          onSelect={(idx) => handleChipSelect(8, idx)}
+                        />
                       </ChatMessage>
                     )
                   }
                   
+                  // Investment risk question with chips (step 9)
                   if (msg.type === "bot" && msg.text?.includes("investment risk")) {
                     return (
                       <ChatMessage key={msg.id} type="bot" text={msg.text} isNew={isLast}>
-                        {chipSelections[7] === undefined && (
-                          <ReplyChips 
-                            options={["Play it safe", "Balanced approach", "Happy to take risks"]}
-                            selectedIndex={chipSelections[7] ?? null}
-                            onSelect={(idx) => handleChipSelect(7, idx)}
-                          />
-                        )}
+                        <ReplyChips 
+                          options={["Play it safe", "Balanced approach", "Happy to take risks"]}
+                          selectedIndex={chipSelections[9] ?? null}
+                          onSelect={(idx) => handleChipSelect(9, idx)}
+                        />
                       </ChatMessage>
                     )
                   }
                   
+                  // Profile summary with card and confirmation chips (step 10)
                   if (msg.type === "bot" && msg.text?.includes("built for your profile")) {
                     return (
                       <ChatMessage key={msg.id} type="bot" text={msg.text} isNew={isLast}>
@@ -1238,17 +1137,16 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
                         <div className="text-sm text-gray-800 mt-2 bg-gray-100 rounded-2xl rounded-bl-none px-3 py-2 inline-block">
                           Does this look right to you?
                         </div>
-                        {chipSelections[8] === undefined && (
-                          <ReplyChips 
-                            options={["Yes, that's me ✓", "Not quite"]}
-                            selectedIndex={chipSelections[8] ?? null}
-                            onSelect={(idx) => handleChipSelect(8, idx)}
-                          />
-                        )}
+                        <ReplyChips 
+                          options={["Yes, that's me ✓", "Not quite"]}
+                          selectedIndex={chipSelections[10] ?? null}
+                          onSelect={(idx) => handleChipSelect(10, idx)}
+                        />
                       </ChatMessage>
                     )
                   }
                   
+                  // Allocation with donut chart and product cards (step 11)
                   if (msg.type === "bot" && msg.text?.includes("suggest allocating")) {
                     return (
                       <ChatMessage key={msg.id} type="bot" text={msg.text} isNew={isLast}>
@@ -1262,6 +1160,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
                     )
                   }
                   
+                  // Compliance checks (step 12)
                   if (msg.type === "bot" && msg.text?.includes("compliance checks")) {
                     return (
                       <ChatMessage key={msg.id} type="bot" text={msg.text} isNew={isLast}>
@@ -1270,6 +1169,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
                     )
                   }
                   
+                  // Plan summary (step 14)
                   if (msg.type === "bot" && msg.text?.includes("final plan")) {
                     return (
                       <ChatMessage key={msg.id} type="bot" text={msg.text} isNew={isLast}>
@@ -1278,6 +1178,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
                     )
                   }
                   
+                  // Success card (step 16)
                   if (msg.type === "bot" && msg.text?.includes("Done, Jes")) {
                     return (
                       <ChatMessage key={msg.id} type="bot" text={msg.text} isNew={isLast}>
@@ -1291,11 +1192,6 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
                   )
                 })}
               </AnimatePresence>
-              
-              {/* Pending user reply chip */}
-              {pendingUserReply && (
-                <UserReplyChip text={pendingUserReply} onTap={handleTapUserReply} />
-              )}
             </div>
           </PhoneShell>
         )
