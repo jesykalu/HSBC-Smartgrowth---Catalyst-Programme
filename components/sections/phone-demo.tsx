@@ -2,124 +2,41 @@
 
 import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Check, FileText, Shield, PiggyBank, TrendingUp, Sparkles, Play, Pause } from "lucide-react"
+import { Check, PiggyBank, TrendingUp, ChevronLeft, ChevronRight, Play, Pause, MessageCircle, ArrowLeft, Calendar, Coins, Lock, Shield, FileText, Users } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
-// Message types
-type MessageType = "bot" | "user"
+// Phase types
+type Phase = "lockscreen" | "faceid" | "chat" | "productDetail" | "done"
 
-interface ChatMessage {
+// Step definition
+interface Step {
   id: number
-  type: MessageType
-  text?: string
-  card?: "profile" | "recommendations" | "allocation" | "terms" | "compliance" | "summary"
-  delay?: number // time before this message appears after the previous one
+  phase: Phase
+  action: string
+  autoSelectIndex?: number // For chip auto-selection
 }
 
-// Full conversation script
-const conversationScript: ChatMessage[] = [
-  {
-    id: 1,
-    type: "bot",
-    text: "Hi Jes 👋 We've detected that you have **£10,000** in idle funds sitting in your current account. Based on your spending habits and existing savings products, we think we can put that money to work for you. Would you like to explore your options?",
-    delay: 1500,
-  },
-  {
-    id: 2,
-    type: "user",
-    text: "Yes, show me what's available.",
-    delay: 1500,
-  },
-  {
-    id: 3,
-    type: "bot",
-    text: "Great! Here's what we know about you:",
-    delay: 1500,
-  },
-  {
-    id: 4,
-    type: "bot",
-    card: "profile",
-    delay: 500,
-  },
-  {
-    id: 5,
-    type: "bot",
-    text: "Based on your profile, here are the products we'd recommend:",
-    delay: 1500,
-  },
-  {
-    id: 6,
-    type: "bot",
-    card: "recommendations",
-    delay: 500,
-  },
-  {
-    id: 7,
-    type: "bot",
-    text: "We suggest splitting your £10,000 like this:",
-    delay: 1500,
-  },
-  {
-    id: 8,
-    type: "bot",
-    card: "allocation",
-    delay: 500,
-  },
-  {
-    id: 9,
-    type: "bot",
-    text: "📋 Important: Your savings are protected up to **£85,000** under the FSCS (Financial Services Compensation Scheme). Tap below if you'd like to read the full terms.",
-    delay: 1500,
-  },
-  {
-    id: 10,
-    type: "bot",
-    card: "terms",
-    delay: 500,
-  },
-  {
-    id: 11,
-    type: "bot",
-    text: "✅ Running compliance checks…",
-    delay: 1500,
-  },
-  {
-    id: 12,
-    type: "bot",
-    card: "compliance",
-    delay: 500,
-  },
-  {
-    id: 13,
-    type: "bot",
-    text: "🔒 Identity verified via Face ID. All checks passed.",
-    delay: 1500,
-  },
-  {
-    id: 14,
-    type: "bot",
-    text: "Here's your plan summary before we confirm:",
-    delay: 1500,
-  },
-  {
-    id: 15,
-    type: "bot",
-    card: "summary",
-    delay: 500,
-  },
-  {
-    id: 16,
-    type: "user",
-    text: "Looks good — confirm my plan.",
-    delay: 1500,
-  },
-  {
-    id: 17,
-    type: "bot",
-    text: "🎉 Your plan is now active, Jes! Total invested: £10,000. Estimated blended return: ~4.9% avg. Your HSBC savings are working for you.",
-    delay: 1500,
-  },
+// All steps in the demo
+const demoSteps: Step[] = [
+  { id: 1, phase: "lockscreen", action: "notification" },
+  { id: 2, phase: "lockscreen", action: "tap" },
+  { id: 3, phase: "faceid", action: "authenticate" },
+  { id: 4, phase: "chat", action: "greeting" },
+  { id: 5, phase: "chat", action: "userReply1" },
+  { id: 6, phase: "chat", action: "question1", autoSelectIndex: 1 },
+  { id: 7, phase: "chat", action: "question2", autoSelectIndex: 1 },
+  { id: 8, phase: "chat", action: "question3", autoSelectIndex: 0 },
+  { id: 9, phase: "chat", action: "profileSummary", autoSelectIndex: 0 },
+  { id: 10, phase: "chat", action: "allocation" },
+  { id: 11, phase: "chat", action: "tapProduct" },
+  { id: 12, phase: "productDetail", action: "showProduct" },
+  { id: 13, phase: "productDetail", action: "returnToChat" },
+  { id: 14, phase: "chat", action: "proceedPrompt", autoSelectIndex: 0 },
+  { id: 15, phase: "chat", action: "compliance" },
+  { id: 16, phase: "chat", action: "identityConfirmed" },
+  { id: 17, phase: "chat", action: "planSummary" },
+  { id: 18, phase: "chat", action: "userConfirm" },
+  { id: 19, phase: "done", action: "success" },
 ]
 
 // Helper to render bold text
@@ -137,8 +54,8 @@ function renderText(text: string) {
 function TypingIndicator() {
   return (
     <div className="flex items-center gap-1 px-4 py-3">
-      <div className="w-8 h-8 rounded-full bg-[#DB0011] flex items-center justify-center flex-shrink-0">
-        <span className="text-white text-xs font-bold">H</span>
+      <div className="w-7 h-7 rounded-full bg-[#DB0011] flex items-center justify-center flex-shrink-0">
+        <span className="text-white text-[10px] font-bold">H</span>
       </div>
       <div className="ml-2 bg-gray-100 rounded-2xl rounded-bl-none px-4 py-3">
         <div className="flex items-center gap-1">
@@ -163,14 +80,132 @@ function TypingIndicator() {
   )
 }
 
-// Profile card component
-function ProfileCard() {
+// Donut Chart Component
+function DonutChart() {
+  const radius = 50
+  const strokeWidth = 16
+  const circumference = 2 * Math.PI * radius
+  const bluePercent = 60
+  const greenPercent = 40
+  const blueOffset = 0
+  const greenOffset = circumference * (bluePercent / 100)
+
   return (
-    <div className="bg-white rounded-xl border border-gray-100 p-3 mt-2 space-y-2">
+    <div className="flex flex-col items-center my-3">
+      <div className="relative w-[140px] h-[140px]">
+        <svg className="w-full h-full -rotate-90" viewBox="0 0 140 140">
+          {/* Blue segment - Fixed Saver 60% */}
+          <circle
+            cx="70"
+            cy="70"
+            r={radius}
+            fill="none"
+            stroke="#3B82F6"
+            strokeWidth={strokeWidth}
+            strokeDasharray={`${circumference * (bluePercent / 100)} ${circumference}`}
+            strokeDashoffset={-blueOffset}
+            strokeLinecap="round"
+          />
+          {/* Green segment - Investment ISA 40% */}
+          <circle
+            cx="70"
+            cy="70"
+            r={radius}
+            fill="none"
+            stroke="#22C55E"
+            strokeWidth={strokeWidth}
+            strokeDasharray={`${circumference * (greenPercent / 100)} ${circumference}`}
+            strokeDashoffset={-greenOffset}
+            strokeLinecap="round"
+          />
+        </svg>
+        {/* Center text */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center">
+          <span className="text-lg font-bold text-gray-900">£10,000</span>
+          <span className="text-xs text-gray-500">Total</span>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// Product cards for allocation
+function ProductCards({ onTapProduct }: { onTapProduct?: () => void }) {
+  return (
+    <div className="space-y-2 mt-2">
+      <motion.div 
+        className="bg-blue-50 border border-blue-200 rounded-xl p-3 cursor-pointer hover:bg-blue-100 transition-colors"
+        whileTap={{ scale: 0.98 }}
+        onClick={onTapProduct}
+      >
+        <div className="flex items-center gap-2 mb-1">
+          <div className="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center">
+            <PiggyBank className="w-4 h-4 text-white" />
+          </div>
+          <div className="flex-1">
+            <div className="font-medium text-blue-900 text-sm">Fixed Saver</div>
+            <div className="text-xs text-blue-700">£6,000 · 4.10% AER</div>
+          </div>
+          <span className="text-[10px] px-2 py-0.5 bg-blue-200 text-blue-700 rounded-full">Tap to explore</span>
+        </div>
+        <div className="text-xs text-blue-600 mt-1">Learn more →</div>
+      </motion.div>
+      <div className="bg-green-50 border border-green-200 rounded-xl p-3">
+        <div className="flex items-center gap-2 mb-1">
+          <div className="w-8 h-8 rounded-lg bg-green-500 flex items-center justify-center">
+            <TrendingUp className="w-4 h-4 text-white" />
+          </div>
+          <div className="flex-1">
+            <div className="font-medium text-green-900 text-sm">Investment ISA</div>
+            <div className="text-xs text-green-700">£4,000 · 5–7% return</div>
+          </div>
+          <span className="text-[10px] px-2 py-0.5 bg-green-200 text-green-700 rounded-full">Tap to explore</span>
+        </div>
+        <div className="text-xs text-green-600 mt-1">Learn more →</div>
+      </div>
+    </div>
+  )
+}
+
+// Reply chips component
+function ReplyChips({ 
+  options, 
+  selectedIndex,
+  onSelect 
+}: { 
+  options: string[]
+  selectedIndex: number | null
+  onSelect?: (index: number) => void 
+}) {
+  return (
+    <div className="flex flex-wrap gap-2 mt-2">
+      {options.map((option, index) => (
+        <motion.button
+          key={option}
+          className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+            selectedIndex === index 
+              ? "bg-[#DB0011] text-white" 
+              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+          }`}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => onSelect?.(index)}
+        >
+          {option}
+        </motion.button>
+      ))}
+    </div>
+  )
+}
+
+// Profile card with withdrawal needs
+function ProfileCardNew() {
+  return (
+    <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-3 mt-2 space-y-2">
       {[
         { label: "Risk Appetite", value: "Low–Medium", color: "bg-blue-100 text-blue-700" },
         { label: "Spending Behaviour", value: "Travel, Retail", color: "bg-purple-100 text-purple-700" },
         { label: "Savings Pattern", value: "Strong Surplus", color: "bg-green-100 text-green-700" },
+        { label: "Withdrawal needs", value: "Occasional", color: "bg-yellow-100 text-yellow-700" },
       ].map((item) => (
         <div key={item.label} className="flex items-center justify-between">
           <span className="text-xs text-gray-600">{item.label}</span>
@@ -181,85 +216,9 @@ function ProfileCard() {
   )
 }
 
-// Recommendations card component
-function RecommendationsCard() {
-  return (
-    <div className="bg-white rounded-xl border border-gray-100 p-3 mt-2 space-y-2">
-      {[
-        { name: "Fixed Saver", rate: "4.10% AER", icon: PiggyBank, recommended: false },
-        { name: "Investment ISA", rate: "5–7% return", icon: TrendingUp, recommended: false },
-        { name: "Smart Split Strategy", rate: "Optimised", icon: Sparkles, recommended: true },
-      ].map((product) => (
-        <div key={product.name} className={`p-2 rounded-lg border ${product.recommended ? 'border-[#DB0011] bg-[#DB0011]/5' : 'border-gray-100'}`}>
-          <div className="flex items-center gap-2">
-            <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${product.recommended ? 'bg-[#DB0011]/10' : 'bg-gray-100'}`}>
-              <product.icon className={`w-4 h-4 ${product.recommended ? 'text-[#DB0011]' : 'text-gray-600'}`} />
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="font-medium text-gray-900 text-sm">{product.name}</div>
-              <div className="text-xs text-gray-500">{product.rate}</div>
-            </div>
-            {product.recommended && (
-              <span className="px-1.5 py-0.5 rounded-full bg-[#DB0011] text-white text-[10px] font-medium">Rec</span>
-            )}
-          </div>
-        </div>
-      ))}
-    </div>
-  )
-}
-
-// Allocation card component
-function AllocationCard() {
-  return (
-    <div className="bg-white rounded-xl border border-gray-100 p-3 mt-2 space-y-3">
-      <div className="p-2 rounded-lg bg-blue-50">
-        <div className="flex items-center justify-between mb-1">
-          <span className="font-medium text-blue-900 text-sm">Fixed Saver</span>
-          <span className="font-bold text-blue-700 text-sm">£6,000</span>
-        </div>
-        <div className="w-full h-1.5 bg-blue-200 rounded-full overflow-hidden">
-          <div className="h-full w-3/5 bg-blue-500 rounded-full" />
-        </div>
-      </div>
-      <div className="p-2 rounded-lg bg-green-50">
-        <div className="flex items-center justify-between mb-1">
-          <span className="font-medium text-green-900 text-sm">Investment ISA</span>
-          <span className="font-bold text-green-700 text-sm">£4,000</span>
-        </div>
-        <div className="w-full h-1.5 bg-green-200 rounded-full overflow-hidden">
-          <div className="h-full w-2/5 bg-green-500 rounded-full" />
-        </div>
-      </div>
-    </div>
-  )
-}
-
-// Terms button card
-function TermsCard() {
-  return (
-    <div className="mt-2">
-      <button className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 text-gray-700 rounded-full text-xs font-medium hover:bg-gray-200 transition-colors">
-        <FileText className="w-3 h-3" />
-        Download terms & info
-      </button>
-    </div>
-  )
-}
-
 // Compliance card with staggered checks
-function ComplianceCard() {
+function ComplianceCardNew({ visibleCount }: { visibleCount: number }) {
   const checks = ["Eligibility", "Suitability", "KYC", "CDD", "Fraud Screening", "Affordability"]
-  const [visibleChecks, setVisibleChecks] = useState<number>(0)
-
-  useEffect(() => {
-    if (visibleChecks < checks.length) {
-      const timer = setTimeout(() => {
-        setVisibleChecks(v => v + 1)
-      }, 300)
-      return () => clearTimeout(timer)
-    }
-  }, [visibleChecks, checks.length])
 
   return (
     <div className="bg-white rounded-xl border border-gray-100 p-3 mt-2 space-y-1.5">
@@ -267,7 +226,7 @@ function ComplianceCard() {
         <motion.div
           key={check}
           initial={{ opacity: 0, x: -10 }}
-          animate={{ opacity: i < visibleChecks ? 1 : 0, x: i < visibleChecks ? 0 : -10 }}
+          animate={{ opacity: i < visibleCount ? 1 : 0, x: i < visibleCount ? 0 : -10 }}
           className="flex items-center gap-2 p-1.5 bg-green-50 rounded-lg"
         >
           <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
@@ -281,27 +240,294 @@ function ComplianceCard() {
 }
 
 // Summary card
-function SummaryCard() {
+function SummaryCardNew() {
   return (
-    <div className="bg-white rounded-xl border border-gray-100 p-3 mt-2 space-y-2">
+    <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-3 mt-2 space-y-2">
       <div className="flex justify-between items-center text-sm">
         <span className="text-gray-600">Fixed Saver</span>
-        <span className="font-medium">£6,000 @ 4.10% AER</span>
+        <span className="font-medium text-gray-900">£6,000 @ 4.10% AER</span>
       </div>
-      <div className="flex justify-between items-center text-sm">
+      <div className="text-[10px] text-gray-500 pl-0">12-month fixed term</div>
+      <div className="flex justify-between items-center text-sm pt-1 border-t border-gray-100">
         <span className="text-gray-600">Investment ISA</span>
-        <span className="font-medium">£4,000 @ 5–7%</span>
+        <span className="font-medium text-gray-900">£4,000 @ 5–7%</span>
       </div>
+      <div className="text-[10px] text-gray-500 pl-0">Flexible access</div>
       <div className="pt-2 border-t border-gray-100">
-        <span className="text-xs text-gray-500">12-month fixed term</span>
+        <div className="flex justify-between items-center">
+          <span className="text-sm font-medium text-gray-900">Total</span>
+          <span className="font-bold text-gray-900">£10,000</span>
+        </div>
+        <div className="text-xs text-gray-500 mt-0.5">Estimated blended return: ~4.9% avg</div>
       </div>
     </div>
   )
 }
 
-// Chat bubble component
-function ChatBubble({ message, isNew }: { message: ChatMessage; isNew: boolean }) {
-  const isBot = message.type === "bot"
+// Success card
+function SuccessCard() {
+  return (
+    <div className="bg-green-50 border border-green-200 rounded-xl p-4 mt-3 text-center">
+      <div className="w-12 h-12 rounded-full bg-green-500 flex items-center justify-center mx-auto mb-2">
+        <Check className="w-6 h-6 text-white" />
+      </div>
+      <div className="font-bold text-green-800 text-sm">Plan Active</div>
+      <div className="text-xs text-green-700 mt-1">£10,000 invested · ~4.9% avg return</div>
+    </div>
+  )
+}
+
+// Lock Screen Component
+function LockScreen({ showNotification }: { showNotification: boolean }) {
+  return (
+    <div className="absolute inset-0 bg-gradient-to-b from-[#1a1a2e] via-[#16213e] to-[#0f0f23] flex flex-col">
+      {/* Time display */}
+      <div className="pt-16 text-center">
+        <div className="text-white text-5xl font-light tracking-tight">9:41</div>
+        <div className="text-white/70 text-sm mt-1">Monday, 12 May</div>
+      </div>
+      
+      {/* Notification */}
+      <AnimatePresence>
+        {showNotification && (
+          <motion.div
+            initial={{ y: -100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ type: "spring", damping: 20, stiffness: 300, delay: 1 }}
+            className="mx-4 mt-8"
+          >
+            <div className="bg-white/95 backdrop-blur-xl rounded-2xl p-3 shadow-lg">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-xl bg-[#DB0011] flex items-center justify-center flex-shrink-0">
+                  <span className="text-white text-xs font-bold">HSBC</span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-gray-900 text-sm">HSBC</span>
+                    <span className="text-xs text-gray-500">now</span>
+                  </div>
+                  <p className="text-xs text-gray-700 mt-0.5 leading-relaxed">
+                    💡 Jes, you have £10,000 sitting idle. We&apos;ve found savings products that could make your money work harder.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      
+      {/* Swipe hint */}
+      <motion.div 
+        className="absolute bottom-24 left-0 right-0 text-center"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 2 }}
+      >
+        <span className="text-white/50 text-xs">Swipe to open →</span>
+      </motion.div>
+      
+      {/* Home indicator */}
+      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 w-32 h-1 bg-white/30 rounded-full" />
+    </div>
+  )
+}
+
+// Face ID Screen Component
+function FaceIDScreen({ isAuthenticated }: { isAuthenticated: boolean }) {
+  return (
+    <div className="h-full flex flex-col items-center justify-center bg-white px-6">
+      {/* Face ID icon */}
+      <motion.div
+        className="w-20 h-20 relative mb-6"
+        animate={!isAuthenticated ? { scale: [1, 1.05, 1] } : {}}
+        transition={{ duration: 1.5, repeat: isAuthenticated ? 0 : Infinity }}
+      >
+        <svg viewBox="0 0 80 80" className="w-full h-full">
+          {/* Face outline */}
+          <rect
+            x="10"
+            y="10"
+            width="60"
+            height="60"
+            rx="16"
+            fill="none"
+            stroke={isAuthenticated ? "#22C55E" : "#DB0011"}
+            strokeWidth="3"
+          />
+          {/* Corner scan lines */}
+          <path
+            d="M10 25 L10 16 Q10 10 16 10 L25 10"
+            fill="none"
+            stroke={isAuthenticated ? "#22C55E" : "#DB0011"}
+            strokeWidth="4"
+            strokeLinecap="round"
+          />
+          <path
+            d="M55 10 L64 10 Q70 10 70 16 L70 25"
+            fill="none"
+            stroke={isAuthenticated ? "#22C55E" : "#DB0011"}
+            strokeWidth="4"
+            strokeLinecap="round"
+          />
+          <path
+            d="M70 55 L70 64 Q70 70 64 70 L55 70"
+            fill="none"
+            stroke={isAuthenticated ? "#22C55E" : "#DB0011"}
+            strokeWidth="4"
+            strokeLinecap="round"
+          />
+          <path
+            d="M25 70 L16 70 Q10 70 10 64 L10 55"
+            fill="none"
+            stroke={isAuthenticated ? "#22C55E" : "#DB0011"}
+            strokeWidth="4"
+            strokeLinecap="round"
+          />
+          {/* Eyes */}
+          <circle cx="30" cy="35" r="3" fill={isAuthenticated ? "#22C55E" : "#DB0011"} />
+          <circle cx="50" cy="35" r="3" fill={isAuthenticated ? "#22C55E" : "#DB0011"} />
+          {/* Nose */}
+          <line x1="40" y1="40" x2="40" y2="48" stroke={isAuthenticated ? "#22C55E" : "#DB0011"} strokeWidth="2" strokeLinecap="round" />
+          {/* Mouth */}
+          <path
+            d="M32 55 Q40 60 48 55"
+            fill="none"
+            stroke={isAuthenticated ? "#22C55E" : "#DB0011"}
+            strokeWidth="2"
+            strokeLinecap="round"
+          />
+        </svg>
+      </motion.div>
+      
+      {/* Status text */}
+      <AnimatePresence mode="wait">
+        {!isAuthenticated ? (
+          <motion.div
+            key="authenticating"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="text-center"
+          >
+            <div className="text-gray-500 text-sm">Authenticating…</div>
+          </motion.div>
+        ) : (
+          <motion.div
+            key="authenticated"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center"
+          >
+            <div className="text-green-600 text-sm font-medium flex items-center gap-1 justify-center">
+              Face ID recognised <Check className="w-4 h-4" />
+            </div>
+            <div className="text-gray-500 text-xs mt-1">Welcome back, Jes</div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  )
+}
+
+// Product Detail Screen Component
+function ProductDetailScreen({ onReturn, showPulse }: { onReturn: () => void; showPulse: boolean }) {
+  const scrollRef = useRef<HTMLDivElement>(null)
+  
+  useEffect(() => {
+    // Auto-scroll effect
+    if (scrollRef.current) {
+      const timer = setTimeout(() => {
+        scrollRef.current?.scrollTo({
+          top: 150,
+          behavior: "smooth"
+        })
+      }, 500)
+      return () => clearTimeout(timer)
+    }
+  }, [])
+
+  const details = [
+    { icon: Calendar, label: "Term", value: "12 months fixed" },
+    { icon: Coins, label: "Min deposit", value: "£500" },
+    { icon: Coins, label: "Max deposit", value: "£85,000" },
+    { icon: Lock, label: "Withdrawals", value: "Not permitted during term" },
+    { icon: Shield, label: "FSCS Protection", value: "Up to £85,000" },
+    { icon: FileText, label: "Interest paid", value: "Annually" },
+    { icon: Users, label: "Eligibility", value: "UK residents 18+" },
+  ]
+
+  return (
+    <div className="h-full flex flex-col bg-white relative">
+      {/* Back button */}
+      <button 
+        onClick={onReturn}
+        className="flex items-center gap-1 px-4 py-2 text-[#DB0011] text-sm font-medium"
+      >
+        <ArrowLeft className="w-4 h-4" />
+        Back to chat
+      </button>
+      
+      {/* Product hero */}
+      <div className="bg-gradient-to-br from-blue-500 to-blue-600 px-4 py-6 text-center">
+        <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center mx-auto mb-2">
+          <PiggyBank className="w-6 h-6 text-white" />
+        </div>
+        <div className="text-white font-bold text-lg">Fixed Saver</div>
+        <div className="text-white/90 text-2xl font-bold mt-1">4.10% AER</div>
+      </div>
+      
+      {/* Details list */}
+      <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-3 space-y-2">
+        {details.map((item) => (
+          <div key={item.label} className="flex items-center gap-3 py-2 border-b border-gray-100">
+            <item.icon className="w-4 h-4 text-gray-400" />
+            <span className="text-xs text-gray-600 w-24">{item.label}</span>
+            <span className="text-xs text-gray-900 flex-1">{item.value}</span>
+          </div>
+        ))}
+        
+        {/* Terms section */}
+        <div className="pt-3">
+          <div className="text-xs font-medium text-gray-900 mb-1">Terms & Conditions</div>
+          <p className="text-[10px] text-gray-500 leading-relaxed">
+            Your capital is at risk. The value of your investment can go down as well as up. 
+            Early withdrawal may result in loss of interest…
+            <span className="text-[#DB0011]"> read more</span>
+          </p>
+        </div>
+        
+        {/* Regulatory info */}
+        <div className="pt-3 pb-16">
+          <div className="text-xs font-medium text-gray-900 mb-1">Regulatory Information</div>
+          <p className="text-[10px] text-gray-500 leading-relaxed">
+            This product is regulated by the FCA. Your eligible deposits are protected up to £85,000 under the FSCS.
+          </p>
+        </div>
+      </div>
+      
+      {/* Floating chat button */}
+      <motion.button
+        onClick={onReturn}
+        className="absolute bottom-4 right-4 w-14 h-14 rounded-full bg-[#DB0011] text-white flex items-center justify-center shadow-lg"
+        animate={showPulse ? { scale: [1, 1.1, 1] } : {}}
+        transition={{ duration: 0.5 }}
+      >
+        <MessageCircle className="w-6 h-6" />
+      </motion.button>
+    </div>
+  )
+}
+
+// Chat Message Component
+interface ChatMessageProps {
+  type: "bot" | "user"
+  text?: string
+  children?: React.ReactNode
+  isNew?: boolean
+}
+
+function ChatMessage({ type, text, children, isNew = false }: ChatMessageProps) {
+  const isBot = type === "bot"
 
   return (
     <motion.div
@@ -310,100 +536,108 @@ function ChatBubble({ message, isNew }: { message: ChatMessage; isNew: boolean }
       transition={{ duration: 0.3 }}
       className={`flex items-start gap-2 px-3 py-1.5 ${isBot ? "" : "flex-row-reverse"}`}
     >
-      {/* Avatar */}
       <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 ${
         isBot ? "bg-[#DB0011]" : "bg-gray-400"
       }`}>
         <span className="text-white text-[10px] font-bold">{isBot ? "H" : "J"}</span>
       </div>
 
-      {/* Message content */}
-      <div className={`max-w-[75%] ${isBot ? "" : "text-right"}`}>
-        <div className={`inline-block rounded-2xl px-3 py-2 ${
-          isBot 
-            ? "bg-gray-100 rounded-bl-none text-left" 
-            : "bg-[#DB0011] text-white rounded-br-none"
-        }`}>
-          {message.text && (
+      <div className={`max-w-[80%] ${isBot ? "" : "text-right"}`}>
+        {text && (
+          <div className={`inline-block rounded-2xl px-3 py-2 ${
+            isBot 
+              ? "bg-gray-100 rounded-bl-none text-left" 
+              : "bg-[#DB0011] text-white rounded-br-none"
+          }`}>
             <p className={`text-sm leading-relaxed ${isBot ? "text-gray-800" : "text-white"}`}>
-              {renderText(message.text)}
+              {renderText(text)}
             </p>
-          )}
-        </div>
-        
-        {/* Inline cards */}
-        {message.card === "profile" && <ProfileCard />}
-        {message.card === "recommendations" && <RecommendationsCard />}
-        {message.card === "allocation" && <AllocationCard />}
-        {message.card === "terms" && <TermsCard />}
-        {message.card === "compliance" && <ComplianceCard />}
-        {message.card === "summary" && <SummaryCard />}
+          </div>
+        )}
+        {children}
       </div>
     </motion.div>
   )
 }
 
-// Phone mockup component
-function PhoneMockup({ children }: { children: React.ReactNode }) {
+// Phone mockup shell component - handles different phases
+function PhoneShell({ 
+  phase, 
+  children,
+  isLockScreen = false
+}: { 
+  phase: Phase
+  children: React.ReactNode
+  isLockScreen?: boolean
+}) {
   return (
     <div className="relative mx-auto w-[280px] h-[600px]">
-      {/* iPhone 17 Max titanium frame */}
+      {/* iPhone frame */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#3a3a3c] via-[#48484a] to-[#3a3a3c] rounded-[3.2rem] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]" />
-      {/* Inner titanium edge */}
       <div className="absolute inset-[2px] bg-gradient-to-b from-[#636366] via-[#8e8e93] to-[#636366] rounded-[3.1rem]" />
-      {/* Black bezel - ultra thin */}
       <div className="absolute inset-[4px] bg-black rounded-[3rem]" />
-      {/* Screen */}
+      
+      {/* Screen content */}
       <div className="absolute inset-[6px] bg-white rounded-[2.8rem] overflow-hidden">
-        {/* Status bar with Dynamic Island */}
-        <div className="h-14 bg-white relative flex items-end justify-between px-8 pb-1">
-          {/* Dynamic Island */}
-          <div className="absolute top-3 left-1/2 -translate-x-1/2 w-[100px] h-[32px] bg-black rounded-full flex items-center justify-center">
-            {/* Camera lens */}
-            <div className="absolute left-4 w-[10px] h-[10px] rounded-full bg-[#1c1c1e] border border-[#2c2c2e]">
-              <div className="absolute inset-[2px] rounded-full bg-gradient-to-br from-[#3a3a3c] to-[#1c1c1e]" />
-              <div className="absolute top-[1px] left-[1px] w-[2px] h-[2px] rounded-full bg-[#5a5a5e]" />
+        {isLockScreen ? (
+          // Lock screen - full screen takeover
+          children
+        ) : (
+          <>
+            {/* Status bar with Dynamic Island */}
+            <div className="h-14 bg-white relative flex items-end justify-between px-8 pb-1">
+              <div className="absolute top-3 left-1/2 -translate-x-1/2 w-[100px] h-[32px] bg-black rounded-full flex items-center justify-center">
+                <div className="absolute left-4 w-[10px] h-[10px] rounded-full bg-[#1c1c1e] border border-[#2c2c2e]">
+                  <div className="absolute inset-[2px] rounded-full bg-gradient-to-br from-[#3a3a3c] to-[#1c1c1e]" />
+                </div>
+                <div className="absolute right-6 w-[6px] h-[6px] rounded-full bg-[#2c2c2e]" />
+              </div>
+              <span className="text-xs font-semibold text-gray-900">9:41</span>
+              <div className="flex items-center gap-1">
+                <div className="flex items-end gap-[2px] h-3">
+                  <div className="w-[3px] h-[4px] bg-gray-900 rounded-sm" />
+                  <div className="w-[3px] h-[6px] bg-gray-900 rounded-sm" />
+                  <div className="w-[3px] h-[8px] bg-gray-900 rounded-sm" />
+                  <div className="w-[3px] h-[10px] bg-gray-900 rounded-sm" />
+                </div>
+                <svg className="w-4 h-4 text-gray-900" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 18c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm-4.9-2.3l1.4 1.4C9.4 16.4 10.6 16 12 16s2.6.4 3.5 1.1l1.4-1.4C15.4 14.6 13.8 14 12 14s-3.4.6-4.9 1.7zm-2.8-2.8l1.4 1.4C7.2 13.1 9.5 12 12 12s4.8 1.1 6.3 2.3l1.4-1.4C17.7 11.1 15 10 12 10s-5.7 1.1-7.7 2.9z"/>
+                </svg>
+                <div className="w-6 h-3 border border-gray-900 rounded-[3px] relative">
+                  <div className="absolute inset-[2px] right-[3px] bg-gray-900 rounded-[1px]" />
+                  <div className="absolute -right-[3px] top-1/2 -translate-y-1/2 w-[2px] h-[5px] bg-gray-900 rounded-r-sm" />
+                </div>
+              </div>
             </div>
-            {/* Face ID sensor */}
-            <div className="absolute right-6 w-[6px] h-[6px] rounded-full bg-[#2c2c2e]" />
-          </div>
-          <span className="text-xs font-semibold text-gray-900">9:41</span>
-          <div className="flex items-center gap-1">
-            {/* Signal bars */}
-            <div className="flex items-end gap-[2px] h-3">
-              <div className="w-[3px] h-[4px] bg-gray-900 rounded-sm" />
-              <div className="w-[3px] h-[6px] bg-gray-900 rounded-sm" />
-              <div className="w-[3px] h-[8px] bg-gray-900 rounded-sm" />
-              <div className="w-[3px] h-[10px] bg-gray-900 rounded-sm" />
+            
+            {/* HSBC Header - only show in chat/done phases */}
+            {(phase === "chat" || phase === "done") && (
+              <div className="h-14 bg-[#DB0011] flex items-center px-4">
+                <div className="text-white font-bold text-lg tracking-tight">HSBC</div>
+              </div>
+            )}
+            
+            {/* Content area */}
+            <div className={`overflow-hidden bg-gray-50 ${
+              phase === "faceid" ? "h-[calc(100%-3.5rem)]" : 
+              phase === "productDetail" ? "h-[calc(100%-3.5rem)]" :
+              "h-[calc(100%-7rem)]"
+            }`}>
+              {children}
             </div>
-            {/* WiFi */}
-            <svg className="w-4 h-4 text-gray-900" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 18c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm-4.9-2.3l1.4 1.4C9.4 16.4 10.6 16 12 16s2.6.4 3.5 1.1l1.4-1.4C15.4 14.6 13.8 14 12 14s-3.4.6-4.9 1.7zm-2.8-2.8l1.4 1.4C7.2 13.1 9.5 12 12 12s4.8 1.1 6.3 2.3l1.4-1.4C17.7 11.1 15 10 12 10s-5.7 1.1-7.7 2.9z"/>
-            </svg>
-            {/* Battery */}
-            <div className="w-6 h-3 border border-gray-900 rounded-[3px] relative">
-              <div className="absolute inset-[2px] right-[3px] bg-gray-900 rounded-[1px]" />
-              <div className="absolute -right-[3px] top-1/2 -translate-y-1/2 w-[2px] h-[5px] bg-gray-900 rounded-r-sm" />
-            </div>
-          </div>
-        </div>
-        {/* Header */}
-        <div className="h-14 bg-[#DB0011] flex items-center px-4">
-          <div className="text-white font-bold text-lg tracking-tight">HSBC</div>
-        </div>
-        {/* Content */}
-        <div className="h-[calc(100%-7rem)] overflow-hidden bg-gray-50">
-          {children}
-        </div>
+          </>
+        )}
+        
         {/* Home indicator */}
-        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-32 h-1 bg-black/20 rounded-full" />
+        {!isLockScreen && (
+          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-32 h-1 bg-black/20 rounded-full" />
+        )}
       </div>
-      {/* Side buttons - Power */}
+      
+      {/* Side buttons */}
       <div className="absolute right-0 top-32 w-[3px] h-16 bg-gradient-to-b from-[#636366] via-[#8e8e93] to-[#636366] rounded-r-sm" />
-      {/* Side buttons - Volume */}
       <div className="absolute left-0 top-28 w-[3px] h-8 bg-gradient-to-b from-[#636366] via-[#8e8e93] to-[#636366] rounded-l-sm" />
       <div className="absolute left-0 top-40 w-[3px] h-8 bg-gradient-to-b from-[#636366] via-[#8e8e93] to-[#636366] rounded-l-sm" />
-      {/* Action button */}
       <div className="absolute left-0 top-20 w-[3px] h-5 bg-gradient-to-b from-[#636366] via-[#8e8e93] to-[#636366] rounded-l-sm" />
     </div>
   )
@@ -413,12 +647,10 @@ function PhoneMockup({ children }: { children: React.ReactNode }) {
 export function PhonePreview() {
   return (
     <div className="relative mx-auto w-[240px] h-[520px]">
-      {/* iPhone frame */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#3a3a3c] via-[#48484a] to-[#3a3a3c] rounded-[2.8rem] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]" />
       <div className="absolute inset-[2px] bg-gradient-to-b from-[#636366] via-[#8e8e93] to-[#636366] rounded-[2.7rem]" />
       <div className="absolute inset-[4px] bg-black rounded-[2.6rem]" />
       <div className="absolute inset-[6px] bg-white rounded-[2.4rem] overflow-hidden">
-        {/* Status bar */}
         <div className="h-12 bg-white relative flex items-end justify-between px-6 pb-1">
           <div className="absolute top-2.5 left-1/2 -translate-x-1/2 w-[80px] h-[26px] bg-black rounded-full" />
           <span className="text-[10px] font-semibold text-gray-900">9:41</span>
@@ -434,11 +666,9 @@ export function PhonePreview() {
             </div>
           </div>
         </div>
-        {/* Header */}
         <div className="h-12 bg-[#DB0011] flex items-center px-4">
           <div className="text-white font-bold text-base tracking-tight">HSBC</div>
         </div>
-        {/* Content - Account Overview screen */}
         <div className="p-3 bg-gray-50 h-[calc(100%-6rem)]">
           <div className="text-xs text-gray-500 mb-0.5">Current Account</div>
           <div className="text-2xl font-bold text-gray-900 mb-3">£18,500</div>
@@ -451,7 +681,6 @@ export function PhonePreview() {
             <div className="text-xs text-amber-600">Idle funds detected</div>
           </div>
         </div>
-        {/* Home indicator */}
         <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-24 h-1 bg-black/20 rounded-full" />
       </div>
     </div>
@@ -463,60 +692,25 @@ interface PhoneDemoSectionProps {
 }
 
 export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
-  const [visibleMessages, setVisibleMessages] = useState<ChatMessage[]>([])
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const [isTyping, setIsTyping] = useState(false)
-  const [isComplete, setIsComplete] = useState(false)
-  const [hasStarted, setHasStarted] = useState(false)
+  const [currentStep, setCurrentStep] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
+  const [isTyping, setIsTyping] = useState(false)
+  const [showNotification, setShowNotification] = useState(false)
+  const [faceIdAuthenticated, setFaceIdAuthenticated] = useState(false)
+  const [showFlash, setShowFlash] = useState(false)
+  const [chatMessages, setChatMessages] = useState<Array<{ id: number; type: "bot" | "user"; text?: string; element?: React.ReactNode }>>([])
+  const [chipSelections, setChipSelections] = useState<Record<number, number | null>>({})
+  const [complianceCount, setComplianceCount] = useState(0)
+  const [productPulse, setProductPulse] = useState(false)
+  
   const scrollRef = useRef<HTMLDivElement>(null)
   const timerRef = useRef<NodeJS.Timeout | null>(null)
-
-  // Auto-start the demo
-  useEffect(() => {
-    if (!hasStarted) {
-      const startTimer = setTimeout(() => {
-        setHasStarted(true)
-      }, 1000)
-      return () => clearTimeout(startTimer)
-    }
-  }, [hasStarted])
-
-  // Progress through conversation
-  useEffect(() => {
-    if (!hasStarted || isPaused) return
-    if (currentIndex >= conversationScript.length) {
-      setIsComplete(true)
-      return
-    }
-
-    const message = conversationScript[currentIndex]
-    const stepDelay = 4000 // 4 seconds between steps
-    const typingDelay = 1500 // 1.5 seconds for typing indicator
-
-    // Show typing indicator for bot messages
-    if (message.type === "bot" && message.text) {
-      setIsTyping(true)
-      timerRef.current = setTimeout(() => {
-        setIsTyping(false)
-        setVisibleMessages(prev => [...prev, message])
-        setCurrentIndex(prev => prev + 1)
-      }, typingDelay)
-    } else {
-      timerRef.current = setTimeout(() => {
-        setVisibleMessages(prev => [...prev, message])
-        setCurrentIndex(prev => prev + 1)
-      }, message.card ? 500 : stepDelay) // Cards show quickly, messages wait 4s
-    }
-
-    return () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current)
-      }
-    }
-  }, [currentIndex, hasStarted, isPaused])
-
-  // Auto-scroll to bottom
+  
+  const totalSteps = demoSteps.length
+  const step = demoSteps[currentStep] || demoSteps[0]
+  const phase = step?.phase || "lockscreen"
+  
+  // Auto-scroll chat
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTo({
@@ -524,82 +718,485 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
         behavior: "smooth"
       })
     }
-  }, [visibleMessages, isTyping])
+  }, [chatMessages, isTyping])
+  
+  // Clear timer on unmount
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current)
+    }
+  }, [])
 
-  const handleReplay = () => {
-    setVisibleMessages([])
-    setCurrentIndex(0)
+  // Process current step
+  const processStep = (stepIndex: number) => {
+    const s = demoSteps[stepIndex]
+    if (!s) return
+    
+    switch (s.action) {
+      case "notification":
+        setShowNotification(true)
+        break
+        
+      case "tap":
+        setShowFlash(true)
+        setTimeout(() => setShowFlash(false), 150)
+        break
+        
+      case "authenticate":
+        setFaceIdAuthenticated(false)
+        setTimeout(() => setFaceIdAuthenticated(true), 1500)
+        break
+        
+      case "greeting":
+        setChatMessages([{
+          id: 1,
+          type: "bot",
+          text: "Hi Jes 👋 I noticed you have **£10,000** in idle funds in your current account. Based on your spending patterns and existing products, I think I can help put that money to work. Want to explore your options?"
+        }])
+        break
+        
+      case "userReply1":
+        setChatMessages(prev => [...prev, {
+          id: prev.length + 1,
+          type: "user",
+          text: "Yes, show me what's available."
+        }])
+        break
+        
+      case "question1":
+        setChatMessages(prev => [...prev, {
+          id: prev.length + 1,
+          type: "bot",
+          text: "Great! Just a couple of quick questions so I can tailor the right products for you. First — do you have any **travel plans or large expenses** coming up in the next 12 months?"
+        }])
+        setTimeout(() => setChipSelections(prev => ({ ...prev, 6: 1 })), 2000)
+        break
+        
+      case "question2":
+        setChatMessages(prev => [...prev, {
+          id: prev.length + 1,
+          type: "bot",
+          text: "Got it. And how often do you think you'd need to **access or withdraw** from these savings?"
+        }])
+        setTimeout(() => setChipSelections(prev => ({ ...prev, 7: 1 })), 2000)
+        break
+        
+      case "question3":
+        setChatMessages(prev => [...prev, {
+          id: prev.length + 1,
+          type: "bot",
+          text: "Last one — how would you describe your attitude to **investment risk**?"
+        }])
+        setTimeout(() => setChipSelections(prev => ({ ...prev, 8: 0 })), 2000)
+        break
+        
+      case "profileSummary":
+        setChatMessages(prev => [...prev, {
+          id: prev.length + 1,
+          type: "bot",
+          text: "Perfect, thanks Jes. Here's what I've built for your profile:"
+        }])
+        setTimeout(() => setChipSelections(prev => ({ ...prev, 9: 0 })), 2000)
+        break
+        
+      case "allocation":
+        setChatMessages(prev => [...prev, {
+          id: prev.length + 1,
+          type: "bot",
+          text: "Based on your profile, here's how I'd suggest allocating your £10,000:"
+        }])
+        break
+        
+      case "tapProduct":
+        // Simulate user tapping product card
+        break
+        
+      case "showProduct":
+        // Product detail view is shown
+        break
+        
+      case "returnToChat":
+        setProductPulse(true)
+        setTimeout(() => setProductPulse(false), 500)
+        break
+        
+      case "proceedPrompt":
+        setChatMessages(prev => [...prev, {
+          id: prev.length + 1,
+          type: "bot",
+          text: "Hope that was helpful! The Fixed Saver locks your money for 12 months but gives you a guaranteed 4.10% return. Ready to proceed with the allocation, or would you like to explore the ISA first?"
+        }])
+        setTimeout(() => setChipSelections(prev => ({ ...prev, 14: 0 })), 2000)
+        break
+        
+      case "compliance":
+        setChatMessages(prev => [...prev, {
+          id: prev.length + 1,
+          type: "bot",
+          text: "Running your compliance checks now…"
+        }])
+        // Stagger compliance checks
+        setComplianceCount(0)
+        for (let i = 1; i <= 6; i++) {
+          setTimeout(() => setComplianceCount(i), i * 300)
+        }
+        break
+        
+      case "identityConfirmed":
+        setChatMessages(prev => [...prev, {
+          id: prev.length + 1,
+          type: "bot",
+          text: "🔒 Identity already verified via Face ID earlier. All checks passed."
+        }])
+        break
+        
+      case "planSummary":
+        setChatMessages(prev => [...prev, {
+          id: prev.length + 1,
+          type: "bot",
+          text: "Here's your final plan before we confirm:"
+        }])
+        break
+        
+      case "userConfirm":
+        setChatMessages(prev => [...prev, {
+          id: prev.length + 1,
+          type: "user",
+          text: "Looks great — confirm my plan."
+        }])
+        break
+        
+      case "success":
+        setChatMessages(prev => [...prev, {
+          id: prev.length + 1,
+          type: "bot",
+          text: "🎉 Done, Jes! Your savings plan is now active. Your £10,000 is officially working for you. I'll check in with you in 30 days. Great choice!"
+        }])
+        break
+    }
+  }
+  
+  // Auto-advance logic
+  useEffect(() => {
+    if (isPaused) return
+    if (currentStep >= totalSteps) return
+    
+    const s = demoSteps[currentStep]
+    const isBotMessage = s.phase === "chat" && s.action !== "userReply1" && s.action !== "userConfirm" && s.action !== "tapProduct"
+    
+    // Show typing indicator for bot messages
+    if (isBotMessage && currentStep > 3) {
+      setIsTyping(true)
+      timerRef.current = setTimeout(() => {
+        setIsTyping(false)
+        processStep(currentStep)
+        
+        // Schedule next step
+        timerRef.current = setTimeout(() => {
+          setCurrentStep(prev => prev + 1)
+        }, 4000)
+      }, 1200)
+    } else {
+      processStep(currentStep)
+      
+      // Schedule next step
+      timerRef.current = setTimeout(() => {
+        setCurrentStep(prev => prev + 1)
+      }, 4000)
+    }
+    
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current)
+    }
+  }, [currentStep, isPaused, totalSteps])
+  
+  // Start demo
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      processStep(0)
+    }, 1000)
+    return () => clearTimeout(timer)
+  }, [])
+  
+  const handlePrev = () => {
+    if (timerRef.current) clearTimeout(timerRef.current)
     setIsTyping(false)
-    setIsComplete(false)
+    const newStep = Math.max(0, currentStep - 1)
+    setCurrentStep(newStep)
+    // Reset state for earlier steps
+    if (newStep <= 3) {
+      setChatMessages([])
+      setChipSelections({})
+      setComplianceCount(0)
+    }
+    if (newStep === 0) {
+      setShowNotification(false)
+      setFaceIdAuthenticated(false)
+      setTimeout(() => setShowNotification(true), 1000)
+    }
+  }
+  
+  const handleNext = () => {
+    if (timerRef.current) clearTimeout(timerRef.current)
+    setIsTyping(false)
+    if (currentStep < totalSteps - 1) {
+      setCurrentStep(prev => prev + 1)
+    }
+  }
+  
+  const handlePauseResume = () => {
+    if (isPaused) {
+      setIsPaused(false)
+    } else {
+      if (timerRef.current) clearTimeout(timerRef.current)
+      setIsTyping(false)
+      setIsPaused(true)
+    }
+  }
+  
+  const handleReplay = () => {
+    if (timerRef.current) clearTimeout(timerRef.current)
+    setCurrentStep(0)
     setIsPaused(false)
-    setHasStarted(true)
+    setIsTyping(false)
+    setShowNotification(false)
+    setFaceIdAuthenticated(false)
+    setShowFlash(false)
+    setChatMessages([])
+    setChipSelections({})
+    setComplianceCount(0)
+    setProductPulse(false)
+    
+    setTimeout(() => {
+      setShowNotification(true)
+    }, 1000)
+  }
+  
+  const isComplete = currentStep >= totalSteps - 1
+  
+  // Render phone content based on phase
+  const renderContent = () => {
+    switch (phase) {
+      case "lockscreen":
+        return (
+          <PhoneShell phase={phase} isLockScreen>
+            <LockScreen showNotification={showNotification} />
+            {showFlash && (
+              <motion.div
+                className="absolute inset-0 bg-white"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: [0, 0.8, 0] }}
+                transition={{ duration: 0.15 }}
+              />
+            )}
+          </PhoneShell>
+        )
+        
+      case "faceid":
+        return (
+          <PhoneShell phase={phase}>
+            <FaceIDScreen isAuthenticated={faceIdAuthenticated} />
+          </PhoneShell>
+        )
+        
+      case "productDetail":
+        return (
+          <PhoneShell phase={phase}>
+            <ProductDetailScreen 
+              onReturn={() => setCurrentStep(prev => prev + 1)} 
+              showPulse={productPulse}
+            />
+          </PhoneShell>
+        )
+        
+      case "chat":
+      case "done":
+        return (
+          <PhoneShell phase={phase}>
+            <div ref={scrollRef} className="h-full overflow-y-auto py-3">
+              <AnimatePresence mode="popLayout">
+                {chatMessages.map((msg, index) => {
+                  const isLast = index === chatMessages.length - 1
+                  
+                  // Render based on step action
+                  if (msg.type === "bot" && msg.text?.includes("travel plans")) {
+                    return (
+                      <ChatMessage key={msg.id} type="bot" text={msg.text} isNew={isLast}>
+                        <ReplyChips 
+                          options={["Yes, within 6 months", "Maybe, 6–12 months", "No plans"]}
+                          selectedIndex={chipSelections[6] ?? null}
+                        />
+                      </ChatMessage>
+                    )
+                  }
+                  
+                  if (msg.type === "bot" && msg.text?.includes("access or withdraw")) {
+                    return (
+                      <ChatMessage key={msg.id} type="bot" text={msg.text} isNew={isLast}>
+                        <ReplyChips 
+                          options={["Regularly (monthly)", "Occasionally", "Rarely / lock it away"]}
+                          selectedIndex={chipSelections[7] ?? null}
+                        />
+                      </ChatMessage>
+                    )
+                  }
+                  
+                  if (msg.type === "bot" && msg.text?.includes("investment risk")) {
+                    return (
+                      <ChatMessage key={msg.id} type="bot" text={msg.text} isNew={isLast}>
+                        <ReplyChips 
+                          options={["Play it safe", "Balanced approach", "Happy to take risks"]}
+                          selectedIndex={chipSelections[8] ?? null}
+                        />
+                      </ChatMessage>
+                    )
+                  }
+                  
+                  if (msg.type === "bot" && msg.text?.includes("built for your profile")) {
+                    return (
+                      <ChatMessage key={msg.id} type="bot" text={msg.text} isNew={isLast}>
+                        <ProfileCardNew />
+                        <div className="text-sm text-gray-800 mt-2 bg-gray-100 rounded-2xl rounded-bl-none px-3 py-2 inline-block">
+                          Does this look right to you?
+                        </div>
+                        <ReplyChips 
+                          options={["Yes, that's me ✓", "Not quite"]}
+                          selectedIndex={chipSelections[9] ?? null}
+                        />
+                      </ChatMessage>
+                    )
+                  }
+                  
+                  if (msg.type === "bot" && msg.text?.includes("suggest allocating")) {
+                    return (
+                      <ChatMessage key={msg.id} type="bot" text={msg.text} isNew={isLast}>
+                        <DonutChart />
+                        <ProductCards />
+                      </ChatMessage>
+                    )
+                  }
+                  
+                  if (msg.type === "bot" && msg.text?.includes("Hope that was helpful")) {
+                    return (
+                      <ChatMessage key={msg.id} type="bot" text={msg.text} isNew={isLast}>
+                        <ReplyChips 
+                          options={["Proceed with this plan ✓", "Show me the ISA"]}
+                          selectedIndex={chipSelections[14] ?? null}
+                        />
+                      </ChatMessage>
+                    )
+                  }
+                  
+                  if (msg.type === "bot" && msg.text?.includes("compliance checks")) {
+                    return (
+                      <ChatMessage key={msg.id} type="bot" text={msg.text} isNew={isLast}>
+                        <ComplianceCardNew visibleCount={complianceCount} />
+                      </ChatMessage>
+                    )
+                  }
+                  
+                  if (msg.type === "bot" && msg.text?.includes("final plan")) {
+                    return (
+                      <ChatMessage key={msg.id} type="bot" text={msg.text} isNew={isLast}>
+                        <SummaryCardNew />
+                      </ChatMessage>
+                    )
+                  }
+                  
+                  if (msg.type === "bot" && msg.text?.includes("Done, Jes")) {
+                    return (
+                      <ChatMessage key={msg.id} type="bot" text={msg.text} isNew={isLast}>
+                        <SuccessCard />
+                      </ChatMessage>
+                    )
+                  }
+                  
+                  return (
+                    <ChatMessage key={msg.id} type={msg.type} text={msg.text} isNew={isLast} />
+                  )
+                })}
+              </AnimatePresence>
+              {isTyping && <TypingIndicator />}
+            </div>
+          </PhoneShell>
+        )
+        
+      default:
+        return <PhoneShell phase="chat"><div /></PhoneShell>
+    }
   }
 
-  // Hero mode - compact version without section wrapper
   if (heroMode) {
     return (
       <div className="flex flex-col items-center">
-        <PhoneMockup>
-          <div ref={scrollRef} className="h-full overflow-y-auto py-3">
-            <AnimatePresence mode="popLayout">
-              {visibleMessages.map((message, index) => (
-                <ChatBubble 
-                  key={message.id} 
-                  message={message} 
-                  isNew={index === visibleMessages.length - 1}
-                />
-              ))}
-            </AnimatePresence>
-            {isTyping && <TypingIndicator />}
-          </div>
-        </PhoneMockup>
+        {renderContent()}
         
-        {/* Navigation controls - Play/Replay and Pause side by side */}
+        {/* Navigation controls */}
         <div className="mt-6 flex items-center gap-3 relative z-50">
-          {/* Play/Replay button - enabled when paused or complete */}
           <Button
             type="button"
-            onClick={() => {
-              if (isComplete) {
-                handleReplay()
-              } else {
-                setIsPaused(false)
-              }
-            }}
+            onClick={handlePrev}
             variant="outline"
             size="sm"
-            className="rounded-full px-4 bg-white"
-            disabled={!isPaused && !isComplete}
+            className="rounded-full px-3 bg-white"
+            disabled={currentStep === 0}
           >
-            <Play className="w-4 h-4 mr-1" />
-            {isComplete ? "Replay" : "Play"}
+            <ChevronLeft className="w-4 h-4" />
           </Button>
           
-          {/* Pause button - enabled when playing (not paused and not complete) */}
+          <span className="text-sm text-muted-foreground min-w-[50px] text-center">
+            {currentStep + 1} / {totalSteps}
+          </span>
+          
           <Button
             type="button"
-            onClick={() => {
-              if (timerRef.current) {
-                clearTimeout(timerRef.current)
-                timerRef.current = null
-              }
-              setIsTyping(false)
-              setIsPaused(true)
-            }}
+            onClick={handleNext}
+            variant="outline"
+            size="sm"
+            className="rounded-full px-3 bg-white"
+            disabled={currentStep >= totalSteps - 1}
+          >
+            <ChevronRight className="w-4 h-4" />
+          </Button>
+          
+          <Button
+            type="button"
+            onClick={handlePauseResume}
             variant="outline"
             size="sm"
             className="rounded-full px-4 bg-white"
-            disabled={isPaused || isComplete}
           >
-            <Pause className="w-4 h-4 mr-1" />
-            Pause
+            {isPaused ? (
+              <>
+                <Play className="w-4 h-4 mr-1" />
+                Play
+              </>
+            ) : (
+              <>
+                <Pause className="w-4 h-4 mr-1" />
+                Pause
+              </>
+            )}
           </Button>
+          
+          {isComplete && (
+            <Button
+              type="button"
+              onClick={handleReplay}
+              variant="outline"
+              size="sm"
+              className="rounded-full px-4 bg-white"
+            >
+              <Play className="w-4 h-4 mr-1" />
+              Replay
+            </Button>
+          )}
         </div>
       </div>
     )
   }
 
-  // Full section version (kept for reference, but no longer used on page)
+  // Full section version
   return (
     <section id="phone-demo" className="py-24 px-6 bg-gradient-to-br from-background via-muted/20 to-background overflow-hidden">
       <div className="max-w-4xl mx-auto">
@@ -610,7 +1207,7 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4 tracking-tight font-[family-name:var(--font-display)]">
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4 tracking-tight">
             See It In Action
           </h2>
           <div className="w-24 h-1 bg-primary mx-auto rounded-full" />
@@ -623,53 +1220,68 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
           transition={{ duration: 0.6 }}
           className="flex flex-col items-center"
         >
-          <PhoneMockup>
-            <div ref={scrollRef} className="h-full overflow-y-auto py-3">
-              <AnimatePresence mode="popLayout">
-                {visibleMessages.map((message, index) => (
-                  <ChatBubble 
-                    key={message.id} 
-                    message={message} 
-                    isNew={index === visibleMessages.length - 1}
-                  />
-                ))}
-              </AnimatePresence>
-              {isTyping && <TypingIndicator />}
-            </div>
-          </PhoneMockup>
+          {renderContent()}
           
-          {/* Navigation controls - Play/Replay and Pause side by side */}
+          {/* Navigation controls */}
           <div className="mt-6 flex items-center gap-3">
-            {/* Play/Replay button - enabled when paused or complete */}
             <Button
-              onClick={isComplete ? handleReplay : () => setIsPaused(false)}
+              type="button"
+              onClick={handlePrev}
               variant="outline"
               size="sm"
-              className="rounded-full px-4"
-              disabled={!isPaused && !isComplete}
+              className="rounded-full px-3"
+              disabled={currentStep === 0}
             >
-              <Play className="w-4 h-4 mr-1" />
-              {isComplete ? "Replay" : "Play"}
+              <ChevronLeft className="w-4 h-4" />
             </Button>
             
-            {/* Pause button - enabled when playing (not paused and not complete) */}
+            <span className="text-sm text-muted-foreground min-w-[50px] text-center">
+              {currentStep + 1} / {totalSteps}
+            </span>
+            
             <Button
-              onClick={() => {
-                if (timerRef.current) {
-                  clearTimeout(timerRef.current)
-                  timerRef.current = null
-                }
-                setIsTyping(false)
-                setIsPaused(true)
-              }}
+              type="button"
+              onClick={handleNext}
+              variant="outline"
+              size="sm"
+              className="rounded-full px-3"
+              disabled={currentStep >= totalSteps - 1}
+            >
+              <ChevronRight className="w-4 h-4" />
+            </Button>
+            
+            <Button
+              type="button"
+              onClick={handlePauseResume}
               variant="outline"
               size="sm"
               className="rounded-full px-4"
-              disabled={isPaused || isComplete}
             >
-              <Pause className="w-4 h-4 mr-1" />
-              Pause
+              {isPaused ? (
+                <>
+                  <Play className="w-4 h-4 mr-1" />
+                  Play
+                </>
+              ) : (
+                <>
+                  <Pause className="w-4 h-4 mr-1" />
+                  Pause
+                </>
+              )}
             </Button>
+            
+            {isComplete && (
+              <Button
+                type="button"
+                onClick={handleReplay}
+                variant="outline"
+                size="sm"
+                className="rounded-full px-4"
+              >
+                <Play className="w-4 h-4 mr-1" />
+                Replay
+              </Button>
+            )}
           </div>
         </motion.div>
       </div>
