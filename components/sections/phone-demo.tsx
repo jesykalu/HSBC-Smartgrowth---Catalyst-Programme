@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Check, FileText, Shield, PiggyBank, TrendingUp, Sparkles, Play, ChevronLeft, ChevronRight, Pause } from "lucide-react"
+import { Check, FileText, Shield, PiggyBank, TrendingUp, Sparkles, Play, Pause } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 // Message types
@@ -535,39 +535,6 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
     setHasStarted(true)
   }
 
-  const handlePrev = () => {
-    if (currentIndex <= 1 && visibleMessages.length <= 1) return
-    
-    // Cancel current timer
-    if (timerRef.current) {
-      clearTimeout(timerRef.current)
-      timerRef.current = null
-    }
-    setIsTyping(false)
-    
-    // Go back one step
-    const newIndex = Math.max(0, visibleMessages.length - 1)
-    setVisibleMessages(prev => prev.slice(0, -1))
-    setCurrentIndex(newIndex)
-    setIsComplete(false)
-  }
-
-  const handleNext = () => {
-    if (currentIndex >= conversationScript.length) return
-    
-    // Cancel current timer
-    if (timerRef.current) {
-      clearTimeout(timerRef.current)
-      timerRef.current = null
-    }
-    setIsTyping(false)
-    
-    // Advance immediately
-    const message = conversationScript[currentIndex]
-    setVisibleMessages(prev => [...prev, message])
-    setCurrentIndex(prev => prev + 1)
-  }
-
   const handlePauseResume = () => {
     if (isPaused) {
       // Resume - the useEffect will pick up from currentIndex
@@ -582,9 +549,6 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
       setIsPaused(true)
     }
   }
-
-  const totalSteps = conversationScript.length
-  const currentStep = visibleMessages.length
 
   // Hero mode - compact version without section wrapper
   if (heroMode) {
@@ -607,35 +571,6 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
         
         {/* Navigation controls */}
         <div className="mt-6 flex flex-col items-center gap-3">
-          {/* Prev / Step counter / Next */}
-          <div className="flex items-center gap-4">
-            <Button
-              onClick={handlePrev}
-              variant="outline"
-              size="sm"
-              className="rounded-full px-4"
-              disabled={currentStep === 0}
-            >
-              <ChevronLeft className="w-4 h-4 mr-1" />
-              Prev
-            </Button>
-            
-            <span className="text-sm text-muted-foreground min-w-[60px] text-center">
-              {currentStep} / {totalSteps}
-            </span>
-            
-            <Button
-              onClick={handleNext}
-              variant="outline"
-              size="sm"
-              className="rounded-full px-4"
-              disabled={currentIndex >= totalSteps}
-            >
-              Next
-              <ChevronRight className="w-4 h-4 ml-1" />
-            </Button>
-          </div>
-          
           {/* Pause/Resume control */}
           <Button
             onClick={handlePauseResume}
@@ -718,35 +653,6 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
           
           {/* Navigation controls */}
           <div className="mt-6 flex flex-col items-center gap-3">
-            {/* Prev / Step counter / Next */}
-            <div className="flex items-center gap-4">
-              <Button
-                onClick={handlePrev}
-                variant="outline"
-                size="sm"
-                className="rounded-full px-4"
-                disabled={currentStep === 0}
-              >
-                <ChevronLeft className="w-4 h-4 mr-1" />
-                Prev
-              </Button>
-              
-              <span className="text-sm text-muted-foreground min-w-[60px] text-center">
-                {currentStep} / {totalSteps}
-              </span>
-              
-              <Button
-                onClick={handleNext}
-                variant="outline"
-                size="sm"
-                className="rounded-full px-4"
-                disabled={currentIndex >= totalSteps}
-              >
-                Next
-                <ChevronRight className="w-4 h-4 ml-1" />
-              </Button>
-            </div>
-            
             {/* Pause/Resume control */}
             <Button
               onClick={handlePauseResume}
