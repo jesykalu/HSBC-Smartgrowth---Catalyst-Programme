@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Sparkles } from "lucide-react"
+import { Sparkles, Lock } from "lucide-react"
 
 export function ClosingSection() {
   return (
@@ -55,6 +55,33 @@ export function ClosingSection() {
             </div>
           </motion.div>
         </motion.div>
+      </div>
+      
+      {/* Confidential Footer Banner */}
+      <div className="absolute bottom-0 left-0 right-0">
+        {/* Top strip - Confidential notice */}
+        <div className="bg-[#0a0a0a] py-3 border-b border-white/10">
+          <div className="flex items-center justify-center gap-2">
+            <Lock className="w-4 h-4 text-amber-600" />
+            <span className="text-xs font-bold uppercase tracking-widest text-amber-600">
+              Confidential — Internal Use Only
+            </span>
+            <Lock className="w-4 h-4 text-amber-600" />
+          </div>
+        </div>
+        
+        {/* Bottom strip - Copyright and authorship */}
+        <div className="bg-[#0a0a0a] py-4 px-6">
+          <div className="max-w-6xl mx-auto flex items-center justify-between">
+            <span className="text-xs text-white/40">
+              © 2026 Accenture. All rights reserved.
+            </span>
+            <span className="text-xs text-white/40">
+              Authored in collaboration with{" "}
+              <span className="font-bold text-white/60">Accenture FS — Rockit team</span>
+            </span>
+          </div>
+        </div>
       </div>
     </section>
   )
