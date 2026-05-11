@@ -535,21 +535,6 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
     setHasStarted(true)
   }
 
-  const handlePauseResume = () => {
-    if (isPaused) {
-      // Resume - the useEffect will pick up from currentIndex
-      setIsPaused(false)
-    } else {
-      // Pause - cancel any pending timer
-      if (timerRef.current) {
-        clearTimeout(timerRef.current)
-        timerRef.current = null
-      }
-      setIsTyping(false)
-      setIsPaused(true)
-    }
-  }
-
   // Hero mode - compact version without section wrapper
   if (heroMode) {
     return (
@@ -571,9 +556,9 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
         
         {/* Navigation controls - Play/Replay and Pause side by side */}
         <div className="mt-6 flex items-center gap-3">
-          {/* Play/Replay button */}
+          {/* Play/Replay button - enabled when paused or complete */}
           <Button
-            onClick={isComplete ? handleReplay : handlePauseResume}
+            onClick={isComplete ? handleReplay : () => setIsPaused(false)}
             variant="outline"
             size="sm"
             className="rounded-full px-4"
@@ -583,9 +568,16 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
             {isComplete ? "Replay" : "Play"}
           </Button>
           
-          {/* Pause button */}
+          {/* Pause button - enabled when playing (not paused and not complete) */}
           <Button
-            onClick={handlePauseResume}
+            onClick={() => {
+              if (timerRef.current) {
+                clearTimeout(timerRef.current)
+                timerRef.current = null
+              }
+              setIsTyping(false)
+              setIsPaused(true)
+            }}
             variant="outline"
             size="sm"
             className="rounded-full px-4"
@@ -640,9 +632,9 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
           
           {/* Navigation controls - Play/Replay and Pause side by side */}
           <div className="mt-6 flex items-center gap-3">
-            {/* Play/Replay button */}
+            {/* Play/Replay button - enabled when paused or complete */}
             <Button
-              onClick={isComplete ? handleReplay : handlePauseResume}
+              onClick={isComplete ? handleReplay : () => setIsPaused(false)}
               variant="outline"
               size="sm"
               className="rounded-full px-4"
@@ -652,9 +644,16 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
               {isComplete ? "Replay" : "Play"}
             </Button>
             
-            {/* Pause button */}
+            {/* Pause button - enabled when playing (not paused and not complete) */}
             <Button
-              onClick={handlePauseResume}
+              onClick={() => {
+                if (timerRef.current) {
+                  clearTimeout(timerRef.current)
+                  timerRef.current = null
+                }
+                setIsTyping(false)
+                setIsPaused(true)
+              }}
               variant="outline"
               size="sm"
               className="rounded-full px-4"
