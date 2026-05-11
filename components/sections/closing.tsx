@@ -23,8 +23,8 @@ export function ClosingSection() {
 
           {/* Main quote */}
           <blockquote className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground leading-[1.1] text-balance mb-8 tracking-tight font-[family-name:var(--font-display)]">
-            &quot;In the age of AI, the banks that win will be the ones that{" "}
-            <span className="text-primary">guide their customers first.</span>&quot;
+            {"\u201C"}In the age of AI, the banks that win will be the ones that{" "}
+            <span className="text-primary">guide their customers first.</span>{"\u201D"}
           </blockquote>
 
           {/* Subtext */}
