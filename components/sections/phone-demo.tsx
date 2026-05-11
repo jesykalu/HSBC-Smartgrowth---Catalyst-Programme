@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Check, PiggyBank, TrendingUp, ChevronRight, Play, MessageCircle, ArrowLeft, Calendar, Coins, Lock, Shield, FileText, Users } from "lucide-react"
+import { Check, PiggyBank, TrendingUp, ChevronRight, ChevronLeft, Play, MessageCircle, ArrowLeft, Calendar, Coins, Lock, Shield, FileText, Users } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 // Phase types
@@ -171,16 +171,16 @@ function ReplyChips({
   onSelect?: (index: number) => void 
 }) {
   return (
-    <div className="flex flex-wrap gap-2 mt-2">
+    <div className="flex flex-col gap-2 mt-2 w-full">
       {options.map((option, index) => (
         <motion.button
           key={option}
-          className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+          className={`w-full px-3 py-2 rounded-xl text-xs font-medium transition-colors text-left ${
             selectedIndex === index 
               ? "bg-[#DB0011] text-white" 
               : "bg-gray-100 text-gray-700 hover:bg-gray-200"
           }`}
-          whileTap={{ scale: 0.95 }}
+          whileTap={{ scale: 0.98 }}
           onClick={() => onSelect?.(index)}
         >
           {option}
@@ -605,7 +605,7 @@ function ChatMessage({ type, text, children, isNew = false }: ChatMessageProps) 
       initial={isNew ? { opacity: 0, y: 8 } : false}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className={`flex items-start gap-2 px-3 py-1.5 ${isBot ? "" : "flex-row-reverse"}`}
+      className={`flex items-start gap-2 px-3 py-1.5 ${isBot ? "ml-2" : "flex-row-reverse mr-2"}`}
     >
       <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 ${
         isBot ? "bg-[#DB0011]" : "bg-gray-400"
@@ -613,7 +613,7 @@ function ChatMessage({ type, text, children, isNew = false }: ChatMessageProps) 
         <span className="text-white text-[10px] font-bold">{isBot ? "H" : "J"}</span>
       </div>
 
-      <div className={`max-w-[80%] ${isBot ? "" : "text-right"}`}>
+      <div className={`${isBot ? "max-w-[78%]" : "max-w-[72%] text-right"}`}>
         {text && (
           <div className={`inline-block rounded-2xl px-3 py-2 ${
             isBot 
@@ -726,22 +726,6 @@ function PhoneShell({
       <div className="absolute left-0 top-28 w-[3px] h-8 bg-gradient-to-b from-[#636366] via-[#8e8e93] to-[#636366] rounded-l-sm" />
       <div className="absolute left-0 top-40 w-[3px] h-8 bg-gradient-to-b from-[#636366] via-[#8e8e93] to-[#636366] rounded-l-sm" />
       <div className="absolute left-0 top-20 w-[3px] h-5 bg-gradient-to-b from-[#636366] via-[#8e8e93] to-[#636366] rounded-l-sm" />
-    </div>
-  )
-}
-
-// Progress bar component
-function ProgressBar({ currentStep, totalSteps }: { currentStep: number; totalSteps: number }) {
-  const progress = ((currentStep + 1) / totalSteps) * 100
-  
-  return (
-    <div className="w-[280px] h-[3px] bg-gray-200 rounded-full overflow-hidden mb-4">
-      <motion.div 
-        className="h-full bg-[#DB0011] rounded-full"
-        initial={{ width: 0 }}
-        animate={{ width: `${progress}%` }}
-        transition={{ duration: 0.3, ease: "easeOut" }}
-      />
     </div>
   )
 }
@@ -1011,14 +995,7 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
     setCurrentProductView(null)
   }
   
-  // Continue after viewing both products
-  const handleContinueFromProducts = () => {
-    const nextStep = currentStep + 1
-    setCurrentStep(nextStep)
-    processStep(nextStep)
-  }
-  
-  // Handle Next button for steps without in-screen actions
+  // Handle Next button
   const handleNext = () => {
     if (currentStep < totalSteps - 1) {
       const nextStep = currentStep + 1
@@ -1041,31 +1018,16 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
   
   const isComplete = currentStep >= totalSteps - 1
   
-  // Determine if we should show the Next button
-  const shouldShowNextButton = () => {
-    // Don't show on chip selection steps
-    if ([5, 6, 7, 8].includes(currentStep)) return false
-    // Don't show on allocation step (product exploration)
-    if (currentStep === 9) return false
-    // Don't show on product detail views
-    if (currentProductView) return false
-    // Don't show when there's a pending user reply
-    if (pendingUserReply) return false
-    // Don't show on lock screen (tap notification) or face id (tap to auth)
-    if (currentStep <= 1) return false
-    // Don't show on final success
-    if (isComplete) return false
-    
-    return true
+  // Handle Prev button
+  const handlePrev = () => {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1)
+    }
   }
   
-  // Determine if we should show "Tap to reply" hint
-  const shouldShowTapToReply = () => {
-    return pendingUserReply !== null && currentStep > 2
-  }
-  
-  // Check if both products are visited for continue button
-  const bothProductsVisited = visitedProducts.size >= 2
+  // Determine disabled states for nav buttons
+  const isPrevDisabled = currentStep === 0
+  const isNextDisabled = currentStep >= totalSteps - 1
   
   // Render phone content based on phase
   const renderContent = () => {
@@ -1200,21 +1162,6 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
                           onTapISA={handleTapISA}
                           visitedProducts={visitedProducts}
                         />
-                        {/* Continue button - appears when both products visited */}
-                        {bothProductsVisited && (
-                          <motion.div
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="mt-3"
-                          >
-                            <motion.button
-                              onClick={handleContinueFromProducts}
-                              className="w-full py-2 px-4 bg-[#DB0011] text-white rounded-xl text-sm font-medium hover:bg-[#b8000e] transition-colors flex items-center justify-center gap-1"
-                            >
-                              Continue →
-                            </motion.button>
-                          </motion.div>
-                        )}
                       </ChatMessage>
                     )
                   }
@@ -1265,45 +1212,44 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
   if (heroMode) {
     return (
       <div className="flex flex-col items-center">
-        {/* Progress bar */}
-        <ProgressBar currentStep={currentStep} totalSteps={totalSteps} />
-        
         {renderContent()}
         
-        {/* Navigation controls */}
-        <div className="mt-4 flex flex-col items-center gap-2 relative z-50">
-          {/* Tap to reply hint */}
-          {shouldShowTapToReply() && (
-            <span className="text-sm text-muted-foreground">Tap to reply →</span>
-          )}
+        {/* Navigation bar - always visible */}
+        <div className="mt-4 flex items-center justify-between gap-4 w-[280px] relative z-50">
+          {/* Prev button */}
+          <Button
+            type="button"
+            onClick={handlePrev}
+            variant="outline"
+            size="sm"
+            className={`rounded-full px-3 bg-white ${isPrevDisabled ? "opacity-50 pointer-events-none" : ""}`}
+            disabled={isPrevDisabled}
+          >
+            <ChevronLeft className="w-4 h-4 mr-1" />
+            Prev
+          </Button>
           
-          {/* Back link for product detail pages */}
-          {currentProductView && (
-            <button 
-              onClick={handleReturnFromProduct}
-              className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1"
-            >
-              <ArrowLeft className="w-3 h-3" />
-              Back to chat
-            </button>
-          )}
+          {/* Step counter */}
+          <span className="text-sm text-muted-foreground">
+            {currentStep + 1} / {totalSteps}
+          </span>
           
-          {/* Next button - only for steps without in-screen actions */}
-          {shouldShowNextButton() && (
-            <Button
-              type="button"
-              onClick={handleNext}
-              variant="outline"
-              size="sm"
-              className="rounded-full px-4 bg-white"
-            >
-              Next
-              <ChevronRight className="w-4 h-4 ml-1" />
-            </Button>
-          )}
-          
-          {/* Replay button */}
-          {isComplete && (
+          {/* Next button */}
+          <Button
+            type="button"
+            onClick={handleNext}
+            size="sm"
+            className={`rounded-full px-3 bg-[#DB0011] text-white hover:bg-[#b8000e] ${isNextDisabled ? "opacity-50 pointer-events-none" : ""}`}
+            disabled={isNextDisabled}
+          >
+            Next
+            <ChevronRight className="w-4 h-4 ml-1" />
+          </Button>
+        </div>
+        
+        {/* Replay button - only on final step */}
+        {isComplete && (
+          <div className="mt-3">
             <Button
               type="button"
               onClick={handleReplay}
@@ -1312,10 +1258,10 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
               className="rounded-full px-4 bg-white"
             >
               <Play className="w-4 h-4 mr-1" />
-              Replay from beginning
+              Replay
             </Button>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     )
   }
@@ -1344,45 +1290,44 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
           transition={{ duration: 0.6 }}
           className="flex flex-col items-center"
         >
-          {/* Progress bar */}
-          <ProgressBar currentStep={currentStep} totalSteps={totalSteps} />
-          
           {renderContent()}
           
-          {/* Navigation controls */}
-          <div className="mt-4 flex flex-col items-center gap-2">
-            {/* Tap to reply hint */}
-            {shouldShowTapToReply() && (
-              <span className="text-sm text-muted-foreground">Tap to reply →</span>
-            )}
+          {/* Navigation bar - always visible */}
+          <div className="mt-4 flex items-center justify-between gap-4 w-[280px]">
+            {/* Prev button */}
+            <Button
+              type="button"
+              onClick={handlePrev}
+              variant="outline"
+              size="sm"
+              className={`rounded-full px-3 ${isPrevDisabled ? "opacity-50 pointer-events-none" : ""}`}
+              disabled={isPrevDisabled}
+            >
+              <ChevronLeft className="w-4 h-4 mr-1" />
+              Prev
+            </Button>
             
-            {/* Back link for product detail pages */}
-            {currentProductView && (
-              <button 
-                onClick={handleReturnFromProduct}
-                className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1"
-              >
-                <ArrowLeft className="w-3 h-3" />
-                Back to chat
-              </button>
-            )}
+            {/* Step counter */}
+            <span className="text-sm text-muted-foreground">
+              {currentStep + 1} / {totalSteps}
+            </span>
             
-            {/* Next button - only for steps without in-screen actions */}
-            {shouldShowNextButton() && (
-              <Button
-                type="button"
-                onClick={handleNext}
-                variant="outline"
-                size="sm"
-                className="rounded-full px-4"
-              >
-                Next
-                <ChevronRight className="w-4 h-4 ml-1" />
-              </Button>
-            )}
-            
-            {/* Replay button */}
-            {isComplete && (
+            {/* Next button */}
+            <Button
+              type="button"
+              onClick={handleNext}
+              size="sm"
+              className={`rounded-full px-3 bg-[#DB0011] text-white hover:bg-[#b8000e] ${isNextDisabled ? "opacity-50 pointer-events-none" : ""}`}
+              disabled={isNextDisabled}
+            >
+              Next
+              <ChevronRight className="w-4 h-4 ml-1" />
+            </Button>
+          </div>
+          
+          {/* Replay button - only on final step */}
+          {isComplete && (
+            <div className="mt-3">
               <Button
                 type="button"
                 onClick={handleReplay}
@@ -1391,10 +1336,10 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
                 className="rounded-full px-4"
               >
                 <Play className="w-4 h-4 mr-1" />
-                Replay from beginning
+                Replay
               </Button>
-            )}
-          </div>
+            </div>
+          )}
         </motion.div>
       </div>
     </section>
