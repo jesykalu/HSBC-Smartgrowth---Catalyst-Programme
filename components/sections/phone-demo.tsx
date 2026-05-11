@@ -1,8 +1,8 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Check, PiggyBank, TrendingUp, ChevronLeft, ChevronRight, Play, Pause, MessageCircle, ArrowLeft, Calendar, Coins, Lock, Shield, FileText, Users } from "lucide-react"
+import { Check, PiggyBank, TrendingUp, ChevronRight, ChevronLeft, Play, MessageCircle, ArrowLeft, Calendar, Coins, Lock, Shield, FileText, Users } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 // Phase types
@@ -13,26 +13,24 @@ interface Step {
   id: number
   phase: Phase
   action: string
-  autoSelectIndex?: number // For chip auto-selection
 }
 
 // All steps in the demo
 const demoSteps: Step[] = [
   { id: 1, phase: "lockscreen", action: "notification" },
-  { id: 2, phase: "lockscreen", action: "tap" },
-  { id: 3, phase: "faceid", action: "authenticate" },
-  { id: 4, phase: "chat", action: "greeting" },
-  { id: 5, phase: "chat", action: "userReply1" },
-  { id: 6, phase: "chat", action: "question1", autoSelectIndex: 1 },
-  { id: 7, phase: "chat", action: "question2", autoSelectIndex: 1 },
-  { id: 8, phase: "chat", action: "question3", autoSelectIndex: 0 },
-  { id: 9, phase: "chat", action: "profileSummary", autoSelectIndex: 0 },
-  { id: 10, phase: "chat", action: "allocation" }, // Product exploration happens here via handlers
-  { id: 11, phase: "chat", action: "compliance" },
-  { id: 12, phase: "chat", action: "identityConfirmed" },
-  { id: 13, phase: "chat", action: "planSummary" },
-  { id: 14, phase: "chat", action: "userConfirm" },
-  { id: 15, phase: "done", action: "success" },
+  { id: 2, phase: "faceid", action: "authenticate" },
+  { id: 3, phase: "chat", action: "greeting" },
+  { id: 4, phase: "chat", action: "userReply1" },
+  { id: 5, phase: "chat", action: "question1" },
+  { id: 6, phase: "chat", action: "question2" },
+  { id: 7, phase: "chat", action: "question3" },
+  { id: 8, phase: "chat", action: "profileSummary" },
+  { id: 9, phase: "chat", action: "allocation" },
+  { id: 10, phase: "chat", action: "compliance" },
+  { id: 11, phase: "chat", action: "identityConfirmed" },
+  { id: 12, phase: "chat", action: "planSummary" },
+  { id: 13, phase: "chat", action: "userConfirm" },
+  { id: 14, phase: "done", action: "success" },
 ]
 
 // Helper to render bold text
@@ -44,36 +42,6 @@ function renderText(text: string) {
     }
     return part
   })
-}
-
-// Typing indicator component
-function TypingIndicator() {
-  return (
-    <div className="flex items-center gap-1 px-4 py-3">
-      <div className="w-7 h-7 rounded-full bg-[#DB0011] flex items-center justify-center flex-shrink-0">
-        <span className="text-white text-[10px] font-bold">H</span>
-      </div>
-      <div className="ml-2 bg-gray-100 rounded-2xl rounded-bl-none px-4 py-3">
-        <div className="flex items-center gap-1">
-          <motion.div
-            className="w-2 h-2 bg-gray-400 rounded-full"
-            animate={{ y: [0, -4, 0] }}
-            transition={{ duration: 0.6, repeat: Infinity, delay: 0 }}
-          />
-          <motion.div
-            className="w-2 h-2 bg-gray-400 rounded-full"
-            animate={{ y: [0, -4, 0] }}
-            transition={{ duration: 0.6, repeat: Infinity, delay: 0.15 }}
-          />
-          <motion.div
-            className="w-2 h-2 bg-gray-400 rounded-full"
-            animate={{ y: [0, -4, 0] }}
-            transition={{ duration: 0.6, repeat: Infinity, delay: 0.3 }}
-          />
-        </div>
-      </div>
-    </div>
-  )
 }
 
 // Donut Chart Component
@@ -161,7 +129,7 @@ function ProductCards({
           </div>
         </div>
         <button className="w-full py-1.5 px-3 bg-blue-500 text-white rounded-lg text-xs font-medium hover:bg-blue-600 transition-colors">
-          Learn more →
+          Tap to explore →
         </button>
       </motion.div>
       <motion.div 
@@ -185,14 +153,14 @@ function ProductCards({
           </div>
         </div>
         <button className="w-full py-1.5 px-3 bg-green-500 text-white rounded-lg text-xs font-medium hover:bg-green-600 transition-colors">
-          Learn more →
+          Tap to explore →
         </button>
       </motion.div>
     </div>
   )
 }
 
-// Reply chips component
+// Reply chips component - now tappable to send user reply
 function ReplyChips({ 
   options, 
   selectedIndex,
@@ -203,16 +171,16 @@ function ReplyChips({
   onSelect?: (index: number) => void 
 }) {
   return (
-    <div className="flex flex-wrap gap-2 mt-2">
+    <div className="flex flex-col gap-2 mt-2 w-full">
       {options.map((option, index) => (
         <motion.button
           key={option}
-          className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+          className={`w-full px-3 py-2 rounded-xl text-xs font-medium transition-colors text-left ${
             selectedIndex === index 
               ? "bg-[#DB0011] text-white" 
               : "bg-gray-100 text-gray-700 hover:bg-gray-200"
           }`}
-          whileTap={{ scale: 0.95 }}
+          whileTap={{ scale: 0.98 }}
           onClick={() => onSelect?.(index)}
         >
           {option}
@@ -241,24 +209,22 @@ function ProfileCardNew() {
   )
 }
 
-// Compliance card with staggered checks
-function ComplianceCardNew({ visibleCount }: { visibleCount: number }) {
+// Compliance card - all checks visible immediately
+function ComplianceCardNew() {
   const checks = ["Eligibility", "Suitability", "KYC", "CDD", "Fraud Screening", "Affordability"]
 
   return (
     <div className="bg-white rounded-xl border border-gray-100 p-3 mt-2 space-y-1.5">
-      {checks.map((check, i) => (
-        <motion.div
+      {checks.map((check) => (
+        <div
           key={check}
-          initial={{ opacity: 0, x: -10 }}
-          animate={{ opacity: i < visibleCount ? 1 : 0, x: i < visibleCount ? 0 : -10 }}
           className="flex items-center gap-2 p-1.5 bg-green-50 rounded-lg"
         >
           <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
             <Check className="w-3 h-3 text-white" />
           </div>
           <span className="text-gray-700 text-xs">{check}</span>
-        </motion.div>
+        </div>
       ))}
     </div>
   )
@@ -302,8 +268,8 @@ function SuccessCard() {
   )
 }
 
-// Lock Screen Component
-function LockScreen({ showNotification }: { showNotification: boolean }) {
+// Lock Screen Component - tappable notification
+function LockScreen({ showNotification, onTapNotification }: { showNotification: boolean; onTapNotification: () => void }) {
   return (
     <div className="absolute inset-0 bg-gradient-to-b from-[#1a1a2e] via-[#16213e] to-[#0f0f23] flex flex-col">
       {/* Time display */}
@@ -318,10 +284,15 @@ function LockScreen({ showNotification }: { showNotification: boolean }) {
           <motion.div
             initial={{ y: -100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            transition={{ type: "spring", damping: 20, stiffness: 300, delay: 1 }}
-            className="mx-4 mt-8"
+            transition={{ type: "spring", damping: 20, stiffness: 300 }}
+            className="mx-4 mt-8 cursor-pointer"
+            onClick={onTapNotification}
           >
-            <div className="bg-white/95 backdrop-blur-xl rounded-2xl p-3 shadow-lg">
+            <motion.div 
+              className="bg-white/95 backdrop-blur-xl rounded-2xl p-3 shadow-lg"
+              animate={{ scale: [1, 1.02, 1] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            >
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 rounded-xl bg-[#DB0011] flex items-center justify-center flex-shrink-0">
                   <span className="text-white text-xs font-bold">HSBC</span>
@@ -336,19 +307,19 @@ function LockScreen({ showNotification }: { showNotification: boolean }) {
                   </p>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
       
-      {/* Swipe hint */}
+      {/* Tap hint */}
       <motion.div 
         className="absolute bottom-24 left-0 right-0 text-center"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 2 }}
+        transition={{ delay: 0.5 }}
       >
-        <span className="text-white/50 text-xs">Swipe to open →</span>
+        <span className="text-white/50 text-xs">Tap notification to open</span>
       </motion.div>
       
       {/* Home indicator */}
@@ -357,15 +328,20 @@ function LockScreen({ showNotification }: { showNotification: boolean }) {
   )
 }
 
-// Face ID Screen Component
-function FaceIDScreen({ isAuthenticated }: { isAuthenticated: boolean }) {
+// Face ID Screen Component - tap to authenticate
+function FaceIDScreen({ isAuthenticated, onTapAuthenticate, onContinue }: { 
+  isAuthenticated: boolean
+  onTapAuthenticate: () => void
+  onContinue: () => void
+}) {
   return (
     <div className="h-full flex flex-col items-center justify-center bg-white px-6">
       {/* Face ID icon */}
       <motion.div
-        className="w-20 h-20 relative mb-6"
+        className="w-20 h-20 relative mb-6 cursor-pointer"
         animate={!isAuthenticated ? { scale: [1, 1.05, 1] } : {}}
         transition={{ duration: 1.5, repeat: isAuthenticated ? 0 : Infinity }}
+        onClick={!isAuthenticated ? onTapAuthenticate : undefined}
       >
         <svg viewBox="0 0 80 80" className="w-full h-full">
           {/* Face outline */}
@@ -428,13 +404,13 @@ function FaceIDScreen({ isAuthenticated }: { isAuthenticated: boolean }) {
       <AnimatePresence mode="wait">
         {!isAuthenticated ? (
           <motion.div
-            key="authenticating"
+            key="tap-to-auth"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="text-center"
           >
-            <div className="text-gray-500 text-sm">Authenticating…</div>
+            <div className="text-gray-500 text-sm">Tap to authenticate</div>
           </motion.div>
         ) : (
           <motion.div
@@ -447,6 +423,17 @@ function FaceIDScreen({ isAuthenticated }: { isAuthenticated: boolean }) {
               Face ID recognised <Check className="w-4 h-4" />
             </div>
             <div className="text-gray-500 text-xs mt-1">Welcome back, Jes</div>
+            
+            {/* Continue button */}
+            <motion.button
+              onClick={onContinue}
+              className="mt-4 px-6 py-2 bg-[#DB0011] text-white rounded-full text-sm font-medium hover:bg-[#b8000e] transition-colors"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+            >
+              Continue →
+            </motion.button>
           </motion.div>
         )}
       </AnimatePresence>
@@ -455,22 +442,7 @@ function FaceIDScreen({ isAuthenticated }: { isAuthenticated: boolean }) {
 }
 
 // Fixed Saver Detail Screen Component
-function FixedSaverDetailScreen({ onReturn, showPulse }: { onReturn: () => void; showPulse: boolean }) {
-  const scrollRef = useRef<HTMLDivElement>(null)
-  
-  useEffect(() => {
-    // Auto-scroll effect
-    if (scrollRef.current) {
-      const timer = setTimeout(() => {
-        scrollRef.current?.scrollTo({
-          top: 150,
-          behavior: "smooth"
-        })
-      }, 500)
-      return () => clearTimeout(timer)
-    }
-  }, [])
-
+function FixedSaverDetailScreen({ onReturn }: { onReturn: () => void }) {
   const details = [
     { icon: Calendar, label: "Term", value: "12 months fixed" },
     { icon: Coins, label: "Min deposit", value: "£500" },
@@ -502,7 +474,7 @@ function FixedSaverDetailScreen({ onReturn, showPulse }: { onReturn: () => void;
       </div>
       
       {/* Details list */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-3 space-y-2">
+      <div className="flex-1 overflow-y-auto px-4 py-3 space-y-2">
         {details.map((item) => (
           <div key={item.label} className="flex items-center gap-3 py-2 border-b border-gray-100">
             <item.icon className="w-4 h-4 text-gray-400" />
@@ -534,8 +506,8 @@ function FixedSaverDetailScreen({ onReturn, showPulse }: { onReturn: () => void;
       <motion.button
         onClick={onReturn}
         className="absolute bottom-4 right-4 w-14 h-14 rounded-full bg-[#DB0011] text-white flex items-center justify-center shadow-lg"
-        animate={showPulse ? { scale: [1, 1.1, 1] } : {}}
-        transition={{ duration: 0.5 }}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
       >
         <MessageCircle className="w-6 h-6" />
       </motion.button>
@@ -544,21 +516,7 @@ function FixedSaverDetailScreen({ onReturn, showPulse }: { onReturn: () => void;
 }
 
 // Investment ISA Detail Screen Component
-function ISADetailScreen({ onReturn, showPulse }: { onReturn: () => void; showPulse: boolean }) {
-  const scrollRef = useRef<HTMLDivElement>(null)
-  
-  useEffect(() => {
-    if (scrollRef.current) {
-      const timer = setTimeout(() => {
-        scrollRef.current?.scrollTo({
-          top: 150,
-          behavior: "smooth"
-        })
-      }, 500)
-      return () => clearTimeout(timer)
-    }
-  }, [])
-
+function ISADetailScreen({ onReturn }: { onReturn: () => void }) {
   const details = [
     { icon: FileText, label: "Wrapper", value: "Stocks & Shares ISA" },
     { icon: Coins, label: "Annual allowance", value: "Up to £20,000 per tax year" },
@@ -590,7 +548,7 @@ function ISADetailScreen({ onReturn, showPulse }: { onReturn: () => void; showPu
       </div>
       
       {/* Details list */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-3 space-y-2">
+      <div className="flex-1 overflow-y-auto px-4 py-3 space-y-2">
         {details.map((item) => (
           <div key={item.label} className="flex items-center gap-3 py-2 border-b border-gray-100">
             <item.icon className="w-4 h-4 text-gray-400" />
@@ -622,8 +580,8 @@ function ISADetailScreen({ onReturn, showPulse }: { onReturn: () => void; showPu
       <motion.button
         onClick={onReturn}
         className="absolute bottom-4 right-4 w-14 h-14 rounded-full bg-[#DB0011] text-white flex items-center justify-center shadow-lg"
-        animate={showPulse ? { scale: [1, 1.1, 1] } : {}}
-        transition={{ duration: 0.5 }}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
       >
         <MessageCircle className="w-6 h-6" />
       </motion.button>
@@ -647,7 +605,7 @@ function ChatMessage({ type, text, children, isNew = false }: ChatMessageProps) 
       initial={isNew ? { opacity: 0, y: 8 } : false}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className={`flex items-start gap-2 px-3 py-1.5 ${isBot ? "" : "flex-row-reverse"}`}
+      className={`flex items-start gap-2 px-3 py-1.5 ${isBot ? "ml-2" : "flex-row-reverse mr-2"}`}
     >
       <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 ${
         isBot ? "bg-[#DB0011]" : "bg-gray-400"
@@ -655,7 +613,7 @@ function ChatMessage({ type, text, children, isNew = false }: ChatMessageProps) 
         <span className="text-white text-[10px] font-bold">{isBot ? "H" : "J"}</span>
       </div>
 
-      <div className={`max-w-[80%] ${isBot ? "" : "text-right"}`}>
+      <div className={`${isBot ? "max-w-[78%]" : "max-w-[72%] text-right"}`}>
         {text && (
           <div className={`inline-block rounded-2xl px-3 py-2 ${
             isBot 
@@ -673,7 +631,22 @@ function ChatMessage({ type, text, children, isNew = false }: ChatMessageProps) 
   )
 }
 
-// Phone mockup shell component - handles different phases
+// User reply chip - tappable to send message
+function UserReplyChip({ text, onTap }: { text: string; onTap: () => void }) {
+  return (
+    <div className="flex justify-end px-3 py-1.5">
+      <motion.button
+        onClick={onTap}
+        className="px-4 py-2 bg-[#DB0011] text-white rounded-full text-sm font-medium hover:bg-[#b8000e] transition-colors"
+        whileTap={{ scale: 0.95 }}
+      >
+        {text}
+      </motion.button>
+    </div>
+  )
+}
+
+// Phone mockup shell component
 function PhoneShell({ 
   phase, 
   children,
@@ -807,22 +780,15 @@ interface PhoneDemoSectionProps {
 
 export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
   const [currentStep, setCurrentStep] = useState(0)
-  const [isPaused, setIsPaused] = useState(false)
-  const [isTyping, setIsTyping] = useState(false)
-  const [showNotification, setShowNotification] = useState(false)
+  const [showNotification, setShowNotification] = useState(true)
   const [faceIdAuthenticated, setFaceIdAuthenticated] = useState(false)
-  const [showFlash, setShowFlash] = useState(false)
-  const [chatMessages, setChatMessages] = useState<Array<{ id: number; type: "bot" | "user"; text?: string; element?: React.ReactNode }>>([])
+  const [chatMessages, setChatMessages] = useState<Array<{ id: number; type: "bot" | "user"; text?: string }>>([])
   const [chipSelections, setChipSelections] = useState<Record<number, number | null>>({})
-  const [complianceCount, setComplianceCount] = useState(0)
-  const [productPulse, setProductPulse] = useState(false)
   const [visitedProducts, setVisitedProducts] = useState<Set<string>>(new Set())
   const [currentProductView, setCurrentProductView] = useState<"fixedSaver" | "isa" | null>(null)
-  const [showContinueButton, setShowContinueButton] = useState(false)
-  const [isOnProductDetail, setIsOnProductDetail] = useState(false)
+  const [pendingUserReply, setPendingUserReply] = useState<string | null>(null)
   
   const scrollRef = useRef<HTMLDivElement>(null)
-  const timerRef = useRef<NodeJS.Timeout | null>(null)
   
   const totalSteps = demoSteps.length
   const step = demoSteps[currentStep] || demoSteps[0]
@@ -835,49 +801,29 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
   }
   const phase = getPhase()
   
-  // Auto-scroll chat
-  useEffect(() => {
+  // Scroll chat to bottom when messages change
+  const scrollToBottom = () => {
     if (scrollRef.current) {
       scrollRef.current.scrollTo({
         top: scrollRef.current.scrollHeight,
         behavior: "smooth"
       })
     }
-  }, [chatMessages, isTyping])
+  }
   
-  // Clear timer on unmount
-  useEffect(() => {
-    return () => {
-      if (timerRef.current) clearTimeout(timerRef.current)
-    }
-  }, [])
-
-  // Process current step
+  // Process step and add appropriate messages
   const processStep = (stepIndex: number) => {
     const s = demoSteps[stepIndex]
     if (!s) return
     
     switch (s.action) {
-      case "notification":
-        setShowNotification(true)
-        break
-        
-      case "tap":
-        setShowFlash(true)
-        setTimeout(() => setShowFlash(false), 150)
-        break
-        
-      case "authenticate":
-        setFaceIdAuthenticated(false)
-        setTimeout(() => setFaceIdAuthenticated(true), 1500)
-        break
-        
       case "greeting":
         setChatMessages([{
           id: 1,
           type: "bot",
           text: "Hi Jes 👋 I noticed you have **£10,000** in idle funds in your current account. Based on your spending patterns and existing products, I think I can help put that money to work. Want to explore your options?"
         }])
+        setPendingUserReply("Yes, show me what's available.")
         break
         
       case "userReply1":
@@ -886,6 +832,7 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
           type: "user",
           text: "Yes, show me what's available."
         }])
+        setPendingUserReply(null)
         break
         
       case "question1":
@@ -894,7 +841,6 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
           type: "bot",
           text: "Great! Just a couple of quick questions so I can tailor the right products for you. First — do you have any **travel plans or large expenses** coming up in the next 12 months?"
         }])
-        setTimeout(() => setChipSelections(prev => ({ ...prev, 6: 1 })), 2000)
         break
         
       case "question2":
@@ -903,7 +849,6 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
           type: "bot",
           text: "Got it. And how often do you think you'd need to **access or withdraw** from these savings?"
         }])
-        setTimeout(() => setChipSelections(prev => ({ ...prev, 7: 1 })), 2000)
         break
         
       case "question3":
@@ -912,7 +857,6 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
           type: "bot",
           text: "Last one — how would you describe your attitude to **investment risk**?"
         }])
-        setTimeout(() => setChipSelections(prev => ({ ...prev, 8: 0 })), 2000)
         break
         
       case "profileSummary":
@@ -921,7 +865,6 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
           type: "bot",
           text: "Perfect, thanks Jes. Here's what I've built for your profile:"
         }])
-        setTimeout(() => setChipSelections(prev => ({ ...prev, 9: 0 })), 2000)
         break
         
       case "allocation":
@@ -938,11 +881,6 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
           type: "bot",
           text: "Running your compliance checks now…"
         }])
-        // Stagger compliance checks
-        setComplianceCount(0)
-        for (let i = 1; i <= 6; i++) {
-          setTimeout(() => setComplianceCount(i), i * 300)
-        }
         break
         
       case "identityConfirmed":
@@ -959,6 +897,7 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
           type: "bot",
           text: "Here's your final plan before we confirm:"
         }])
+        setPendingUserReply("Looks great — confirm my plan.")
         break
         
       case "userConfirm":
@@ -967,6 +906,7 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
           type: "user",
           text: "Looks great — confirm my plan."
         }])
+        setPendingUserReply(null)
         break
         
       case "success":
@@ -977,19 +917,69 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
         }])
         break
     }
+    
+    setTimeout(scrollToBottom, 100)
+  }
+  
+  // Handle tapping the lock screen notification
+  const handleTapNotification = () => {
+    setCurrentStep(1) // Move to Face ID step
+  }
+  
+  // Handle tapping to authenticate Face ID
+  const handleTapAuthenticate = () => {
+    setFaceIdAuthenticated(true)
+  }
+  
+  // Handle continuing after Face ID
+  const handleFaceIdContinue = () => {
+    setCurrentStep(2) // Move to chat
+    processStep(2)
+  }
+  
+  // Handle chip selection - advances to next step
+  const handleChipSelect = (stepId: number, index: number) => {
+    setChipSelections(prev => ({ ...prev, [stepId]: index }))
+    
+    // Add user reply based on selection
+    const chipOptions: Record<number, string[]> = {
+      5: ["Yes, within 6 months", "Maybe, 6–12 months", "No plans"],
+      6: ["Regularly (monthly)", "Occasionally", "Rarely / lock it away"],
+      7: ["Play it safe", "Balanced approach", "Happy to take risks"],
+      8: ["Yes, that's me ✓", "Not quite"],
+    }
+    
+    const options = chipOptions[stepId]
+    if (options && options[index]) {
+      setChatMessages(prev => [...prev, {
+        id: prev.length + 1,
+        type: "user",
+        text: options[index]
+      }])
+    }
+    
+    // Advance to next step
+    setTimeout(() => {
+      const nextStep = currentStep + 1
+      setCurrentStep(nextStep)
+      processStep(nextStep)
+    }, 300)
+  }
+  
+  // Handle tapping user reply chip
+  const handleTapUserReply = () => {
+    const nextStep = currentStep + 1
+    setCurrentStep(nextStep)
+    processStep(nextStep)
   }
   
   // Navigate to Fixed Saver product detail
   const handleTapFixedSaver = () => {
-    if (timerRef.current) clearTimeout(timerRef.current)
-    setIsOnProductDetail(true)
     setCurrentProductView("fixedSaver")
   }
   
   // Navigate to ISA product detail
   const handleTapISA = () => {
-    if (timerRef.current) clearTimeout(timerRef.current)
-    setIsOnProductDetail(true)
     setCurrentProductView("isa")
   }
   
@@ -1003,162 +993,113 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
       })
     }
     setCurrentProductView(null)
-    setIsOnProductDetail(false)
-    
-    // Check if both products have been visited
-    const updatedVisited = new Set(visitedProducts)
-    if (currentProductView) updatedVisited.add(currentProductView)
-    
-    if (updatedVisited.size >= 2) {
-      setShowContinueButton(true)
-    }
   }
   
-  // Continue to next step after viewing products
-  const handleContinue = () => {
-    if (timerRef.current) clearTimeout(timerRef.current)
-    setShowContinueButton(false)
-    setCurrentStep(prev => prev + 1)
-  }
-  
-  // Auto-advance logic
-  useEffect(() => {
-    if (isPaused) return
-    if (isOnProductDetail) return // Don't auto-advance while viewing product detail
-    if (currentStep >= totalSteps) return
-    
-    const s = demoSteps[currentStep]
-    const isBotMessage = s.phase === "chat" && s.action !== "userReply1" && s.action !== "userConfirm" && s.action !== "tapProduct"
-    
-    // Special handling for allocation step (Step 10) - auto-explore products
-    if (s.action === "allocation") {
-      setIsTyping(true)
-      timerRef.current = setTimeout(() => {
-        setIsTyping(false)
-        processStep(currentStep)
-        
-        // Start automated product exploration sequence
-        timerRef.current = setTimeout(() => {
-          // Visit Fixed Saver first
-          handleTapFixedSaver()
-          
-          // Return after 3 seconds
-          timerRef.current = setTimeout(() => {
-            handleReturnFromProduct()
-            
-            // Visit ISA after returning
-            timerRef.current = setTimeout(() => {
-              handleTapISA()
-              
-              // Return after 3 seconds
-              timerRef.current = setTimeout(() => {
-                handleReturnFromProduct()
-                
-                // Show continue button and auto-tap after 1.5 seconds
-                timerRef.current = setTimeout(() => {
-                  handleContinue()
-                }, 1500)
-              }, 3000)
-            }, 500)
-          }, 3000)
-        }, 2000)
-      }, 1200)
-      return
-    }
-    
-    // Show typing indicator for bot messages
-    if (isBotMessage && currentStep > 3) {
-      setIsTyping(true)
-      timerRef.current = setTimeout(() => {
-        setIsTyping(false)
-        processStep(currentStep)
-        
-        // Schedule next step
-        timerRef.current = setTimeout(() => {
-          setCurrentStep(prev => prev + 1)
-        }, 4000)
-      }, 1200)
-    } else {
-      processStep(currentStep)
-      
-      // Schedule next step
-      timerRef.current = setTimeout(() => {
-        setCurrentStep(prev => prev + 1)
-      }, 4000)
-    }
-    
-    return () => {
-      if (timerRef.current) clearTimeout(timerRef.current)
-    }
-  }, [currentStep, isPaused, totalSteps, isOnProductDetail])
-  
-  // Start demo
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      processStep(0)
-    }, 1000)
-    return () => clearTimeout(timer)
-  }, [])
-  
-  const handlePrev = () => {
-    if (timerRef.current) clearTimeout(timerRef.current)
-    setIsTyping(false)
-    const newStep = Math.max(0, currentStep - 1)
-    setCurrentStep(newStep)
-    // Reset state for earlier steps
-    if (newStep <= 3) {
-      setChatMessages([])
-      setChipSelections({})
-      setComplianceCount(0)
-    }
-    if (newStep === 0) {
-      setShowNotification(false)
-      setFaceIdAuthenticated(false)
-      setTimeout(() => setShowNotification(true), 1000)
-    }
-  }
-  
+  // Handle Next button
   const handleNext = () => {
-    if (timerRef.current) clearTimeout(timerRef.current)
-    setIsTyping(false)
     if (currentStep < totalSteps - 1) {
-      setCurrentStep(prev => prev + 1)
+      const nextStep = currentStep + 1
+      setCurrentStep(nextStep)
+      processStep(nextStep)
     }
   }
   
-  const handlePauseResume = () => {
-    if (isPaused) {
-      setIsPaused(false)
-    } else {
-      if (timerRef.current) clearTimeout(timerRef.current)
-      setIsTyping(false)
-      setIsPaused(true)
-    }
-  }
-  
+  // Handle replay
   const handleReplay = () => {
-    if (timerRef.current) clearTimeout(timerRef.current)
     setCurrentStep(0)
-    setIsPaused(false)
-    setIsTyping(false)
-    setShowNotification(false)
+    setShowNotification(true)
     setFaceIdAuthenticated(false)
-    setShowFlash(false)
     setChatMessages([])
     setChipSelections({})
-    setComplianceCount(0)
-    setProductPulse(false)
     setVisitedProducts(new Set())
     setCurrentProductView(null)
-    setShowContinueButton(false)
-    setIsOnProductDetail(false)
-    
-    setTimeout(() => {
-      setShowNotification(true)
-    }, 1000)
+    setPendingUserReply(null)
   }
   
   const isComplete = currentStep >= totalSteps - 1
+  
+  // Handle Prev button - rebuild state from beginning to target step
+  const handlePrev = () => {
+    if (currentStep > 0) {
+      const targetStep = currentStep - 1
+      
+      // Reset all state
+      setShowNotification(targetStep >= 0)
+      setFaceIdAuthenticated(targetStep >= 1)
+      setChatMessages([])
+      setChipSelections({})
+      setPendingUserReply(null)
+      setCurrentProductView(null)
+      
+      // Rebuild state by processing all steps up to target
+      const rebuildState = () => {
+        const newMessages: Array<{id: number; type: "bot" | "user"; text: string}> = []
+        const newChipSelections: Record<number, number> = {}
+        
+        for (let i = 2; i <= targetStep; i++) {
+          const step = demoSteps[i]
+          if (!step) continue
+          
+          switch (step.action) {
+            case "greeting":
+              newMessages.push({ id: newMessages.length + 1, type: "bot", text: "Hi Jes! 👋 I noticed you have £10,000 sitting in your current account. Would you like me to show you some smarter options for that money?" })
+              break
+            case "userReply1":
+              newMessages.push({ id: newMessages.length + 1, type: "user", text: "Sure, show me." })
+              break
+            case "question1":
+              newMessages.push({ id: newMessages.length + 1, type: "bot", text: "Great! Let me ask a few quick questions to tailor the best options for you. First: Do you expect to need this money in the next 12 months?" })
+              break
+            case "question2":
+              newMessages.push({ id: newMessages.length + 1, type: "user", text: "Maybe, 6–12 months" })
+              newChipSelections[5] = 1
+              newMessages.push({ id: newMessages.length + 1, type: "bot", text: "Got it. How often do you typically dip into your savings?" })
+              break
+            case "question3":
+              newMessages.push({ id: newMessages.length + 1, type: "user", text: "Occasionally" })
+              newChipSelections[6] = 1
+              newMessages.push({ id: newMessages.length + 1, type: "bot", text: "And what's your comfort level with investment risk?" })
+              break
+            case "profileSummary":
+              newMessages.push({ id: newMessages.length + 1, type: "user", text: "Balanced approach" })
+              newChipSelections[7] = 1
+              newMessages.push({ id: newMessages.length + 1, type: "bot", text: "Based on your answers, here's your profile. Does this sound like you?" })
+              break
+            case "allocation":
+              newMessages.push({ id: newMessages.length + 1, type: "user", text: "Yes, that's me ✓" })
+              newChipSelections[8] = 0
+              newMessages.push({ id: newMessages.length + 1, type: "bot", text: "Based on your profile, here's how I'd suggest allocating your £10,000:" })
+              break
+            case "compliance":
+              newMessages.push({ id: newMessages.length + 1, type: "bot", text: "Running your compliance checks now…" })
+              break
+            case "identityConfirmed":
+              newMessages.push({ id: newMessages.length + 1, type: "bot", text: "🔒 Identity already verified via Face ID earlier. All checks passed." })
+              break
+            case "planSummary":
+              newMessages.push({ id: newMessages.length + 1, type: "bot", text: "Here's your final plan before we confirm:" })
+              break
+            case "userConfirm":
+              newMessages.push({ id: newMessages.length + 1, type: "user", text: "Looks great — confirm my plan." })
+              break
+            case "success":
+              newMessages.push({ id: newMessages.length + 1, type: "bot", text: "🎉 Done, Jes! Your savings plan is now active. Your £10,000 is officially working for you. I'll check in with you in 30 days. Great choice!" })
+              break
+          }
+        }
+        
+        setChatMessages(newMessages)
+        setChipSelections(newChipSelections)
+      }
+      
+      rebuildState()
+      setCurrentStep(targetStep)
+    }
+  }
+  
+  // Determine disabled states for nav buttons
+  const isPrevDisabled = currentStep === 0
+  const isNextDisabled = currentStep >= totalSteps - 1
   
   // Render phone content based on phase
   const renderContent = () => {
@@ -1166,22 +1107,21 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
       case "lockscreen":
         return (
           <PhoneShell phase={phase} isLockScreen>
-            <LockScreen showNotification={showNotification} />
-            {showFlash && (
-              <motion.div
-                className="absolute inset-0 bg-white"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: [0, 0.8, 0] }}
-                transition={{ duration: 0.15 }}
-              />
-            )}
+            <LockScreen 
+              showNotification={showNotification} 
+              onTapNotification={handleTapNotification}
+            />
           </PhoneShell>
         )
         
       case "faceid":
         return (
           <PhoneShell phase={phase}>
-            <FaceIDScreen isAuthenticated={faceIdAuthenticated} />
+            <FaceIDScreen 
+              isAuthenticated={faceIdAuthenticated} 
+              onTapAuthenticate={handleTapAuthenticate}
+              onContinue={handleFaceIdContinue}
+            />
           </PhoneShell>
         )
         
@@ -1195,10 +1135,7 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
               className="h-full"
             >
-              <FixedSaverDetailScreen 
-                onReturn={handleReturnFromProduct} 
-                showPulse={productPulse}
-              />
+              <FixedSaverDetailScreen onReturn={handleReturnFromProduct} />
             </motion.div>
           </PhoneShell>
         )
@@ -1213,10 +1150,7 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
               className="h-full"
             >
-              <ISADetailScreen 
-                onReturn={handleReturnFromProduct} 
-                showPulse={productPulse}
-              />
+              <ISADetailScreen onReturn={handleReturnFromProduct} />
             </motion.div>
           </PhoneShell>
         )
@@ -1234,10 +1168,13 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
                   if (msg.type === "bot" && msg.text?.includes("travel plans")) {
                     return (
                       <ChatMessage key={msg.id} type="bot" text={msg.text} isNew={isLast}>
-                        <ReplyChips 
-                          options={["Yes, within 6 months", "Maybe, 6–12 months", "No plans"]}
-                          selectedIndex={chipSelections[6] ?? null}
-                        />
+                        {chipSelections[5] === undefined && (
+                          <ReplyChips 
+                            options={["Yes, within 6 months", "Maybe, 6–12 months", "No plans"]}
+                            selectedIndex={chipSelections[5] ?? null}
+                            onSelect={(idx) => handleChipSelect(5, idx)}
+                          />
+                        )}
                       </ChatMessage>
                     )
                   }
@@ -1245,10 +1182,13 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
                   if (msg.type === "bot" && msg.text?.includes("access or withdraw")) {
                     return (
                       <ChatMessage key={msg.id} type="bot" text={msg.text} isNew={isLast}>
-                        <ReplyChips 
-                          options={["Regularly (monthly)", "Occasionally", "Rarely / lock it away"]}
-                          selectedIndex={chipSelections[7] ?? null}
-                        />
+                        {chipSelections[6] === undefined && (
+                          <ReplyChips 
+                            options={["Regularly (monthly)", "Occasionally", "Rarely / lock it away"]}
+                            selectedIndex={chipSelections[6] ?? null}
+                            onSelect={(idx) => handleChipSelect(6, idx)}
+                          />
+                        )}
                       </ChatMessage>
                     )
                   }
@@ -1256,10 +1196,13 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
                   if (msg.type === "bot" && msg.text?.includes("investment risk")) {
                     return (
                       <ChatMessage key={msg.id} type="bot" text={msg.text} isNew={isLast}>
-                        <ReplyChips 
-                          options={["Play it safe", "Balanced approach", "Happy to take risks"]}
-                          selectedIndex={chipSelections[8] ?? null}
-                        />
+                        {chipSelections[7] === undefined && (
+                          <ReplyChips 
+                            options={["Play it safe", "Balanced approach", "Happy to take risks"]}
+                            selectedIndex={chipSelections[7] ?? null}
+                            onSelect={(idx) => handleChipSelect(7, idx)}
+                          />
+                        )}
                       </ChatMessage>
                     )
                   }
@@ -1271,10 +1214,13 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
                         <div className="text-sm text-gray-800 mt-2 bg-gray-100 rounded-2xl rounded-bl-none px-3 py-2 inline-block">
                           Does this look right to you?
                         </div>
-                        <ReplyChips 
-                          options={["Yes, that's me ✓", "Not quite"]}
-                          selectedIndex={chipSelections[9] ?? null}
-                        />
+                        {chipSelections[8] === undefined && (
+                          <ReplyChips 
+                            options={["Yes, that's me ✓", "Not quite"]}
+                            selectedIndex={chipSelections[8] ?? null}
+                            onSelect={(idx) => handleChipSelect(8, idx)}
+                          />
+                        )}
                       </ChatMessage>
                     )
                   }
@@ -1288,23 +1234,6 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
                           onTapISA={handleTapISA}
                           visitedProducts={visitedProducts}
                         />
-                        {/* Continue button - appears when both products visited */}
-                        {showContinueButton && (
-                          <motion.div
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="mt-3"
-                          >
-                            <motion.button
-                              onClick={handleContinue}
-                              className="w-full py-2 px-4 bg-[#DB0011] text-white rounded-xl text-sm font-medium hover:bg-[#b8000e] transition-colors flex items-center justify-center gap-1"
-                              animate={{ scale: [1, 1.02, 1] }}
-                              transition={{ duration: 1.5, repeat: Infinity }}
-                            >
-                              Continue →
-                            </motion.button>
-                          </motion.div>
-                        )}
                       </ChatMessage>
                     )
                   }
@@ -1312,7 +1241,7 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
                   if (msg.type === "bot" && msg.text?.includes("compliance checks")) {
                     return (
                       <ChatMessage key={msg.id} type="bot" text={msg.text} isNew={isLast}>
-                        <ComplianceCardNew visibleCount={complianceCount} />
+                        <ComplianceCardNew />
                       </ChatMessage>
                     )
                   }
@@ -1338,7 +1267,11 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
                   )
                 })}
               </AnimatePresence>
-              {isTyping && <TypingIndicator />}
+              
+              {/* Pending user reply chip */}
+              {pendingUserReply && (
+                <UserReplyChip text={pendingUserReply} onTap={handleTapUserReply} />
+              )}
             </div>
           </PhoneShell>
         )
@@ -1353,55 +1286,42 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
       <div className="flex flex-col items-center">
         {renderContent()}
         
-        {/* Navigation controls */}
-        <div className="mt-6 flex items-center gap-3 relative z-50">
+        {/* Navigation bar - always visible */}
+        <div className="mt-4 flex items-center justify-between gap-4 w-[280px] relative z-50">
+          {/* Prev button */}
           <Button
             type="button"
             onClick={handlePrev}
             variant="outline"
             size="sm"
-            className="rounded-full px-3 bg-white"
-            disabled={currentStep === 0}
+            className={`rounded-full px-3 bg-white ${isPrevDisabled ? "opacity-50 pointer-events-none" : ""}`}
+            disabled={isPrevDisabled}
           >
-            <ChevronLeft className="w-4 h-4" />
+            <ChevronLeft className="w-4 h-4 mr-1" />
+            Prev
           </Button>
           
-          <span className="text-sm text-muted-foreground min-w-[50px] text-center">
+          {/* Step counter */}
+          <span className="text-sm text-muted-foreground">
             {currentStep + 1} / {totalSteps}
           </span>
           
+          {/* Next button */}
           <Button
             type="button"
             onClick={handleNext}
-            variant="outline"
             size="sm"
-            className="rounded-full px-3 bg-white"
-            disabled={currentStep >= totalSteps - 1}
+            className={`rounded-full px-3 bg-[#DB0011] text-white hover:bg-[#b8000e] ${isNextDisabled ? "opacity-50 pointer-events-none" : ""}`}
+            disabled={isNextDisabled}
           >
-            <ChevronRight className="w-4 h-4" />
+            Next
+            <ChevronRight className="w-4 h-4 ml-1" />
           </Button>
-          
-          <Button
-            type="button"
-            onClick={handlePauseResume}
-            variant="outline"
-            size="sm"
-            className="rounded-full px-4 bg-white"
-          >
-            {isPaused || isOnProductDetail ? (
-              <>
-                <Play className="w-4 h-4 mr-1" />
-                {isOnProductDetail ? "Paused" : "Play"}
-              </>
-            ) : (
-              <>
-                <Pause className="w-4 h-4 mr-1" />
-                Pause
-              </>
-            )}
-          </Button>
-          
-          {isComplete && (
+        </div>
+        
+        {/* Replay button - only on final step */}
+        {isComplete && (
+          <div className="mt-3">
             <Button
               type="button"
               onClick={handleReplay}
@@ -1412,8 +1332,8 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
               <Play className="w-4 h-4 mr-1" />
               Replay
             </Button>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     )
   }
@@ -1444,55 +1364,42 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
         >
           {renderContent()}
           
-          {/* Navigation controls */}
-          <div className="mt-6 flex items-center gap-3">
+          {/* Navigation bar - always visible */}
+          <div className="mt-4 flex items-center justify-between gap-4 w-[280px]">
+            {/* Prev button */}
             <Button
               type="button"
               onClick={handlePrev}
               variant="outline"
               size="sm"
-              className="rounded-full px-3"
-              disabled={currentStep === 0}
+              className={`rounded-full px-3 ${isPrevDisabled ? "opacity-50 pointer-events-none" : ""}`}
+              disabled={isPrevDisabled}
             >
-              <ChevronLeft className="w-4 h-4" />
+              <ChevronLeft className="w-4 h-4 mr-1" />
+              Prev
             </Button>
             
-            <span className="text-sm text-muted-foreground min-w-[50px] text-center">
+            {/* Step counter */}
+            <span className="text-sm text-muted-foreground">
               {currentStep + 1} / {totalSteps}
             </span>
             
+            {/* Next button */}
             <Button
               type="button"
               onClick={handleNext}
-              variant="outline"
               size="sm"
-              className="rounded-full px-3"
-              disabled={currentStep >= totalSteps - 1}
+              className={`rounded-full px-3 bg-[#DB0011] text-white hover:bg-[#b8000e] ${isNextDisabled ? "opacity-50 pointer-events-none" : ""}`}
+              disabled={isNextDisabled}
             >
-              <ChevronRight className="w-4 h-4" />
+              Next
+              <ChevronRight className="w-4 h-4 ml-1" />
             </Button>
-            
-            <Button
-              type="button"
-              onClick={handlePauseResume}
-              variant="outline"
-              size="sm"
-              className="rounded-full px-4"
-            >
-              {isPaused || isOnProductDetail ? (
-                <>
-                  <Play className="w-4 h-4 mr-1" />
-                  {isOnProductDetail ? "Paused" : "Play"}
-                </>
-              ) : (
-                <>
-                  <Pause className="w-4 h-4 mr-1" />
-                  Pause
-                </>
-              )}
-            </Button>
-            
-            {isComplete && (
+          </div>
+          
+          {/* Replay button - only on final step */}
+          {isComplete && (
+            <div className="mt-3">
               <Button
                 type="button"
                 onClick={handleReplay}
@@ -1503,8 +1410,8 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
                 <Play className="w-4 h-4 mr-1" />
                 Replay
               </Button>
-            )}
-          </div>
+            </div>
+          )}
         </motion.div>
       </div>
     </section>

@@ -112,8 +112,8 @@ export function ProblemSection() {
         >
           <div className="inline-block px-8 py-6 rounded-2xl bg-primary/5 border border-primary/20">
 <p className="text-xl md:text-2xl font-bold text-foreground tracking-tight font-[family-name:var(--font-display)]">
-            &quot;If you don&apos;t guide your customers&apos; money,{" "}
-            <span className="text-primary">someone else will.</span>&quot;
+            {"\u201C"}If you don&apos;t guide your customers&apos; money,{" "}
+            <span className="text-primary">someone else will.</span>{"\u201D"}
             </p>
           </div>
         </motion.div>
