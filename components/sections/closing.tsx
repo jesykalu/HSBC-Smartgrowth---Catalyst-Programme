@@ -50,8 +50,6 @@ export function ClosingSection() {
             <p className="text-sm text-muted-foreground mb-2">Presented by</p>
             <div className="flex items-center justify-center gap-3">
               <span className="text-xl font-bold text-primary tracking-tight font-[family-name:var(--font-display)]">Accenture</span>
-              <span className="text-muted-foreground">×</span>
-              <span className="text-xl font-bold text-[#DB0011] tracking-tight font-[family-name:var(--font-display)]">HSBC</span>
             </div>
           </motion.div>
         </motion.div>
