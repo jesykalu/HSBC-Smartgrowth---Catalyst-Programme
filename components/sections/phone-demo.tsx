@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useRef } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 import { Check, PiggyBank, TrendingUp, ChevronRight, ChevronLeft, Play, MessageCircle, ArrowLeft, Calendar, Coins, Lock, Shield, FileText, Users, Sparkles, CreditCard, Plane, BarChart3, ArrowUpDown, ShoppingBag, Wallet } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
@@ -691,10 +691,9 @@ function PhoneShell({
             
             {/* Content area */}
             <div className={`overflow-hidden bg-gray-50 ${
-              phase === "faceid" ? `h-[calc(100%-${isXLarge ? "5rem" : isLarge ? "4rem" : "3.5rem"})]` : 
-              phase === "productDetail_fixedSaver" ? `h-[calc(100%-${isXLarge ? "5rem" : isLarge ? "4rem" : "3.5rem"})]` :
-              phase === "productDetail_isa" ? `h-[calc(100%-${isXLarge ? "5rem" : isLarge ? "4rem" : "3.5rem"})]` :
-              `h-[calc(100%-${isXLarge ? "10rem" : isLarge ? "8rem" : "7rem"})]`
+              phase === "faceid" || phase === "productDetail_fixedSaver" || phase === "productDetail_isa"
+                ? (isXLarge ? "h-[calc(100%-5rem)]" : isLarge ? "h-[calc(100%-4rem)]" : "h-[calc(100%-3.5rem)]")
+                : (isXLarge ? "h-[calc(100%-10rem)]" : isLarge ? "h-[calc(100%-8rem)]" : "h-[calc(100%-7rem)]")
             }`}>
               {children}
             </div>
@@ -1066,8 +1065,8 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
       case "done":
         return (
           <PhoneShell phase={phase} isLarge={isLarge} isXLarge={isXLarge}>
-            <div key={`step-${currentStep}`} ref={scrollRef} className="h-full overflow-y-auto py-3">
-              <AnimatePresence mode="popLayout">
+            <div ref={scrollRef} className="h-full overflow-y-auto py-3">
+              <>
                 {computedMessages.map((msg, index) => {
                   const isLast = index === computedMessages.length - 1
                   
@@ -1181,7 +1180,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
                     <ChatMessage key={msg.id} type={msg.type} text={msg.text} isNew={isLast} />
                   )
                 })}
-              </AnimatePresence>
+              </>
             </div>
           </PhoneShell>
         )
@@ -1203,7 +1202,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
           {/* Prev button */}
           <button
             type="button"
-            onClick={() => setCurrentStep(prev => Math.max(prev - 1, 0))}
+            onClick={handlePrev}
             disabled={isPrevDisabled}
             className={`rounded-full px-4 py-2 text-sm font-medium border bg-white shadow-sm transition-all ${
               isPrevDisabled ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-50 cursor-pointer"
@@ -1223,7 +1222,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
           {/* Next button */}
           <button
             type="button"
-            onClick={() => setCurrentStep(prev => Math.min(prev + 1, totalSteps - 1))}
+            onClick={handleNext}
             disabled={isNextDisabled}
             className={`rounded-full px-4 py-2 text-sm font-medium bg-[#DB0011] text-white shadow-sm transition-all ${
               isNextDisabled ? "opacity-50 cursor-not-allowed" : "hover:bg-[#b8000e] cursor-pointer"
