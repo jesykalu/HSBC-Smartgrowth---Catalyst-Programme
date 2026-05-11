@@ -651,27 +651,31 @@ function PhoneShell({
   phase, 
   children,
   isLockScreen = false,
-  isLarge = false
+  isLarge = false,
+  isXLarge = false
 }: { 
   phase: Phase
   children: React.ReactNode
   isLockScreen?: boolean
   isLarge?: boolean
+  isXLarge?: boolean
 }) {
   // Dimension classes based on scale
-  const dimensions = isLarge 
-    ? "w-[340px] h-[720px]" 
-    : "w-[280px] h-[600px]"
-  const outerRadius = isLarge ? "rounded-[3.6rem]" : "rounded-[3.2rem]"
-  const innerRadius1 = isLarge ? "rounded-[3.5rem]" : "rounded-[3.1rem]"
-  const innerRadius2 = isLarge ? "rounded-[3.4rem]" : "rounded-[3rem]"
-  const screenRadius = isLarge ? "rounded-[3.2rem]" : "rounded-[2.8rem]"
-  const statusBarHeight = isLarge ? "h-16" : "h-14"
-  const headerHeight = isLarge ? "h-16" : "h-14"
-  const dynamicIslandWidth = isLarge ? "w-[120px] h-[38px]" : "w-[100px] h-[32px]"
-  const timeTextSize = isLarge ? "text-sm" : "text-xs"
-  const hsbcTextSize = isLarge ? "text-xl" : "text-lg"
-  const homeIndicatorWidth = isLarge ? "w-36" : "w-32"
+  const dimensions = isXLarge 
+    ? "w-[400px] h-[860px]" 
+    : isLarge 
+      ? "w-[340px] h-[720px]" 
+      : "w-[280px] h-[600px]"
+  const outerRadius = isXLarge ? "rounded-[4rem]" : isLarge ? "rounded-[3.6rem]" : "rounded-[3.2rem]"
+  const innerRadius1 = isXLarge ? "rounded-[3.9rem]" : isLarge ? "rounded-[3.5rem]" : "rounded-[3.1rem]"
+  const innerRadius2 = isXLarge ? "rounded-[3.8rem]" : isLarge ? "rounded-[3.4rem]" : "rounded-[3rem]"
+  const screenRadius = isXLarge ? "rounded-[3.6rem]" : isLarge ? "rounded-[3.2rem]" : "rounded-[2.8rem]"
+  const statusBarHeight = isXLarge ? "h-20" : isLarge ? "h-16" : "h-14"
+  const headerHeight = isXLarge ? "h-20" : isLarge ? "h-16" : "h-14"
+  const dynamicIslandWidth = isXLarge ? "w-[140px] h-[44px]" : isLarge ? "w-[120px] h-[38px]" : "w-[100px] h-[32px]"
+  const timeTextSize = isXLarge ? "text-base" : isLarge ? "text-sm" : "text-xs"
+  const hsbcTextSize = isXLarge ? "text-2xl" : isLarge ? "text-xl" : "text-lg"
+  const homeIndicatorWidth = isXLarge ? "w-40" : isLarge ? "w-36" : "w-32"
   
   return (
     <div className={`relative mx-auto ${dimensions}`}>
@@ -688,27 +692,27 @@ function PhoneShell({
         ) : (
           <>
             {/* Status bar with Dynamic Island */}
-            <div className={`${statusBarHeight} bg-white relative flex items-end justify-between px-8 pb-1`}>
-              <div className={`absolute top-3 left-1/2 -translate-x-1/2 ${dynamicIslandWidth} bg-black rounded-full flex items-center justify-center`}>
-                <div className={`absolute left-4 ${isLarge ? "w-[12px] h-[12px]" : "w-[10px] h-[10px]"} rounded-full bg-[#1c1c1e] border border-[#2c2c2e]`}>
+            <div className={`${statusBarHeight} bg-white relative flex items-end justify-between ${isXLarge ? "px-10" : "px-8"} pb-1`}>
+              <div className={`absolute ${isXLarge ? "top-4" : "top-3"} left-1/2 -translate-x-1/2 ${dynamicIslandWidth} bg-black rounded-full flex items-center justify-center`}>
+                <div className={`absolute left-4 ${isXLarge ? "w-[14px] h-[14px]" : isLarge ? "w-[12px] h-[12px]" : "w-[10px] h-[10px]"} rounded-full bg-[#1c1c1e] border border-[#2c2c2e]`}>
                   <div className="absolute inset-[2px] rounded-full bg-gradient-to-br from-[#3a3a3c] to-[#1c1c1e]" />
                 </div>
-                <div className={`absolute right-6 ${isLarge ? "w-[7px] h-[7px]" : "w-[6px] h-[6px]"} rounded-full bg-[#2c2c2e]`} />
+                <div className={`absolute right-6 ${isXLarge ? "w-[8px] h-[8px]" : isLarge ? "w-[7px] h-[7px]" : "w-[6px] h-[6px]"} rounded-full bg-[#2c2c2e]`} />
               </div>
               <span className={`${timeTextSize} font-semibold text-gray-900`}>9:41</span>
               <div className="flex items-center gap-1">
-                <div className={`flex items-end gap-[2px] ${isLarge ? "h-4" : "h-3"}`}>
-                  <div className={`${isLarge ? "w-[4px] h-[5px]" : "w-[3px] h-[4px]"} bg-gray-900 rounded-sm`} />
-                  <div className={`${isLarge ? "w-[4px] h-[7px]" : "w-[3px] h-[6px]"} bg-gray-900 rounded-sm`} />
-                  <div className={`${isLarge ? "w-[4px] h-[10px]" : "w-[3px] h-[8px]"} bg-gray-900 rounded-sm`} />
-                  <div className={`${isLarge ? "w-[4px] h-[12px]" : "w-[3px] h-[10px]"} bg-gray-900 rounded-sm`} />
+                <div className={`flex items-end gap-[2px] ${isXLarge ? "h-5" : isLarge ? "h-4" : "h-3"}`}>
+                  <div className={`${isXLarge ? "w-[5px] h-[6px]" : isLarge ? "w-[4px] h-[5px]" : "w-[3px] h-[4px]"} bg-gray-900 rounded-sm`} />
+                  <div className={`${isXLarge ? "w-[5px] h-[9px]" : isLarge ? "w-[4px] h-[7px]" : "w-[3px] h-[6px]"} bg-gray-900 rounded-sm`} />
+                  <div className={`${isXLarge ? "w-[5px] h-[12px]" : isLarge ? "w-[4px] h-[10px]" : "w-[3px] h-[8px]"} bg-gray-900 rounded-sm`} />
+                  <div className={`${isXLarge ? "w-[5px] h-[15px]" : isLarge ? "w-[4px] h-[12px]" : "w-[3px] h-[10px]"} bg-gray-900 rounded-sm`} />
                 </div>
-                <svg className={`${isLarge ? "w-5 h-5" : "w-4 h-4"} text-gray-900`} viewBox="0 0 24 24" fill="currentColor">
+                <svg className={`${isXLarge ? "w-6 h-6" : isLarge ? "w-5 h-5" : "w-4 h-4"} text-gray-900`} viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12 18c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm-4.9-2.3l1.4 1.4C9.4 16.4 10.6 16 12 16s2.6.4 3.5 1.1l1.4-1.4C15.4 14.6 13.8 14 12 14s-3.4.6-4.9 1.7zm-2.8-2.8l1.4 1.4C7.2 13.1 9.5 12 12 12s4.8 1.1 6.3 2.3l1.4-1.4C17.7 11.1 15 10 12 10s-5.7 1.1-7.7 2.9z"/>
                 </svg>
-                <div className={`${isLarge ? "w-7 h-4" : "w-6 h-3"} border border-gray-900 rounded-[3px] relative`}>
+                <div className={`${isXLarge ? "w-8 h-5" : isLarge ? "w-7 h-4" : "w-6 h-3"} border border-gray-900 rounded-[3px] relative`}>
                   <div className="absolute inset-[2px] right-[3px] bg-gray-900 rounded-[1px]" />
-                  <div className={`absolute -right-[3px] top-1/2 -translate-y-1/2 w-[2px] ${isLarge ? "h-[6px]" : "h-[5px]"} bg-gray-900 rounded-r-sm`} />
+                  <div className={`absolute -right-[3px] top-1/2 -translate-y-1/2 w-[2px] ${isXLarge ? "h-[7px]" : isLarge ? "h-[6px]" : "h-[5px]"} bg-gray-900 rounded-r-sm`} />
                 </div>
               </div>
             </div>
@@ -722,10 +726,10 @@ function PhoneShell({
             
             {/* Content area */}
             <div className={`overflow-hidden bg-gray-50 ${
-              phase === "faceid" ? `h-[calc(100%-${isLarge ? "4rem" : "3.5rem"})]` : 
-              phase === "productDetail_fixedSaver" ? `h-[calc(100%-${isLarge ? "4rem" : "3.5rem"})]` :
-              phase === "productDetail_isa" ? `h-[calc(100%-${isLarge ? "4rem" : "3.5rem"})]` :
-              `h-[calc(100%-${isLarge ? "8rem" : "7rem"})]`
+              phase === "faceid" ? `h-[calc(100%-${isXLarge ? "5rem" : isLarge ? "4rem" : "3.5rem"})]` : 
+              phase === "productDetail_fixedSaver" ? `h-[calc(100%-${isXLarge ? "5rem" : isLarge ? "4rem" : "3.5rem"})]` :
+              phase === "productDetail_isa" ? `h-[calc(100%-${isXLarge ? "5rem" : isLarge ? "4rem" : "3.5rem"})]` :
+              `h-[calc(100%-${isXLarge ? "10rem" : isLarge ? "8rem" : "7rem"})]`
             }`}>
               {children}
             </div>
@@ -739,10 +743,10 @@ function PhoneShell({
       </div>
       
       {/* Side buttons */}
-      <div className={`absolute right-0 ${isLarge ? "top-40" : "top-32"} w-[3px] ${isLarge ? "h-20" : "h-16"} bg-gradient-to-b from-[#636366] via-[#8e8e93] to-[#636366] rounded-r-sm`} />
-      <div className={`absolute left-0 ${isLarge ? "top-36" : "top-28"} w-[3px] ${isLarge ? "h-10" : "h-8"} bg-gradient-to-b from-[#636366] via-[#8e8e93] to-[#636366] rounded-l-sm`} />
-      <div className={`absolute left-0 ${isLarge ? "top-52" : "top-40"} w-[3px] ${isLarge ? "h-10" : "h-8"} bg-gradient-to-b from-[#636366] via-[#8e8e93] to-[#636366] rounded-l-sm`} />
-      <div className={`absolute left-0 ${isLarge ? "top-24" : "top-20"} w-[3px] ${isLarge ? "h-6" : "h-5"} bg-gradient-to-b from-[#636366] via-[#8e8e93] to-[#636366] rounded-l-sm`} />
+      <div className={`absolute right-0 ${isXLarge ? "top-48" : isLarge ? "top-40" : "top-32"} w-[3px] ${isXLarge ? "h-24" : isLarge ? "h-20" : "h-16"} bg-gradient-to-b from-[#636366] via-[#8e8e93] to-[#636366] rounded-r-sm`} />
+      <div className={`absolute left-0 ${isXLarge ? "top-44" : isLarge ? "top-36" : "top-28"} w-[3px] ${isXLarge ? "h-12" : isLarge ? "h-10" : "h-8"} bg-gradient-to-b from-[#636366] via-[#8e8e93] to-[#636366] rounded-l-sm`} />
+      <div className={`absolute left-0 ${isXLarge ? "top-64" : isLarge ? "top-52" : "top-40"} w-[3px] ${isXLarge ? "h-12" : isLarge ? "h-10" : "h-8"} bg-gradient-to-b from-[#636366] via-[#8e8e93] to-[#636366] rounded-l-sm`} />
+      <div className={`absolute left-0 ${isXLarge ? "top-28" : isLarge ? "top-24" : "top-20"} w-[3px] ${isXLarge ? "h-7" : isLarge ? "h-6" : "h-5"} bg-gradient-to-b from-[#636366] via-[#8e8e93] to-[#636366] rounded-l-sm`} />
     </div>
   )
 }
@@ -793,11 +797,12 @@ export function PhonePreview() {
 
 interface PhoneDemoSectionProps {
   heroMode?: boolean
-  scale?: "default" | "large"
+  scale?: "default" | "large" | "xlarge"
 }
 
 export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneDemoSectionProps) {
-  const isLarge = scale === "large"
+  const isLarge = scale === "large" || scale === "xlarge"
+  const isXLarge = scale === "xlarge"
   const [currentStep, setCurrentStep] = useState(0)
   const [showNotification, setShowNotification] = useState(true)
   const [faceIdAuthenticated, setFaceIdAuthenticated] = useState(false)
@@ -1125,7 +1130,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
     switch (phase) {
       case "lockscreen":
         return (
-          <PhoneShell phase={phase} isLockScreen isLarge={isLarge}>
+          <PhoneShell phase={phase} isLockScreen isLarge={isLarge} isXLarge={isXLarge}>
             <LockScreen 
               showNotification={showNotification} 
               onTapNotification={handleTapNotification}
@@ -1135,7 +1140,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
         
       case "faceid":
         return (
-          <PhoneShell phase={phase} isLarge={isLarge}>
+          <PhoneShell phase={phase} isLarge={isLarge} isXLarge={isXLarge}>
             <FaceIDScreen 
               isAuthenticated={faceIdAuthenticated} 
               onTapAuthenticate={handleTapAuthenticate}
@@ -1146,7 +1151,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
         
       case "productDetail_fixedSaver":
         return (
-          <PhoneShell phase={phase} isLarge={isLarge}>
+          <PhoneShell phase={phase} isLarge={isLarge} isXLarge={isXLarge}>
             <motion.div
               initial={{ x: 300, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
@@ -1161,7 +1166,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
         
       case "productDetail_isa":
         return (
-          <PhoneShell phase={phase} isLarge={isLarge}>
+          <PhoneShell phase={phase} isLarge={isLarge} isXLarge={isXLarge}>
             <motion.div
               initial={{ x: 300, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
@@ -1177,7 +1182,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
       case "chat":
       case "done":
         return (
-          <PhoneShell phase={phase} isLarge={isLarge}>
+          <PhoneShell phase={phase} isLarge={isLarge} isXLarge={isXLarge}>
             <div ref={scrollRef} className="h-full overflow-y-auto py-3">
               <AnimatePresence mode="popLayout">
                 {chatMessages.map((msg, index) => {
@@ -1296,12 +1301,12 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
         )
         
       default:
-        return <PhoneShell phase="chat" isLarge={isLarge}><div /></PhoneShell>
+        return <PhoneShell phase="chat" isLarge={isLarge} isXLarge={isXLarge}><div /></PhoneShell>
     }
   }
 
   if (heroMode) {
-    const navWidth = isLarge ? "w-[340px]" : "w-[280px]"
+    const navWidth = isXLarge ? "w-[400px]" : isLarge ? "w-[340px]" : "w-[280px]"
     return (
       <div className="flex flex-col items-center overflow-visible">
         {renderContent()}
