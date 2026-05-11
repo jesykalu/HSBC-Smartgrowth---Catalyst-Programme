@@ -140,20 +140,20 @@ function TypingIndicator() {
       <div className="w-8 h-8 rounded-full bg-[#DB0011] flex items-center justify-center flex-shrink-0">
         <span className="text-white text-xs font-bold">H</span>
       </div>
-      <div className="ml-2 bg-gray-100 rounded-2xl rounded-bl-none px-4 py-3">
+      <div className="ml-2 bg-[#3a3a3c] rounded-2xl rounded-bl-none px-4 py-3">
         <div className="flex items-center gap-1">
           <motion.div
-            className="w-2 h-2 bg-gray-400 rounded-full"
+            className="w-2 h-2 bg-gray-500 rounded-full"
             animate={{ y: [0, -4, 0] }}
             transition={{ duration: 0.6, repeat: Infinity, delay: 0 }}
           />
           <motion.div
-            className="w-2 h-2 bg-gray-400 rounded-full"
+            className="w-2 h-2 bg-gray-500 rounded-full"
             animate={{ y: [0, -4, 0] }}
             transition={{ duration: 0.6, repeat: Infinity, delay: 0.15 }}
           />
           <motion.div
-            className="w-2 h-2 bg-gray-400 rounded-full"
+            className="w-2 h-2 bg-gray-500 rounded-full"
             animate={{ y: [0, -4, 0] }}
             transition={{ duration: 0.6, repeat: Infinity, delay: 0.3 }}
           />
@@ -166,14 +166,14 @@ function TypingIndicator() {
 // Profile card component
 function ProfileCard() {
   return (
-    <div className="bg-white rounded-xl border border-gray-100 p-3 mt-2 space-y-2">
+    <div className="bg-[#48484a]/80 backdrop-blur-sm rounded-xl border border-white/10 p-3 mt-2 space-y-2">
       {[
-        { label: "Risk Appetite", value: "Low–Medium", color: "bg-blue-100 text-blue-700" },
-        { label: "Spending Behaviour", value: "Travel, Retail", color: "bg-purple-100 text-purple-700" },
-        { label: "Savings Pattern", value: "Strong Surplus", color: "bg-green-100 text-green-700" },
+        { label: "Risk Appetite", value: "Low–Medium", color: "bg-blue-500/20 text-blue-300" },
+        { label: "Spending Behaviour", value: "Travel, Retail", color: "bg-purple-500/20 text-purple-300" },
+        { label: "Savings Pattern", value: "Strong Surplus", color: "bg-green-500/20 text-green-300" },
       ].map((item) => (
         <div key={item.label} className="flex items-center justify-between">
-          <span className="text-xs text-gray-600">{item.label}</span>
+          <span className="text-xs text-gray-400">{item.label}</span>
           <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${item.color}`}>{item.value}</span>
         </div>
       ))}
@@ -184,20 +184,20 @@ function ProfileCard() {
 // Recommendations card component
 function RecommendationsCard() {
   return (
-    <div className="bg-white rounded-xl border border-gray-100 p-3 mt-2 space-y-2">
+    <div className="bg-[#48484a]/80 backdrop-blur-sm rounded-xl border border-white/10 p-3 mt-2 space-y-2">
       {[
         { name: "Fixed Saver", rate: "4.10% AER", icon: PiggyBank, recommended: false },
         { name: "Investment ISA", rate: "5–7% return", icon: TrendingUp, recommended: false },
         { name: "Smart Split Strategy", rate: "Optimised", icon: Sparkles, recommended: true },
       ].map((product) => (
-        <div key={product.name} className={`p-2 rounded-lg border ${product.recommended ? 'border-[#DB0011] bg-[#DB0011]/5' : 'border-gray-100'}`}>
+        <div key={product.name} className={`p-2 rounded-lg border ${product.recommended ? 'border-[#DB0011] bg-[#DB0011]/10' : 'border-white/5 bg-white/5'}`}>
           <div className="flex items-center gap-2">
-            <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${product.recommended ? 'bg-[#DB0011]/10' : 'bg-gray-100'}`}>
-              <product.icon className={`w-4 h-4 ${product.recommended ? 'text-[#DB0011]' : 'text-gray-600'}`} />
+            <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${product.recommended ? 'bg-[#DB0011]/20' : 'bg-white/10'}`}>
+              <product.icon className={`w-4 h-4 ${product.recommended ? 'text-[#DB0011]' : 'text-gray-400'}`} />
             </div>
             <div className="flex-1 min-w-0">
-              <div className="font-medium text-gray-900 text-sm">{product.name}</div>
-              <div className="text-xs text-gray-500">{product.rate}</div>
+              <div className="font-medium text-white text-sm">{product.name}</div>
+              <div className="text-xs text-gray-400">{product.rate}</div>
             </div>
             {product.recommended && (
               <span className="px-1.5 py-0.5 rounded-full bg-[#DB0011] text-white text-[10px] font-medium">Rec</span>
@@ -212,23 +212,23 @@ function RecommendationsCard() {
 // Allocation card component
 function AllocationCard() {
   return (
-    <div className="bg-white rounded-xl border border-gray-100 p-3 mt-2 space-y-3">
-      <div className="p-2 rounded-lg bg-blue-50">
+    <div className="bg-[#48484a]/80 backdrop-blur-sm rounded-xl border border-white/10 p-3 mt-2 space-y-3">
+      <div className="p-2 rounded-lg bg-blue-500/15">
         <div className="flex items-center justify-between mb-1">
-          <span className="font-medium text-blue-900 text-sm">Fixed Saver</span>
-          <span className="font-bold text-blue-700 text-sm">£6,000</span>
+          <span className="font-medium text-blue-300 text-sm">Fixed Saver</span>
+          <span className="font-bold text-blue-300 text-sm">£6,000</span>
         </div>
-        <div className="w-full h-1.5 bg-blue-200 rounded-full overflow-hidden">
-          <div className="h-full w-3/5 bg-blue-500 rounded-full" />
+        <div className="w-full h-1.5 bg-blue-500/30 rounded-full overflow-hidden">
+          <div className="h-full w-3/5 bg-blue-400 rounded-full" />
         </div>
       </div>
-      <div className="p-2 rounded-lg bg-green-50">
+      <div className="p-2 rounded-lg bg-green-500/15">
         <div className="flex items-center justify-between mb-1">
-          <span className="font-medium text-green-900 text-sm">Investment ISA</span>
-          <span className="font-bold text-green-700 text-sm">£4,000</span>
+          <span className="font-medium text-green-300 text-sm">Investment ISA</span>
+          <span className="font-bold text-green-300 text-sm">£4,000</span>
         </div>
-        <div className="w-full h-1.5 bg-green-200 rounded-full overflow-hidden">
-          <div className="h-full w-2/5 bg-green-500 rounded-full" />
+        <div className="w-full h-1.5 bg-green-500/30 rounded-full overflow-hidden">
+          <div className="h-full w-2/5 bg-green-400 rounded-full" />
         </div>
       </div>
     </div>
@@ -239,7 +239,7 @@ function AllocationCard() {
 function TermsCard() {
   return (
     <div className="mt-2">
-      <button className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 text-gray-700 rounded-full text-xs font-medium hover:bg-gray-200 transition-colors">
+      <button className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/10 text-gray-300 rounded-full text-xs font-medium hover:bg-white/20 transition-colors border border-white/10">
         <FileText className="w-3 h-3" />
         Download terms & info
       </button>
@@ -262,18 +262,18 @@ function ComplianceCard() {
   }, [visibleChecks, checks.length])
 
   return (
-    <div className="bg-white rounded-xl border border-gray-100 p-3 mt-2 space-y-1.5">
+    <div className="bg-[#48484a]/80 backdrop-blur-sm rounded-xl border border-white/10 p-3 mt-2 space-y-1.5">
       {checks.map((check, i) => (
         <motion.div
           key={check}
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: i < visibleChecks ? 1 : 0, x: i < visibleChecks ? 0 : -10 }}
-          className="flex items-center gap-2 p-1.5 bg-green-50 rounded-lg"
+          className="flex items-center gap-2 p-1.5 bg-green-500/15 rounded-lg"
         >
           <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
             <Check className="w-3 h-3 text-white" />
           </div>
-          <span className="text-gray-700 text-xs">{check}</span>
+          <span className="text-gray-300 text-xs">{check}</span>
         </motion.div>
       ))}
     </div>
@@ -283,16 +283,16 @@ function ComplianceCard() {
 // Summary card
 function SummaryCard() {
   return (
-    <div className="bg-white rounded-xl border border-gray-100 p-3 mt-2 space-y-2">
+    <div className="bg-[#48484a]/80 backdrop-blur-sm rounded-xl border border-white/10 p-3 mt-2 space-y-2">
       <div className="flex justify-between items-center text-sm">
-        <span className="text-gray-600">Fixed Saver</span>
-        <span className="font-medium">£6,000 @ 4.10% AER</span>
+        <span className="text-gray-400">Fixed Saver</span>
+        <span className="font-medium text-white">£6,000 @ 4.10% AER</span>
       </div>
       <div className="flex justify-between items-center text-sm">
-        <span className="text-gray-600">Investment ISA</span>
-        <span className="font-medium">£4,000 @ 5–7%</span>
+        <span className="text-gray-400">Investment ISA</span>
+        <span className="font-medium text-white">£4,000 @ 5–7%</span>
       </div>
-      <div className="pt-2 border-t border-gray-100">
+      <div className="pt-2 border-t border-white/10">
         <span className="text-xs text-gray-500">12-month fixed term</span>
       </div>
     </div>
@@ -312,7 +312,7 @@ function ChatBubble({ message, isNew }: { message: ChatMessage; isNew: boolean }
     >
       {/* Avatar */}
       <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 ${
-        isBot ? "bg-[#DB0011]" : "bg-gray-400"
+        isBot ? "bg-[#DB0011]" : "bg-gray-500"
       }`}>
         <span className="text-white text-[10px] font-bold">{isBot ? "H" : "J"}</span>
       </div>
@@ -321,11 +321,11 @@ function ChatBubble({ message, isNew }: { message: ChatMessage; isNew: boolean }
       <div className={`max-w-[75%] ${isBot ? "" : "text-right"}`}>
         <div className={`inline-block rounded-2xl px-3 py-2 ${
           isBot 
-            ? "bg-gray-100 rounded-bl-none text-left" 
+            ? "bg-[#3a3a3c] rounded-bl-none text-left" 
             : "bg-[#DB0011] text-white rounded-br-none"
         }`}>
           {message.text && (
-            <p className={`text-sm leading-relaxed ${isBot ? "text-gray-800" : "text-white"}`}>
+            <p className={`text-sm leading-relaxed ${isBot ? "text-gray-200" : "text-white"}`}>
               {renderText(message.text)}
             </p>
           )}
@@ -354,9 +354,9 @@ function PhoneMockup({ children }: { children: React.ReactNode }) {
       {/* Black bezel - ultra thin */}
       <div className="absolute inset-[4px] bg-black rounded-[3rem]" />
       {/* Screen */}
-      <div className="absolute inset-[6px] bg-white rounded-[2.8rem] overflow-hidden">
+      <div className="absolute inset-[6px] bg-gradient-to-b from-[#2c2c2e] via-[#1c1c1e] to-[#2c2c2e] rounded-[2.8rem] overflow-hidden">
         {/* Status bar with Dynamic Island */}
-        <div className="h-14 bg-white relative flex items-end justify-between px-8 pb-1">
+        <div className="h-14 bg-transparent relative flex items-end justify-between px-8 pb-1">
           {/* Dynamic Island */}
           <div className="absolute top-3 left-1/2 -translate-x-1/2 w-[100px] h-[32px] bg-black rounded-full flex items-center justify-center">
             {/* Camera lens */}
@@ -367,23 +367,23 @@ function PhoneMockup({ children }: { children: React.ReactNode }) {
             {/* Face ID sensor */}
             <div className="absolute right-6 w-[6px] h-[6px] rounded-full bg-[#2c2c2e]" />
           </div>
-          <span className="text-xs font-semibold text-gray-900">9:41</span>
+          <span className="text-xs font-semibold text-white">9:41</span>
           <div className="flex items-center gap-1">
             {/* Signal bars */}
             <div className="flex items-end gap-[2px] h-3">
-              <div className="w-[3px] h-[4px] bg-gray-900 rounded-sm" />
-              <div className="w-[3px] h-[6px] bg-gray-900 rounded-sm" />
-              <div className="w-[3px] h-[8px] bg-gray-900 rounded-sm" />
-              <div className="w-[3px] h-[10px] bg-gray-900 rounded-sm" />
+              <div className="w-[3px] h-[4px] bg-white rounded-sm" />
+              <div className="w-[3px] h-[6px] bg-white rounded-sm" />
+              <div className="w-[3px] h-[8px] bg-white rounded-sm" />
+              <div className="w-[3px] h-[10px] bg-white rounded-sm" />
             </div>
             {/* WiFi */}
-            <svg className="w-4 h-4 text-gray-900" viewBox="0 0 24 24" fill="currentColor">
+            <svg className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 18c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm-4.9-2.3l1.4 1.4C9.4 16.4 10.6 16 12 16s2.6.4 3.5 1.1l1.4-1.4C15.4 14.6 13.8 14 12 14s-3.4.6-4.9 1.7zm-2.8-2.8l1.4 1.4C7.2 13.1 9.5 12 12 12s4.8 1.1 6.3 2.3l1.4-1.4C17.7 11.1 15 10 12 10s-5.7 1.1-7.7 2.9z"/>
             </svg>
             {/* Battery */}
-            <div className="w-6 h-3 border border-gray-900 rounded-[3px] relative">
-              <div className="absolute inset-[2px] right-[3px] bg-gray-900 rounded-[1px]" />
-              <div className="absolute -right-[3px] top-1/2 -translate-y-1/2 w-[2px] h-[5px] bg-gray-900 rounded-r-sm" />
+            <div className="w-6 h-3 border border-white rounded-[3px] relative">
+              <div className="absolute inset-[2px] right-[3px] bg-white rounded-[1px]" />
+              <div className="absolute -right-[3px] top-1/2 -translate-y-1/2 w-[2px] h-[5px] bg-white rounded-r-sm" />
             </div>
           </div>
         </div>
@@ -392,11 +392,11 @@ function PhoneMockup({ children }: { children: React.ReactNode }) {
           <div className="text-white font-bold text-lg tracking-tight">HSBC</div>
         </div>
         {/* Content */}
-        <div className="h-[calc(100%-7rem)] overflow-hidden bg-gray-50">
+        <div className="h-[calc(100%-7rem)] overflow-hidden bg-gradient-to-b from-[#2c2c2e] to-[#1c1c1e]">
           {children}
         </div>
         {/* Home indicator */}
-        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-32 h-1 bg-black/20 rounded-full" />
+        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-32 h-1 bg-white/30 rounded-full" />
       </div>
       {/* Side buttons - Power */}
       <div className="absolute right-0 top-32 w-[3px] h-16 bg-gradient-to-b from-[#636366] via-[#8e8e93] to-[#636366] rounded-r-sm" />
@@ -417,20 +417,20 @@ export function PhonePreview() {
       <div className="absolute inset-0 bg-gradient-to-b from-[#3a3a3c] via-[#48484a] to-[#3a3a3c] rounded-[2.8rem] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]" />
       <div className="absolute inset-[2px] bg-gradient-to-b from-[#636366] via-[#8e8e93] to-[#636366] rounded-[2.7rem]" />
       <div className="absolute inset-[4px] bg-black rounded-[2.6rem]" />
-      <div className="absolute inset-[6px] bg-white rounded-[2.4rem] overflow-hidden">
+      <div className="absolute inset-[6px] bg-gradient-to-b from-[#2c2c2e] via-[#1c1c1e] to-[#2c2c2e] rounded-[2.4rem] overflow-hidden">
         {/* Status bar */}
-        <div className="h-12 bg-white relative flex items-end justify-between px-6 pb-1">
+        <div className="h-12 bg-transparent relative flex items-end justify-between px-6 pb-1">
           <div className="absolute top-2.5 left-1/2 -translate-x-1/2 w-[80px] h-[26px] bg-black rounded-full" />
-          <span className="text-[10px] font-semibold text-gray-900">9:41</span>
+          <span className="text-[10px] font-semibold text-white">9:41</span>
           <div className="flex items-center gap-1">
             <div className="flex items-end gap-[2px] h-2.5">
-              <div className="w-[2px] h-[3px] bg-gray-900 rounded-sm" />
-              <div className="w-[2px] h-[5px] bg-gray-900 rounded-sm" />
-              <div className="w-[2px] h-[7px] bg-gray-900 rounded-sm" />
-              <div className="w-[2px] h-[9px] bg-gray-900 rounded-sm" />
+              <div className="w-[2px] h-[3px] bg-white rounded-sm" />
+              <div className="w-[2px] h-[5px] bg-white rounded-sm" />
+              <div className="w-[2px] h-[7px] bg-white rounded-sm" />
+              <div className="w-[2px] h-[9px] bg-white rounded-sm" />
             </div>
-            <div className="w-5 h-2.5 border border-gray-900 rounded-[2px] relative">
-              <div className="absolute inset-[1px] right-[2px] bg-gray-900 rounded-[1px]" />
+            <div className="w-5 h-2.5 border border-white rounded-[2px] relative">
+              <div className="absolute inset-[1px] right-[2px] bg-white rounded-[1px]" />
             </div>
           </div>
         </div>
@@ -439,20 +439,20 @@ export function PhonePreview() {
           <div className="text-white font-bold text-base tracking-tight">HSBC</div>
         </div>
         {/* Content - Account Overview screen */}
-        <div className="p-3 bg-gray-50 h-[calc(100%-6rem)]">
-          <div className="text-xs text-gray-500 mb-0.5">Current Account</div>
-          <div className="text-2xl font-bold text-gray-900 mb-3">£18,500</div>
-          <div className="bg-amber-50 border border-amber-200 rounded-xl p-3">
-            <div className="flex items-center gap-1.5 text-amber-700 font-medium mb-0.5 text-xs">
+        <div className="p-3 bg-gradient-to-b from-[#2c2c2e] to-[#1c1c1e] h-[calc(100%-6rem)]">
+          <div className="text-xs text-gray-400 mb-0.5">Current Account</div>
+          <div className="text-2xl font-bold text-white mb-3">£18,500</div>
+          <div className="bg-amber-500/15 border border-amber-500/30 rounded-xl p-3">
+            <div className="flex items-center gap-1.5 text-amber-400 font-medium mb-0.5 text-xs">
               <PiggyBank className="w-3 h-3" />
               Available Savings Opportunity
             </div>
-            <div className="text-xl font-bold text-amber-800">£10,000</div>
-            <div className="text-xs text-amber-600">Idle funds detected</div>
+            <div className="text-xl font-bold text-amber-300">£10,000</div>
+            <div className="text-xs text-amber-400/80">Idle funds detected</div>
           </div>
         </div>
         {/* Home indicator */}
-        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-24 h-1 bg-black/20 rounded-full" />
+        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-24 h-1 bg-white/30 rounded-full" />
       </div>
     </div>
   )
