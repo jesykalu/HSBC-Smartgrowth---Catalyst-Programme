@@ -1018,10 +1018,82 @@ export function PhoneDemoSection({ heroMode = false }: PhoneDemoSectionProps) {
   
   const isComplete = currentStep >= totalSteps - 1
   
-  // Handle Prev button
+  // Handle Prev button - rebuild state from beginning to target step
   const handlePrev = () => {
     if (currentStep > 0) {
-      setCurrentStep(currentStep - 1)
+      const targetStep = currentStep - 1
+      
+      // Reset all state
+      setShowNotification(targetStep >= 0)
+      setFaceIdAuthenticated(targetStep >= 1)
+      setChatMessages([])
+      setChipSelections({})
+      setPendingUserReply(null)
+      setCurrentProductView(null)
+      
+      // Rebuild state by processing all steps up to target
+      const rebuildState = () => {
+        const newMessages: Array<{id: number; type: "bot" | "user"; text: string}> = []
+        const newChipSelections: Record<number, number> = {}
+        
+        for (let i = 2; i <= targetStep; i++) {
+          const step = demoSteps[i]
+          if (!step) continue
+          
+          switch (step.action) {
+            case "greeting":
+              newMessages.push({ id: newMessages.length + 1, type: "bot", text: "Hi Jes! 👋 I noticed you have £10,000 sitting in your current account. Would you like me to show you some smarter options for that money?" })
+              break
+            case "userReply1":
+              newMessages.push({ id: newMessages.length + 1, type: "user", text: "Sure, show me." })
+              break
+            case "question1":
+              newMessages.push({ id: newMessages.length + 1, type: "bot", text: "Great! Let me ask a few quick questions to tailor the best options for you. First: Do you expect to need this money in the next 12 months?" })
+              break
+            case "question2":
+              newMessages.push({ id: newMessages.length + 1, type: "user", text: "Maybe, 6–12 months" })
+              newChipSelections[5] = 1
+              newMessages.push({ id: newMessages.length + 1, type: "bot", text: "Got it. How often do you typically dip into your savings?" })
+              break
+            case "question3":
+              newMessages.push({ id: newMessages.length + 1, type: "user", text: "Occasionally" })
+              newChipSelections[6] = 1
+              newMessages.push({ id: newMessages.length + 1, type: "bot", text: "And what's your comfort level with investment risk?" })
+              break
+            case "profileSummary":
+              newMessages.push({ id: newMessages.length + 1, type: "user", text: "Balanced approach" })
+              newChipSelections[7] = 1
+              newMessages.push({ id: newMessages.length + 1, type: "bot", text: "Based on your answers, here's your profile. Does this sound like you?" })
+              break
+            case "allocation":
+              newMessages.push({ id: newMessages.length + 1, type: "user", text: "Yes, that's me ✓" })
+              newChipSelections[8] = 0
+              newMessages.push({ id: newMessages.length + 1, type: "bot", text: "Based on your profile, here's how I'd suggest allocating your £10,000:" })
+              break
+            case "compliance":
+              newMessages.push({ id: newMessages.length + 1, type: "bot", text: "Running your compliance checks now…" })
+              break
+            case "identityConfirmed":
+              newMessages.push({ id: newMessages.length + 1, type: "bot", text: "🔒 Identity already verified via Face ID earlier. All checks passed." })
+              break
+            case "planSummary":
+              newMessages.push({ id: newMessages.length + 1, type: "bot", text: "Here's your final plan before we confirm:" })
+              break
+            case "userConfirm":
+              newMessages.push({ id: newMessages.length + 1, type: "user", text: "Looks great — confirm my plan." })
+              break
+            case "success":
+              newMessages.push({ id: newMessages.length + 1, type: "bot", text: "🎉 Done, Jes! Your savings plan is now active. Your £10,000 is officially working for you. I'll check in with you in 30 days. Great choice!" })
+              break
+          }
+        }
+        
+        setChatMessages(newMessages)
+        setChipSelections(newChipSelections)
+      }
+      
+      rebuildState()
+      setCurrentStep(targetStep)
     }
   }
   
