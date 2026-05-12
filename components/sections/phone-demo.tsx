@@ -1250,6 +1250,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
     
     // Determine delay based on current step - pause longer on key screens
     const currentAction = demoSteps[currentStep]?.action
+    const currentStepId = demoSteps[currentStep]?.id
     let delay = 4000 // Default delay - increased for readability
     if (currentAction === "financialSnapshot") delay = 6000 // Financial snapshot needs time to read
     if (currentAction === "faceid") delay = 5000 // Face ID animation completes at ~2.5s, then pause to see "Face ID recognised" result
@@ -1259,24 +1260,42 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
     if (currentAction === "planSummary") delay = 6000 // Plan summary needs time to read
     
     // Check if current step needs chip selection animation
-    const needsChipSelection = currentAction === "question1" || currentAction === "question2" || currentAction === "question3" || currentAction === "profileSummary"
+    // Map step IDs: question1=6, question2=7, question3=8, profileSummary=9
+    const chipStepIds: Record<string, number> = {
+      "question1": 6,
+      "question2": 7, 
+      "question3": 8,
+      "profileSummary": 9
+    }
+    const needsChipSelection = currentAction && chipStepIds[currentAction] !== undefined
+    const chipStepId = needsChipSelection ? chipStepIds[currentAction!] : null
     
-    if (needsChipSelection && chipSelections[currentStep] === undefined) {
-      // First show the pending state (pink -> transitioning)
-      const pendingTimeout = setTimeout(() => {
-        setPendingSelection({ step: currentStep, index: 0 })
+    if (needsChipSelection && chipStepId !== null && chipSelections[chipStepId] === undefined) {
+      // First, wait to show the unselected pink chips
+      const showChipsTimeout = setTimeout(() => {
+        // Show pending state (transitioning to selection)
+        setPendingSelection({ step: chipStepId, index: 0 })
         
-        // Then after a short delay, confirm the selection (turn red)
+        // After 0.5s, confirm the selection (turn red)
         setTimeout(() => {
           setChipSelections(prevSelections => ({
             ...prevSelections,
-            [currentStep]: 0
+            [chipStepId]: 0
           }))
           setPendingSelection(null)
-        }, 400)
-      }, 800) // Wait a bit before starting the selection animation
+          
+          // After 0.8s more, advance to next step (black response appears)
+          setTimeout(() => {
+            if (currentStep < totalSteps - 1) {
+              const nextStep = currentStep + 1
+              setTimeout(() => scrollForStep(nextStep), 100)
+              setCurrentStep(nextStep)
+            }
+          }, 800)
+        }, 500)
+      }, 1500) // Wait 1.5s to show pink chips first
       
-      return () => clearTimeout(pendingTimeout)
+      return () => clearTimeout(showChipsTimeout)
     }
     
     const timeout = setTimeout(() => {
