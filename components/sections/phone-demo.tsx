@@ -1243,67 +1243,82 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
         {renderContent()}
         
         {/* Controls panel - right side of phone */}
-        <div className="flex flex-col items-center gap-2 relative z-[100]">
+        <div className="flex flex-col items-center gap-3 relative z-[100]">
           {/* Step counter */}
-          <span className="text-xs text-white font-medium bg-black/50 px-2 py-0.5 rounded-full whitespace-nowrap">
-            {currentStep + 1}/{totalSteps}
-          </span>
+          <div className="flex flex-col items-center gap-0.5">
+            <span className="text-[10px] text-gray-400">Step</span>
+            <span className="text-xs text-white font-medium bg-black/50 px-2 py-0.5 rounded-full whitespace-nowrap">
+              {currentStep + 1}/{totalSteps}
+            </span>
+          </div>
           
           {/* Prev button */}
-          <button
-            type="button"
-            onClick={handlePrev}
-            disabled={isPrevDisabled}
-            className={`rounded-full p-1.5 border bg-white shadow-sm transition-all ${
-              isPrevDisabled ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-50 cursor-pointer"
-            }`}
-            title="Previous"
-          >
-            <ChevronLeft className="w-3.5 h-3.5" />
-          </button>
+          <div className="flex flex-col items-center gap-0.5">
+            <button
+              type="button"
+              onClick={handlePrev}
+              disabled={isPrevDisabled}
+              className={`rounded-full p-1.5 border bg-white shadow-sm transition-all ${
+                isPrevDisabled ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-50 cursor-pointer"
+              }`}
+              title="Previous"
+            >
+              <ChevronLeft className="w-3.5 h-3.5" />
+            </button>
+            <span className="text-[10px] text-gray-400">Prev</span>
+          </div>
           
           {/* Next button */}
-          <button
-            type="button"
-            onClick={handleNext}
-            disabled={isNextDisabled}
-            className={`rounded-full p-1.5 bg-[#DB0011] text-white shadow-sm transition-all ${
-              isNextDisabled ? "opacity-50 cursor-not-allowed" : "hover:bg-[#b8000e] cursor-pointer"
-            }`}
-            title="Next"
-          >
-            <ChevronRight className="w-3.5 h-3.5" />
-          </button>
+          <div className="flex flex-col items-center gap-0.5">
+            <button
+              type="button"
+              onClick={handleNext}
+              disabled={isNextDisabled}
+              className={`rounded-full p-1.5 bg-[#DB0011] text-white shadow-sm transition-all ${
+                isNextDisabled ? "opacity-50 cursor-not-allowed" : "hover:bg-[#b8000e] cursor-pointer"
+              }`}
+              title="Next"
+            >
+              <ChevronRight className="w-3.5 h-3.5" />
+            </button>
+            <span className="text-[10px] text-gray-400">Next</span>
+          </div>
           
           {/* Autoplay toggle button */}
-          <button
-            type="button"
-            onClick={toggleAutoPlay}
-            className={`rounded-full p-1.5 border shadow-sm transition-all ${
-              isAutoPlaying 
-                ? "bg-[#DB0011] text-white border-[#DB0011] hover:bg-[#b8000e]" 
-                : "bg-white hover:bg-gray-50"
-            }`}
-            title={isAutoPlaying ? "Pause" : "Autoplay"}
-          >
-            {isAutoPlaying ? (
-              <Pause className="w-3.5 h-3.5" />
-            ) : (
-              <Play className="w-3.5 h-3.5" />
-            )}
-          </button>
+          <div className="flex flex-col items-center gap-0.5">
+            <button
+              type="button"
+              onClick={toggleAutoPlay}
+              className={`rounded-full p-1.5 border shadow-sm transition-all ${
+                isAutoPlaying 
+                  ? "bg-[#DB0011] text-white border-[#DB0011] hover:bg-[#b8000e]" 
+                  : "bg-white hover:bg-gray-50"
+              }`}
+              title={isAutoPlaying ? "Pause" : "Autoplay"}
+            >
+              {isAutoPlaying ? (
+                <Pause className="w-3.5 h-3.5" />
+              ) : (
+                <Play className="w-3.5 h-3.5" />
+              )}
+            </button>
+            <span className="text-[10px] text-gray-400">{isAutoPlaying ? "Pause" : "Auto"}</span>
+          </div>
           
-{/* Replay button - only on final step */}
-  {isComplete && !isAutoPlaying && (
-  <button
-  type="button"
-  onClick={handleReplay}
-  className="rounded-full p-1.5 border bg-white shadow-sm hover:bg-gray-50"
-  title="Replay"
-  >
-  <RotateCcw className="w-3.5 h-3.5" />
-  </button>
-  )}
+          {/* Replay button - only on final step */}
+          {isComplete && !isAutoPlaying && (
+            <div className="flex flex-col items-center gap-0.5">
+              <button
+                type="button"
+                onClick={handleReplay}
+                className="rounded-full p-1.5 border bg-white shadow-sm hover:bg-gray-50"
+                title="Replay"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+              </button>
+              <span className="text-[10px] text-gray-400">Replay</span>
+            </div>
+          )}
         </div>
       </div>
     )
