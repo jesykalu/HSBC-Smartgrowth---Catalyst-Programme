@@ -1067,13 +1067,13 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
           setIsAutoPlaying(false)
           return prev
         }
-        // Auto-select chip options for question steps
+        // Auto-select chip options for question steps and profile summary
         const nextStep = prev + 1
         const nextStepAction = demoSteps[nextStep]?.action
-        if (nextStepAction === "question1" || nextStepAction === "question2" || nextStepAction === "question3") {
+        if (nextStepAction === "question1" || nextStepAction === "question2" || nextStepAction === "question3" || nextStepAction === "profileSummary") {
           setChipSelections(prevSelections => ({
             ...prevSelections,
-            [nextStep]: 0 // Auto-select first option
+            [nextStep]: 0 // Auto-select first option (e.g., "Yes, that's me")
           }))
         }
         setTimeout(scrollToBottom, 100)
