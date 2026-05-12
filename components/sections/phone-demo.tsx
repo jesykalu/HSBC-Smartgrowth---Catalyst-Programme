@@ -171,7 +171,7 @@ function ReplyChips({
   onSelect?: (index: number) => void 
 }) {
   return (
-    <div className="flex flex-col gap-2 mt-2 max-w-[75%] ml-8">
+    <div className="flex flex-col gap-2 mt-2 max-w-[95%] ml-8">
       {/* Please select label */}
       <span className="text-[10px] text-gray-400 mb-0.5">please select</span>
       {options.map((option, index) => {
@@ -322,12 +322,16 @@ function SummaryCardNew() {
 // Success card
 function SuccessCard() {
   return (
-    <div className="bg-green-50 border border-green-200 rounded-xl p-4 mt-3 text-center">
-      <div className="w-12 h-12 rounded-full bg-green-500 flex items-center justify-center mx-auto mb-2">
-        <Check className="w-6 h-6 text-white" />
+    <div className="bg-green-50 border border-green-200 rounded-xl p-3 mt-2 text-center">
+      <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center mx-auto mb-1.5">
+        <Check className="w-4 h-4 text-white" />
       </div>
-      <div className="font-bold text-green-800 text-sm">Plan Active</div>
-      <div className="text-xs text-green-700 mt-1">£10,000 invested · ~4.9% avg return</div>
+      <div className="font-bold text-green-800 text-[11px]">Plan Active</div>
+      <div className="text-[10px] text-green-700 mt-0.5">£10,000 invested · ~4.9% avg return</div>
+      <button className="mt-2 w-full py-1.5 px-3 bg-[#DB0011] text-white rounded-lg text-[10px] font-medium flex items-center justify-center gap-1.5 hover:bg-[#b8000e] transition-colors">
+        <FileText className="w-3 h-3" />
+        Download Documents
+      </button>
     </div>
   )
 }
@@ -347,8 +351,12 @@ function LockScreen({ showNotification }: { showNotification: boolean }) {
         <div className="mx-4 mt-8">
           <div className="bg-white/95 backdrop-blur-xl rounded-2xl p-3 shadow-lg">
             <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#DB0011] flex items-center justify-center flex-shrink-0">
-                <span className="text-white text-xs font-bold">HSBC</span>
+              <div className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0 bg-white flex items-center justify-center">
+                <img 
+                  src="/images/hsbc-logo.png" 
+                  alt="HSBC" 
+                  className="w-[34px] h-[34px] object-contain"
+                />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between">
@@ -733,7 +741,7 @@ function ChatMessage({ type, text, children, isNew = false }: ChatMessageProps) 
         <span className="text-white text-[9px] font-bold">{isBot ? "H" : "J"}</span>
       </div>
 
-      <div className={`flex flex-col ${isBot ? "items-start max-w-[75%]" : "items-end max-w-[68%]"}`}>
+      <div className={`flex flex-col ${isBot ? "items-start max-w-[75%]" : "items-end max-w-[85%]"}`}>
         {text && (
           <div className={`rounded-2xl px-3 py-2 text-left ${
             isBot 
@@ -776,7 +784,7 @@ function PhoneShell({
   const innerRadius2 = isXLarge ? "rounded-[3.8rem]" : isLarge ? "rounded-[3rem]" : "rounded-[3rem]"
   const screenRadius = isXLarge ? "rounded-[3.6rem]" : isLarge ? "rounded-[2.8rem]" : "rounded-[2.8rem]"
   const statusBarHeight = isXLarge ? "h-20" : isLarge ? "h-14" : "h-14"
-  const headerHeight = isXLarge ? "h-20" : isLarge ? "h-14" : "h-14"
+  const headerHeight = isXLarge ? "h-10" : isLarge ? "h-8" : "h-7"
   const dynamicIslandWidth = isXLarge ? "w-[140px] h-[44px]" : isLarge ? "w-[124px] h-[38px]" : "w-[100px] h-[32px]"
   const timeTextSize = isXLarge ? "text-base" : isLarge ? "text-sm" : "text-xs"
   const hsbcTextSize = isXLarge ? "text-2xl" : isLarge ? "text-xl" : "text-lg"
@@ -825,7 +833,11 @@ function PhoneShell({
             {/* HSBC Header - only show in chat/done phases */}
             {(phase === "chat" || phase === "done") && (
               <div className={`${headerHeight} bg-[#DB0011] flex items-center px-4`}>
-                <div className={`text-white font-bold ${hsbcTextSize} tracking-tight`}>HSBC</div>
+                <img 
+                  src="/images/hsbc-logo-full.png" 
+                  alt="HSBC" 
+                  className={`${isXLarge ? "h-6" : isLarge ? "h-5" : "h-4"} w-auto`}
+                />
               </div>
             )}
             
@@ -893,8 +905,12 @@ export function PhonePreview() {
             </div>
           </div>
         </div>
-        <div className="h-12 bg-[#DB0011] flex items-center px-4">
-          <div className="text-white font-bold text-base tracking-tight">HSBC</div>
+        <div className="h-8 bg-[#DB0011] flex items-center px-3">
+          <img 
+            src="/images/hsbc-logo-full.png" 
+            alt="HSBC" 
+            className="h-4 w-auto"
+          />
         </div>
         <div className="p-3 bg-gray-50 h-[calc(100%-6rem)]">
           <div className="text-xs text-gray-500 mb-0.5">Current Account</div>
