@@ -627,12 +627,12 @@ function PhoneShell({
   isLarge?: boolean
   isXLarge?: boolean
 }) {
-  // Dimension classes based on scale
+  // Dimension classes based on scale (reduced by 10%)
   const dimensions = isXLarge 
-    ? "w-[400px] h-[860px]" 
+    ? "w-[360px] h-[774px]" 
     : isLarge 
-      ? "w-[320px] h-[660px]" 
-      : "w-[280px] h-[600px]"
+      ? "w-[288px] h-[594px]" 
+      : "w-[252px] h-[540px]"
   const outerRadius = isXLarge ? "rounded-[4rem]" : isLarge ? "rounded-[3.2rem]" : "rounded-[3.2rem]"
   const innerRadius1 = isXLarge ? "rounded-[3.9rem]" : isLarge ? "rounded-[3.1rem]" : "rounded-[3.1rem]"
   const innerRadius2 = isXLarge ? "rounded-[3.8rem]" : isLarge ? "rounded-[3rem]" : "rounded-[3rem]"
@@ -1193,7 +1193,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
   }
 
   if (heroMode) {
-    const navWidth = isLarge ? "w-[320px]" : "w-[280px]"
+    const navWidth = isLarge ? "w-[288px]" : "w-[252px]"
     
     return (
       <div className="flex flex-col items-center overflow-visible">
