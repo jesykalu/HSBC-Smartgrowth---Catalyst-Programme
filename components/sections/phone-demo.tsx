@@ -371,13 +371,13 @@ function FaceIDScreen() {
           className="absolute inset-[-20px] rounded-full border-2 border-[#DB0011]/30"
           initial={{ scale: 0.6, opacity: 0 }}
           animate={{ scale: [0.6, 1.2, 1.2], opacity: [0, 0.5, 0] }}
-          transition={{ duration: 1.5, repeat: 2, ease: "easeOut" }}
+          transition={{ duration: 2, repeat: 3, ease: "easeOut" }}
         />
         <motion.div
           className="absolute inset-[-10px] rounded-full border-2 border-[#DB0011]/20"
           initial={{ scale: 0.7, opacity: 0 }}
           animate={{ scale: [0.7, 1.1, 1.1], opacity: [0, 0.4, 0] }}
-          transition={{ duration: 1.5, repeat: 2, ease: "easeOut", delay: 0.2 }}
+          transition={{ duration: 2, repeat: 3, ease: "easeOut", delay: 0.3 }}
         />
         
         <svg viewBox="0 0 80 80" className="w-full h-full relative z-10">
@@ -392,7 +392,7 @@ function FaceIDScreen() {
               stroke: ["#DB0011", "#DB0011", "#DB0011", "#22C55E"],
               pathLength: [0, 1, 1, 1]
             }}
-            transition={{ duration: 3.5, times: [0, 0.15, 0.85, 1], ease: "easeInOut" }}
+            transition={{ duration: 5, times: [0, 0.15, 0.85, 1], ease: "easeInOut" }}
           />
           <motion.path
             d="M58 6 L68 6 Q74 6 74 12 L74 22"
@@ -404,7 +404,7 @@ function FaceIDScreen() {
               stroke: ["#DB0011", "#DB0011", "#DB0011", "#22C55E"],
               pathLength: [0, 1, 1, 1]
             }}
-            transition={{ duration: 3.5, times: [0, 0.15, 0.85, 1], ease: "easeInOut", delay: 0.1 }}
+            transition={{ duration: 5, times: [0, 0.15, 0.85, 1], ease: "easeInOut", delay: 0.15 }}
           />
           <motion.path
             d="M74 58 L74 68 Q74 74 68 74 L58 74"
@@ -416,7 +416,7 @@ function FaceIDScreen() {
               stroke: ["#DB0011", "#DB0011", "#DB0011", "#22C55E"],
               pathLength: [0, 1, 1, 1]
             }}
-            transition={{ duration: 3.5, times: [0, 0.15, 0.85, 1], ease: "easeInOut", delay: 0.2 }}
+            transition={{ duration: 5, times: [0, 0.15, 0.85, 1], ease: "easeInOut", delay: 0.3 }}
           />
           <motion.path
             d="M22 74 L12 74 Q6 74 6 68 L6 58"
@@ -428,14 +428,14 @@ function FaceIDScreen() {
               stroke: ["#DB0011", "#DB0011", "#DB0011", "#22C55E"],
               pathLength: [0, 1, 1, 1]
             }}
-            transition={{ duration: 3.5, times: [0, 0.15, 0.85, 1], ease: "easeInOut", delay: 0.3 }}
+            transition={{ duration: 5, times: [0, 0.15, 0.85, 1], ease: "easeInOut", delay: 0.45 }}
           />
           
           {/* Face icon - fades in during scan, transitions to green */}
           <motion.g
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.5 }}
+            transition={{ duration: 0.8, delay: 0.8 }}
           >
             <motion.g
               initial={{ stroke: "#DB0011", fill: "#DB0011" }}
@@ -443,21 +443,21 @@ function FaceIDScreen() {
                 stroke: ["#DB0011", "#DB0011", "#22C55E"],
                 fill: ["#DB0011", "#DB0011", "#22C55E"]
               }}
-              transition={{ duration: 3.5, times: [0, 0.85, 1], ease: "easeInOut" }}
+              transition={{ duration: 5, times: [0, 0.85, 1], ease: "easeInOut" }}
             >
               {/* Left eye */}
               <motion.circle 
                 cx="30" cy="32" r="3"
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                transition={{ duration: 0.3, delay: 0.8 }}
+                transition={{ duration: 0.5, delay: 1.2 }}
               />
               {/* Right eye */}
               <motion.circle 
                 cx="50" cy="32" r="3"
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                transition={{ duration: 0.3, delay: 0.9 }}
+                transition={{ duration: 0.5, delay: 1.4 }}
               />
               {/* Nose line */}
               <motion.line 
@@ -466,7 +466,7 @@ function FaceIDScreen() {
                 strokeLinecap="round"
                 initial={{ pathLength: 0 }}
                 animate={{ pathLength: 1 }}
-                transition={{ duration: 0.4, delay: 1.0 }}
+                transition={{ duration: 0.6, delay: 1.6 }}
               />
               {/* Smile */}
               <motion.path
@@ -476,21 +476,21 @@ function FaceIDScreen() {
                 strokeLinecap="round"
                 initial={{ pathLength: 0 }}
                 animate={{ pathLength: 1 }}
-                transition={{ duration: 0.5, delay: 1.2 }}
+                transition={{ duration: 0.7, delay: 2.0 }}
               />
             </motion.g>
           </motion.g>
         </svg>
         
-        {/* Scanning line effect - moves up and down */}
+        {/* Scanning line effect - moves up and down slower */}
         <motion.div
           className="absolute left-2 right-2 h-0.5 bg-gradient-to-r from-transparent via-[#DB0011] to-transparent z-20"
           initial={{ top: "20%", opacity: 0 }}
           animate={{ 
-            top: ["20%", "80%", "20%", "80%", "50%"],
-            opacity: [0, 0.8, 0.8, 0.8, 0]
+            top: ["20%", "80%", "20%", "80%", "20%", "80%", "50%"],
+            opacity: [0, 0.8, 0.8, 0.8, 0.8, 0.8, 0]
           }}
-          transition={{ duration: 3, times: [0, 0.25, 0.5, 0.75, 1], ease: "easeInOut" }}
+          transition={{ duration: 5, times: [0, 0.15, 0.3, 0.45, 0.6, 0.75, 1], ease: "easeInOut" }}
         />
         
         {/* Checkmark overlay - appears after scan complete */}
@@ -498,12 +498,12 @@ function FaceIDScreen() {
           className="absolute inset-0 flex items-center justify-center bg-white z-30"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.3, delay: 3.5 }}
+          transition={{ duration: 0.4, delay: 5.2 }}
         >
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            transition={{ duration: 0.4, delay: 3.6, type: "spring", stiffness: 200 }}
+            transition={{ duration: 0.5, delay: 5.4, type: "spring", stiffness: 200 }}
           >
             <div className="w-14 h-14 bg-green-500 rounded-full flex items-center justify-center shadow-lg">
               <Check className="w-8 h-8 text-white" strokeWidth={3} />
@@ -519,13 +519,13 @@ function FaceIDScreen() {
           className="text-gray-800 text-lg font-medium"
           initial={{ opacity: 0 }}
           animate={{ opacity: [0, 1, 1, 0] }}
-          transition={{ duration: 3.5, times: [0, 0.1, 0.9, 1] }}
+          transition={{ duration: 5, times: [0, 0.1, 0.9, 1] }}
         >
           Face ID
           <motion.span
             className="inline-block ml-1"
             animate={{ opacity: [0, 1, 0] }}
-            transition={{ duration: 0.8, repeat: 4 }}
+            transition={{ duration: 1, repeat: 5 }}
           >
             ...
           </motion.span>
@@ -536,7 +536,7 @@ function FaceIDScreen() {
           className="absolute inset-0 flex flex-col items-center justify-center"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 3.8 }}
+          transition={{ duration: 0.5, delay: 5.8 }}
         >
           <div className="text-green-600 text-lg font-semibold flex items-center gap-1.5">
             <Check className="w-5 h-5" />
@@ -1172,7 +1172,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
     const currentAction = demoSteps[currentStep]?.action
     let delay = 1500 // Default delay
     if (currentAction === "financialSnapshot") delay = 3000 // Financial snapshot needs time to read
-    if (currentAction === "faceid") delay = 6000 // Face ID animation takes ~4s + pause to see checkmark and result
+    if (currentAction === "faceid") delay = 9000 // Face ID animation takes ~5s + longer pause to see checkmark and result
     
     // Check if current step needs chip selection animation
     const needsChipSelection = currentAction === "question1" || currentAction === "question2" || currentAction === "question3" || currentAction === "profileSummary"
