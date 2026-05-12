@@ -87,7 +87,7 @@ function DonutChart() {
         </svg>
         {/* Center text */}
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-sm font-bold text-gray-900">£10,000</span>
+          <span className="text-[11px] font-bold text-gray-900">£10,000</span>
           <span className="text-[10px] text-gray-500">Total</span>
         </div>
       </div>
@@ -360,7 +360,7 @@ function LockScreen({ showNotification }: { showNotification: boolean }) {
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between">
-                  <span className="font-semibold text-gray-900 text-sm">HSBC</span>
+                  <span className="font-semibold text-gray-900 text-[11px]">HSBC</span>
                   <span className="text-xs text-gray-500">now</span>
                 </div>
                 <p className="text-xs text-gray-700 mt-0.5 leading-relaxed">
@@ -534,7 +534,7 @@ function FaceIDScreen() {
       <div className="text-center h-16 relative">
         {/* "Face ID" scanning text */}
         <motion.div
-          className="text-gray-800 text-lg font-medium"
+          className="text-gray-800 text-[11px] font-medium"
           initial={{ opacity: 0 }}
           animate={{ opacity: [0, 1, 1, 0] }}
           transition={{ duration: 5, times: [0, 0.1, 0.9, 1] }}
@@ -556,11 +556,11 @@ function FaceIDScreen() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 5.8 }}
         >
-          <div className="text-green-600 text-lg font-semibold flex items-center gap-1.5">
+          <div className="text-green-600 text-[11px] font-semibold flex items-center gap-1.5">
             <Check className="w-5 h-5" />
             Face ID recognised
           </div>
-          <div className="text-gray-500 text-sm mt-1">
+          <div className="text-gray-500 text-[11px] mt-1">
             Welcome back, Jes
           </div>
         </motion.div>
@@ -586,7 +586,7 @@ function FixedSaverDetailScreen({ onReturn }: { onReturn: () => void }) {
       {/* Back button */}
       <button 
         onClick={onReturn}
-        className="flex items-center gap-1 px-4 py-2 text-[#DB0011] text-sm font-medium"
+            className="flex items-center gap-1 px-4 py-2 text-[#DB0011] text-[11px] font-medium"
       >
         <ArrowLeft className="w-4 h-4" />
         Back to chat
@@ -597,7 +597,7 @@ function FixedSaverDetailScreen({ onReturn }: { onReturn: () => void }) {
         <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center mx-auto mb-2">
           <PiggyBank className="w-6 h-6 text-white" />
         </div>
-        <div className="text-white font-bold text-lg">Fixed Saver</div>
+        <div className="text-white font-bold text-[11px]">Fixed Saver</div>
         <div className="text-white/90 text-2xl font-bold mt-1">4.10% AER</div>
       </div>
       
@@ -660,7 +660,7 @@ function ISADetailScreen({ onReturn }: { onReturn: () => void }) {
       {/* Back button */}
       <button 
         onClick={onReturn}
-        className="flex items-center gap-1 px-4 py-2 text-[#DB0011] text-sm font-medium"
+            className="flex items-center gap-1 px-4 py-2 text-[#DB0011] text-[11px] font-medium"
       >
         <ArrowLeft className="w-4 h-4" />
         Back
@@ -671,7 +671,7 @@ function ISADetailScreen({ onReturn }: { onReturn: () => void }) {
         <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center mx-auto mb-2">
           <TrendingUp className="w-6 h-6 text-white" />
         </div>
-        <div className="text-white font-bold text-lg">LISA</div>
+        <div className="text-white font-bold text-[11px]">LISA</div>
         <div className="text-white/90 text-2xl font-bold mt-1">5–7% projected return</div>
       </div>
       
@@ -920,7 +920,7 @@ export function PhonePreview() {
               <PiggyBank className="w-3 h-3" />
               Available Savings Opportunity
             </div>
-            <div className="text-xl font-bold text-amber-800">£10,000</div>
+            <div className="text-[11px] font-bold text-amber-800">£10,000</div>
             <div className="text-xs text-amber-600">Idle funds detected</div>
           </div>
         </div>
