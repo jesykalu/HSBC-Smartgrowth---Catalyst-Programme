@@ -349,76 +349,117 @@ function LockScreen({ showNotification }: { showNotification: boolean }) {
   )
 }
 
-// Face ID Screen Component - shows authenticated state immediately, no tap required
+// Face ID Screen Component - with scanning animation
 function FaceIDScreen() {
   return (
     <div className="h-full flex flex-col items-center justify-center bg-white px-6">
-      {/* Face ID icon - already authenticated */}
+      {/* Face ID icon with scanning animation */}
       <div className="w-20 h-20 relative mb-6">
-        <svg viewBox="0 0 80 80" className="w-full h-full">
-          {/* Face outline */}
-          <rect
-            x="10"
-            y="10"
-            width="60"
-            height="60"
-            rx="16"
-            fill="none"
-            stroke="#22C55E"
-            strokeWidth="3"
-          />
-          {/* Corner scan lines */}
-          <path
+        {/* Scanning pulse effect */}
+        <motion.div
+          className="absolute inset-0 rounded-2xl bg-green-500/20"
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: [0.8, 1.3, 0.8], opacity: [0, 0.5, 0] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+        />
+        
+        {/* Scanning line effect */}
+        <motion.div
+          className="absolute left-2 right-2 h-0.5 bg-gradient-to-r from-transparent via-green-500 to-transparent"
+          initial={{ top: "15%" }}
+          animate={{ top: ["15%", "85%", "15%"] }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+        />
+        
+        <svg viewBox="0 0 80 80" className="w-full h-full relative z-10">
+          {/* Corner scan lines with draw animation */}
+          <motion.path
             d="M10 25 L10 16 Q10 10 16 10 L25 10"
             fill="none"
             stroke="#22C55E"
             strokeWidth="4"
             strokeLinecap="round"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 0.5, delay: 0 }}
           />
-          <path
+          <motion.path
             d="M55 10 L64 10 Q70 10 70 16 L70 25"
             fill="none"
             stroke="#22C55E"
             strokeWidth="4"
             strokeLinecap="round"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
           />
-          <path
+          <motion.path
             d="M70 55 L70 64 Q70 70 64 70 L55 70"
             fill="none"
             stroke="#22C55E"
             strokeWidth="4"
             strokeLinecap="round"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
           />
-          <path
+          <motion.path
             d="M25 70 L16 70 Q10 70 10 64 L10 55"
             fill="none"
             stroke="#22C55E"
             strokeWidth="4"
             strokeLinecap="round"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
           />
-          {/* Eyes */}
-          <circle cx="30" cy="35" r="3" fill="#22C55E" />
-          <circle cx="50" cy="35" r="3" fill="#22C55E" />
-          {/* Nose */}
-          <line x1="40" y1="40" x2="40" y2="48" stroke="#22C55E" strokeWidth="2" strokeLinecap="round" />
-          {/* Mouth */}
-          <path
-            d="M32 55 Q40 60 48 55"
-            fill="none"
-            stroke="#22C55E"
-            strokeWidth="2"
-            strokeLinecap="round"
-          />
+          {/* Face features with fade in */}
+          <motion.g
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.4, delay: 0.6 }}
+          >
+            {/* Eyes */}
+            <circle cx="30" cy="35" r="3" fill="#22C55E" />
+            <circle cx="50" cy="35" r="3" fill="#22C55E" />
+            {/* Nose */}
+            <line x1="40" y1="40" x2="40" y2="48" stroke="#22C55E" strokeWidth="2" strokeLinecap="round" />
+            {/* Mouth */}
+            <path
+              d="M32 55 Q40 60 48 55"
+              fill="none"
+              stroke="#22C55E"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
+          </motion.g>
         </svg>
+        
+        {/* Success checkmark overlay */}
+        <motion.div
+          className="absolute inset-0 flex items-center justify-center"
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.3, delay: 1.2, type: "spring", stiffness: 200 }}
+        >
+          <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center shadow-lg">
+            <Check className="w-5 h-5 text-white" />
+          </div>
+        </motion.div>
       </div>
       
-      {/* Status text - already authenticated */}
-      <div className="text-center">
+      {/* Status text with animation */}
+      <motion.div 
+        className="text-center"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 1.4 }}
+      >
         <div className="text-green-600 text-sm font-medium flex items-center gap-1 justify-center">
           Face ID recognised <Check className="w-4 h-4" />
         </div>
         <div className="text-gray-500 text-xs mt-1">Welcome back, Jes</div>
-      </div>
+      </motion.div>
     </div>
   )
 }
