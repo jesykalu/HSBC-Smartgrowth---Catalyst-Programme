@@ -21,7 +21,7 @@ export function HeroSection() {
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/30" />
 
         <div className="relative z-10 w-full px-8 md:px-12 lg:px-16 py-16 overflow-visible">
-          <div className="max-w-5xl mx-auto grid lg:grid-cols-[1.2fr_1fr] gap-4 lg:gap-6 items-center">
+          <div className="max-w-6xl mx-auto grid lg:grid-cols-[1.5fr_0.8fr] gap-4 lg:gap-6 items-center">
             {/* Left column - Text content */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
