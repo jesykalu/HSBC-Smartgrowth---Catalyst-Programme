@@ -1063,7 +1063,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
     
     // Determine delay based on current step
     const currentAction = demoSteps[currentStep]?.action
-    const delay = currentAction === "financialSnapshot" ? 3000 : 800 // Pause longer on financial snapshot
+    const delay = currentAction === "financialSnapshot" ? 3000 : 1500 // Pause longer on financial snapshot
     
     const timeout = setTimeout(() => {
       if (currentStep >= totalSteps - 1) {
