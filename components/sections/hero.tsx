@@ -91,7 +91,7 @@ export function HeroSection() {
                     {/* Time display */}
                     <div className="pt-12 text-center">
                       <div className="text-white text-4xl font-light tracking-tight">9:41</div>
-                      <div className="text-white/70 text-[10px] mt-0.5">Monday, 12 May</div>
+                      <div className="text-white/70 text-[10px] mt-0.5">Tuesday 12 May</div>
                     </div>
                     
                     {/* HSBC Notification */}

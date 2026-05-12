@@ -339,7 +339,7 @@ function LockScreen({ showNotification }: { showNotification: boolean }) {
       {/* Time display */}
       <div className="pt-16 text-center">
         <div className="text-white text-5xl font-light tracking-tight">9:41</div>
-        <div className="text-white/70 text-sm mt-1">Monday, 12 May</div>
+        <div className="text-white/70 text-sm mt-1">Tuesday 12 May</div>
       </div>
       
       {/* Notification - static, no animation delay */}
@@ -833,10 +833,25 @@ function PhoneShell({
             <div className={`overflow-hidden bg-gray-50 ${
               phase === "faceid" || phase === "productDetail_fixedSaver" || phase === "productDetail_isa"
                 ? (isXLarge ? "h-[calc(100%-5rem)]" : isLarge ? "h-[calc(100%-4rem)]" : "h-[calc(100%-3.5rem)]")
-                : (isXLarge ? "h-[calc(100%-10rem)]" : isLarge ? "h-[calc(100%-8rem)]" : "h-[calc(100%-7rem)]")
+                : (isXLarge ? "h-[calc(100%-12rem)]" : isLarge ? "h-[calc(100%-9.5rem)]" : "h-[calc(100%-8.5rem)]")
             }`}>
               {children}
             </div>
+            
+            {/* Chat input bar - only show in chat/done phases */}
+            {(phase === "chat" || phase === "done") && (
+              <div className={`bg-white border-t border-gray-200 ${isXLarge ? "px-3 py-2" : "px-2 py-1.5"} flex items-center gap-2`}>
+                <div className={`flex-1 bg-gray-100 rounded-full ${isXLarge ? "px-4 py-2" : "px-3 py-1.5"} flex items-center`}>
+                  <span className={`text-gray-400 ${isXLarge ? "text-sm" : "text-[10px]"}`}>Message HSBC AI...</span>
+                </div>
+                <div className={`${isXLarge ? "w-8 h-8" : "w-6 h-6"} rounded-full bg-[#DB0011] flex items-center justify-center`}>
+                  <svg className={`${isXLarge ? "w-4 h-4" : "w-3 h-3"} text-white`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13" />
+                    <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                  </svg>
+                </div>
+              </div>
+            )}
           </>
         )}
         
