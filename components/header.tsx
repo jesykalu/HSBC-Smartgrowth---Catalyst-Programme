@@ -28,10 +28,23 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <div className="flex items-center gap-3">
-            <div className="text-xl font-bold text-primary tracking-tight font-[family-name:var(--font-display)]">Accenture</div>
-            <span className="text-muted-foreground">×</span>
-            <div className="text-xl font-bold text-[#DB0011] tracking-tight font-[family-name:var(--font-display)]">HSBC</div>
+          <div className="flex items-center gap-4">
+            {/* Accenture logo */}
+            <img 
+              src="/accenture-logo.png" 
+              alt="Accenture" 
+              className="h-8 w-auto"
+            />
+            
+            {/* Divider */}
+            <div className="w-px h-6 bg-muted-foreground/30" />
+            
+            {/* HSBC logo */}
+            <img 
+              src="/hsbc-logo.png" 
+              alt="HSBC" 
+              className="h-6 w-auto"
+            />
           </div>
 
           {/* Navigation indicator */}
