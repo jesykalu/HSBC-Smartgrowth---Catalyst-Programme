@@ -87,7 +87,7 @@ function DonutChart() {
         </svg>
         {/* Center text */}
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-sm font-bold text-gray-900">£10,000</span>
+          <span className="text-[11px] font-bold text-gray-900">£10,000</span>
           <span className="text-[10px] text-gray-500">Total</span>
         </div>
       </div>
@@ -171,7 +171,7 @@ function ReplyChips({
   onSelect?: (index: number) => void 
 }) {
   return (
-    <div className="flex flex-col gap-2 mt-2 max-w-[95%] ml-8">
+    <div className="flex flex-col gap-1.5 mt-1.5 max-w-[95%] ml-8">
       {/* Please select label */}
       <span className="text-[10px] text-gray-400 mb-0.5">please select</span>
       {options.map((option, index) => {
@@ -181,7 +181,7 @@ function ReplyChips({
         return (
           <motion.button
             key={option}
-            className={`w-full px-3 py-2 rounded-xl text-xs font-medium text-left transition-all duration-300 ${
+              className={`w-full px-2.5 py-1.5 rounded-xl text-xs font-medium text-left transition-all duration-300 ${
               isSelected 
                 ? "bg-[#DB0011] text-white" 
                 : isPending
@@ -264,7 +264,7 @@ function ComplianceCardNew() {
   const checks = ["Eligibility", "Suitability", "KYC", "CDD", "Fraud Screening", "Affordability"]
 
   return (
-    <div className="bg-white rounded-xl border border-gray-100 p-3 mt-2 space-y-1.5">
+    <div className="bg-white rounded-xl border border-gray-100 p-2 mt-1.5 space-y-1">
       {checks.map((check, index) => (
         <motion.div
           key={check}
@@ -322,13 +322,13 @@ function SummaryCardNew() {
 // Success card
 function SuccessCard() {
   return (
-    <div className="bg-green-50 border border-green-200 rounded-xl p-3 mt-2 text-center">
-      <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center mx-auto mb-1.5">
+    <div className="bg-green-50 border border-green-200 rounded-xl p-2 mt-1.5 text-center">
+      <div className="w-7 h-7 rounded-full bg-green-500 flex items-center justify-center mx-auto mb-1">
         <Check className="w-4 h-4 text-white" />
       </div>
       <div className="font-bold text-green-800 text-[11px]">Plan Active</div>
       <div className="text-[10px] text-green-700 mt-0.5">£10,000 invested · ~4.9% avg return</div>
-      <button className="mt-2 w-full py-1.5 px-3 bg-[#DB0011] text-white rounded-lg text-[10px] font-medium flex items-center justify-center gap-1.5 hover:bg-[#b8000e] transition-colors">
+      <button className="mt-1.5 w-full py-1 px-2.5 bg-[#DB0011] text-white rounded-lg text-[10px] font-medium flex items-center justify-center gap-1 hover:bg-[#b8000e] transition-colors">
         <FileText className="w-3 h-3" />
         Download Documents
       </button>
@@ -360,7 +360,7 @@ function LockScreen({ showNotification }: { showNotification: boolean }) {
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between">
-                  <span className="font-semibold text-gray-900 text-sm">HSBC</span>
+                  <span className="font-semibold text-gray-900 text-[11px]">HSBC</span>
                   <span className="text-xs text-gray-500">now</span>
                 </div>
                 <p className="text-xs text-gray-700 mt-0.5 leading-relaxed">
@@ -389,13 +389,13 @@ function FaceIDScreen() {
           className="absolute inset-[-20px] rounded-full border-2 border-[#DB0011]/30"
           initial={{ scale: 0.6, opacity: 0 }}
           animate={{ scale: [0.6, 1.2, 1.2], opacity: [0, 0.5, 0] }}
-          transition={{ duration: 2, repeat: 3, ease: "easeOut" }}
+          transition={{ duration: 0.6, repeat: 2, ease: "easeOut" }}
         />
         <motion.div
           className="absolute inset-[-10px] rounded-full border-2 border-[#DB0011]/20"
           initial={{ scale: 0.7, opacity: 0 }}
           animate={{ scale: [0.7, 1.1, 1.1], opacity: [0, 0.4, 0] }}
-          transition={{ duration: 2, repeat: 3, ease: "easeOut", delay: 0.3 }}
+          transition={{ duration: 0.6, repeat: 2, ease: "easeOut", delay: 0.1 }}
         />
         
         <svg viewBox="0 0 80 80" className="w-full h-full relative z-10">
@@ -410,7 +410,7 @@ function FaceIDScreen() {
               stroke: ["#DB0011", "#DB0011", "#DB0011", "#22C55E"],
               pathLength: [0, 1, 1, 1]
             }}
-            transition={{ duration: 5, times: [0, 0.15, 0.85, 1], ease: "easeInOut" }}
+            transition={{ duration: 1.8, times: [0, 0.2, 0.8, 1], ease: "easeInOut" }}
           />
           <motion.path
             d="M58 6 L68 6 Q74 6 74 12 L74 22"
@@ -422,7 +422,7 @@ function FaceIDScreen() {
               stroke: ["#DB0011", "#DB0011", "#DB0011", "#22C55E"],
               pathLength: [0, 1, 1, 1]
             }}
-            transition={{ duration: 5, times: [0, 0.15, 0.85, 1], ease: "easeInOut", delay: 0.15 }}
+            transition={{ duration: 1.8, times: [0, 0.2, 0.8, 1], ease: "easeInOut", delay: 0.05 }}
           />
           <motion.path
             d="M74 58 L74 68 Q74 74 68 74 L58 74"
@@ -434,7 +434,7 @@ function FaceIDScreen() {
               stroke: ["#DB0011", "#DB0011", "#DB0011", "#22C55E"],
               pathLength: [0, 1, 1, 1]
             }}
-            transition={{ duration: 5, times: [0, 0.15, 0.85, 1], ease: "easeInOut", delay: 0.3 }}
+            transition={{ duration: 1.8, times: [0, 0.2, 0.8, 1], ease: "easeInOut", delay: 0.1 }}
           />
           <motion.path
             d="M22 74 L12 74 Q6 74 6 68 L6 58"
@@ -446,14 +446,14 @@ function FaceIDScreen() {
               stroke: ["#DB0011", "#DB0011", "#DB0011", "#22C55E"],
               pathLength: [0, 1, 1, 1]
             }}
-            transition={{ duration: 5, times: [0, 0.15, 0.85, 1], ease: "easeInOut", delay: 0.45 }}
+            transition={{ duration: 1.8, times: [0, 0.2, 0.8, 1], ease: "easeInOut", delay: 0.15 }}
           />
           
           {/* Face icon - fades in during scan, transitions to green */}
           <motion.g
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.8 }}
+            transition={{ duration: 0.2, delay: 0.2 }}
           >
             <motion.g
               initial={{ stroke: "#DB0011", fill: "#DB0011" }}
@@ -461,21 +461,21 @@ function FaceIDScreen() {
                 stroke: ["#DB0011", "#DB0011", "#22C55E"],
                 fill: ["#DB0011", "#DB0011", "#22C55E"]
               }}
-              transition={{ duration: 5, times: [0, 0.85, 1], ease: "easeInOut" }}
+              transition={{ duration: 1.8, times: [0, 0.8, 1], ease: "easeInOut" }}
             >
               {/* Left eye */}
               <motion.circle 
                 cx="30" cy="32" r="3"
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                transition={{ duration: 0.5, delay: 1.2 }}
+                transition={{ duration: 0.15, delay: 0.3 }}
               />
               {/* Right eye */}
               <motion.circle 
                 cx="50" cy="32" r="3"
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                transition={{ duration: 0.5, delay: 1.4 }}
+                transition={{ duration: 0.15, delay: 0.4 }}
               />
               {/* Nose line */}
               <motion.line 
@@ -484,7 +484,7 @@ function FaceIDScreen() {
                 strokeLinecap="round"
                 initial={{ pathLength: 0 }}
                 animate={{ pathLength: 1 }}
-                transition={{ duration: 0.6, delay: 1.6 }}
+                transition={{ duration: 0.2, delay: 0.5 }}
               />
               {/* Smile */}
               <motion.path
@@ -494,21 +494,21 @@ function FaceIDScreen() {
                 strokeLinecap="round"
                 initial={{ pathLength: 0 }}
                 animate={{ pathLength: 1 }}
-                transition={{ duration: 0.7, delay: 2.0 }}
+                transition={{ duration: 0.2, delay: 0.6 }}
               />
             </motion.g>
           </motion.g>
         </svg>
         
-        {/* Scanning line effect - moves up and down slower */}
+        {/* Scanning line effect - moves up and down like real Face ID */}
         <motion.div
           className="absolute left-2 right-2 h-0.5 bg-gradient-to-r from-transparent via-[#DB0011] to-transparent z-20"
           initial={{ top: "20%", opacity: 0 }}
           animate={{ 
-            top: ["20%", "80%", "20%", "80%", "20%", "80%", "50%"],
-            opacity: [0, 0.8, 0.8, 0.8, 0.8, 0.8, 0]
+            top: ["20%", "80%", "20%", "50%"],
+            opacity: [0, 0.8, 0.8, 0]
           }}
-          transition={{ duration: 5, times: [0, 0.15, 0.3, 0.45, 0.6, 0.75, 1], ease: "easeInOut" }}
+          transition={{ duration: 1.5, times: [0, 0.4, 0.8, 1], ease: "easeInOut" }}
         />
         
         {/* Checkmark overlay - appears after scan complete */}
@@ -516,12 +516,12 @@ function FaceIDScreen() {
           className="absolute inset-0 flex items-center justify-center bg-white z-30"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.4, delay: 5.2 }}
+          transition={{ duration: 0.2, delay: 1.9 }}
         >
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            transition={{ duration: 0.5, delay: 5.4, type: "spring", stiffness: 200 }}
+            transition={{ duration: 0.3, delay: 2.0, type: "spring", stiffness: 200 }}
           >
             <div className="w-14 h-14 bg-green-500 rounded-full flex items-center justify-center shadow-lg">
               <Check className="w-8 h-8 text-white" strokeWidth={3} />
@@ -534,16 +534,16 @@ function FaceIDScreen() {
       <div className="text-center h-16 relative">
         {/* "Face ID" scanning text */}
         <motion.div
-          className="text-gray-800 text-lg font-medium"
+          className="text-gray-800 text-[11px] font-medium"
           initial={{ opacity: 0 }}
           animate={{ opacity: [0, 1, 1, 0] }}
-          transition={{ duration: 5, times: [0, 0.1, 0.9, 1] }}
+          transition={{ duration: 1.8, times: [0, 0.1, 0.85, 1] }}
         >
           Face ID
           <motion.span
             className="inline-block ml-1"
             animate={{ opacity: [0, 1, 0] }}
-            transition={{ duration: 1, repeat: 5 }}
+            transition={{ duration: 0.4, repeat: 4 }}
           >
             ...
           </motion.span>
@@ -554,13 +554,13 @@ function FaceIDScreen() {
           className="absolute inset-0 flex flex-col items-center justify-center"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 5.8 }}
+          transition={{ duration: 0.3, delay: 2.2 }}
         >
-          <div className="text-green-600 text-lg font-semibold flex items-center gap-1.5">
+          <div className="text-green-600 text-[11px] font-semibold flex items-center gap-1.5">
             <Check className="w-5 h-5" />
             Face ID recognised
           </div>
-          <div className="text-gray-500 text-sm mt-1">
+          <div className="text-gray-500 text-[11px] mt-1">
             Welcome back, Jes
           </div>
         </motion.div>
@@ -586,7 +586,7 @@ function FixedSaverDetailScreen({ onReturn }: { onReturn: () => void }) {
       {/* Back button */}
       <button 
         onClick={onReturn}
-        className="flex items-center gap-1 px-4 py-2 text-[#DB0011] text-sm font-medium"
+            className="flex items-center gap-1 px-4 py-2 text-[#DB0011] text-[11px] font-medium"
       >
         <ArrowLeft className="w-4 h-4" />
         Back to chat
@@ -597,7 +597,7 @@ function FixedSaverDetailScreen({ onReturn }: { onReturn: () => void }) {
         <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center mx-auto mb-2">
           <PiggyBank className="w-6 h-6 text-white" />
         </div>
-        <div className="text-white font-bold text-lg">Fixed Saver</div>
+        <div className="text-white font-bold text-[11px]">Fixed Saver</div>
         <div className="text-white/90 text-2xl font-bold mt-1">4.10% AER</div>
       </div>
       
@@ -660,7 +660,7 @@ function ISADetailScreen({ onReturn }: { onReturn: () => void }) {
       {/* Back button */}
       <button 
         onClick={onReturn}
-        className="flex items-center gap-1 px-4 py-2 text-[#DB0011] text-sm font-medium"
+            className="flex items-center gap-1 px-4 py-2 text-[#DB0011] text-[11px] font-medium"
       >
         <ArrowLeft className="w-4 h-4" />
         Back
@@ -671,7 +671,7 @@ function ISADetailScreen({ onReturn }: { onReturn: () => void }) {
         <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center mx-auto mb-2">
           <TrendingUp className="w-6 h-6 text-white" />
         </div>
-        <div className="text-white font-bold text-lg">LISA</div>
+        <div className="text-white font-bold text-[11px]">LISA</div>
         <div className="text-white/90 text-2xl font-bold mt-1">5–7% projected return</div>
       </div>
       
@@ -733,7 +733,7 @@ function ChatMessage({ type, text, children, isNew = false }: ChatMessageProps) 
       initial={isNew ? { opacity: 0, y: 8 } : false}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className={`flex items-start gap-2 px-2 py-1 ${isBot ? "" : "flex-row-reverse"}`}
+      className={`flex items-start gap-1.5 px-2 py-0.5 ${isBot ? "" : "flex-row-reverse"}`}
     >
       <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
         isBot ? "bg-[#DB0011]" : "bg-gray-400"
@@ -743,10 +743,10 @@ function ChatMessage({ type, text, children, isNew = false }: ChatMessageProps) 
 
       <div className={`flex flex-col ${isBot ? "items-start max-w-[75%]" : "items-end max-w-[85%]"}`}>
         {text && (
-          <div className={`rounded-2xl px-3 py-2 text-left ${
+          <div className={`rounded-2xl px-2.5 py-1.5 text-left ${
             isBot 
               ? "bg-gray-100 rounded-tl-none" 
-              : "bg-[#DB0011] rounded-tr-none"
+              : "bg-gray-800 rounded-tr-none"
           }`}>
             <p className={`text-xs leading-tight ${isBot ? "text-gray-800" : "text-white"}`}>
               {renderText(text)}
@@ -920,7 +920,7 @@ export function PhonePreview() {
               <PiggyBank className="w-3 h-3" />
               Available Savings Opportunity
             </div>
-            <div className="text-xl font-bold text-amber-800">£10,000</div>
+            <div className="text-[11px] font-bold text-amber-800">£10,000</div>
             <div className="text-xs text-amber-600">Idle funds detected</div>
           </div>
         </div>
@@ -958,14 +958,17 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
   }
   const phase = getPhase()
   
-  // Scroll chat to bottom with very slow, readable animation
-  const scrollToBottom = () => {
+  // Scroll chat with very slow, readable animation
+  // scrollPercentage: 1 = scroll to bottom, 0.5 = scroll halfway, etc.
+  // customDuration: optional duration in ms (default 3000)
+  const scrollToPosition = (scrollPercentage: number = 1, customDuration?: number) => {
     if (scrollRef.current) {
       const element = scrollRef.current
-      const targetScroll = element.scrollHeight
+      const maxScroll = element.scrollHeight - element.clientHeight
+      const targetScroll = maxScroll * scrollPercentage
       const startScroll = element.scrollTop
       const distance = targetScroll - startScroll
-      const duration = 3000 // 3 seconds for very slow readable scroll
+      const duration = customDuration || 3000 // default 3 seconds
       let startTime: number | null = null
       
       const animateScroll = (currentTime: number) => {
@@ -983,6 +986,31 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
       }
       
       requestAnimationFrame(animateScroll)
+    }
+  }
+  
+  // Convenience function for scrolling to bottom
+  const scrollToBottom = () => scrollToPosition(1)
+  
+  // Determine scroll position and duration based on step
+  const getScrollConfigForStep = (stepIndex: number) => {
+    const action = demoSteps[stepIndex]?.action
+    // For financialSnapshot, start at top so user can see the intro message and card
+    if (action === "financialSnapshot") return { position: 0, duration: 3000 }
+    // For question1 (step 7), scroll more slowly so user can read the content
+    if (action === "question1") return { position: 1, duration: 5000 }
+    // For other content-heavy steps, scroll to bottom
+    return { position: 1, duration: 3000 }
+  }
+  
+  // Smart scroll based on current step
+  const scrollForStep = (stepIndex: number) => {
+    const { position, duration } = getScrollConfigForStep(stepIndex)
+    if (position === 0 && scrollRef.current) {
+      // For steps that need to show content from top, immediately scroll to top
+      scrollRef.current.scrollTop = 0
+    } else {
+      scrollToPosition(position, duration)
     }
   }
   
@@ -1030,7 +1058,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
           newMessages.push({
             id: newMessages.length + 1,
             type: "user",
-            text: "Thanks — let's see what you'd recommend"
+            text: "Thanks �� let's see what you'd recommend"
           })
           break
           
@@ -1136,9 +1164,19 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
     return { messages: newMessages }
   }
   
-  // Handle chip selection - ONLY highlights, does NOT advance
+  // Handle chip selection - highlights first, then advances after 0.8s delay
   const handleChipSelect = (stepId: number, index: number) => {
+    // First, show the selection immediately
     setChipSelections(prev => ({ ...prev, [stepId]: index }))
+    
+    // After 0.8s delay, advance to next step (selection becomes Jes's response)
+    setTimeout(() => {
+      if (currentStep < totalSteps - 1) {
+        const nextStep = currentStep + 1
+        setCurrentStep(nextStep)
+        setTimeout(() => scrollForStep(nextStep), 100)
+      }
+    }, 800)
   }
   
   // Navigate to Fixed Saver product detail
@@ -1166,8 +1204,9 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
   // Handle Next button - just advances step, messages computed directly
   const handleNext = () => {
     if (currentStep < totalSteps - 1) {
-      setCurrentStep(currentStep + 1)
-      setTimeout(scrollToBottom, 100)
+      const nextStep = currentStep + 1
+      setCurrentStep(nextStep)
+      setTimeout(() => scrollForStep(nextStep), 100)
     }
   }
   
@@ -1187,7 +1226,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
       })
       setChipSelections(newSelections)
       
-      setTimeout(scrollToBottom, 100)
+      setTimeout(() => scrollForStep(prevStep), 100)
     }
   }
   
@@ -1211,30 +1250,57 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
     
     // Determine delay based on current step - pause longer on key screens
     const currentAction = demoSteps[currentStep]?.action
-    let delay = 1500 // Default delay
-    if (currentAction === "financialSnapshot") delay = 3000 // Financial snapshot needs time to read
-    if (currentAction === "faceid") delay = 12000 // Face ID animation completes at ~6s, then pause to see "Face ID recognised" result
-    if (currentAction === "compliance") delay = 6000 // Wait for all 6 compliance checks to animate (0.8s + 6*0.6s = ~4.4s + pause)
+    const currentStepId = demoSteps[currentStep]?.id
+    let delay = 4000 // Default delay - increased for readability
+    if (currentAction === "financialSnapshot") delay = 6000 // Financial snapshot needs time to read
+    if (currentAction === "faceid") delay = 5000 // Face ID animation completes at ~2.5s, then pause to see "Face ID recognised" result
+    if (currentAction === "compliance") delay = 9000 // Wait for all 6 compliance checks to animate (0.8s + 6*0.6s = ~4.4s + pause)
+    if (currentAction === "profileSummary") delay = 6000 // Profile summary needs time to read
+    if (currentAction === "allocation") delay = 6000 // Allocation chart needs time to read
+    if (currentAction === "planSummary") delay = 6000 // Plan summary needs time to read
     
     // Check if current step needs chip selection animation
-    const needsChipSelection = currentAction === "question1" || currentAction === "question2" || currentAction === "question3" || currentAction === "profileSummary"
+    // Map step IDs: question1=6, question2=7, question3=8, profileSummary=9
+    const chipStepIds: Record<string, number> = {
+      "question1": 6,
+      "question2": 7, 
+      "question3": 8,
+      "profileSummary": 9
+    }
+    const needsChipSelection = currentAction && chipStepIds[currentAction] !== undefined
+    const chipStepId = needsChipSelection ? chipStepIds[currentAction!] : null
     
-    if (needsChipSelection && chipSelections[currentStep] === undefined) {
-      // First show the pending state (pink -> transitioning)
-      const pendingTimeout = setTimeout(() => {
-        setPendingSelection({ step: currentStep, index: 0 })
+    if (needsChipSelection && chipStepId !== null && chipSelections[chipStepId] === undefined) {
+      // Get scroll duration for this step - need to wait for scroll to complete first
+      const { duration: scrollDuration } = getScrollConfigForStep(currentStep)
+      
+      // Wait for scroll to complete + extra time to read the question and see all chips
+      const waitForScrollAndRead = scrollDuration + 2000 // scroll time + 2s to read
+      
+      const showChipsTimeout = setTimeout(() => {
+        // Show pending state (transitioning to selection)
+        setPendingSelection({ step: chipStepId, index: 0 })
         
-        // Then after a short delay, confirm the selection (turn red)
+        // After 0.6s, confirm the selection (turn red)
         setTimeout(() => {
           setChipSelections(prevSelections => ({
             ...prevSelections,
-            [currentStep]: 0
+            [chipStepId]: 0
           }))
           setPendingSelection(null)
-        }, 400)
-      }, 800) // Wait a bit before starting the selection animation
+          
+          // After 1s more, advance to next step (black response appears)
+          setTimeout(() => {
+            if (currentStep < totalSteps - 1) {
+              const nextStep = currentStep + 1
+              setTimeout(() => scrollForStep(nextStep), 100)
+              setCurrentStep(nextStep)
+            }
+          }, 1000)
+        }, 600)
+      }, waitForScrollAndRead)
       
-      return () => clearTimeout(pendingTimeout)
+      return () => clearTimeout(showChipsTimeout)
     }
     
     const timeout = setTimeout(() => {
@@ -1243,8 +1309,9 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
         return
       }
       
-      setTimeout(scrollToBottom, 100)
-      setCurrentStep(currentStep + 1)
+      const nextStep = currentStep + 1
+      setTimeout(() => scrollForStep(nextStep), 100)
+      setCurrentStep(nextStep)
     }, delay)
     
     return () => clearTimeout(timeout)
@@ -1321,7 +1388,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
       case "done":
         return (
           <PhoneShell phase={phase} isLarge={isLarge} isXLarge={isXLarge}>
-            <div ref={scrollRef} className="h-full w-full overflow-y-auto py-2 [&::-webkit-scrollbar]:w-[3px] [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-full" style={{ scrollbarGutter: 'stable' }}>
+            <div ref={scrollRef} className="h-full w-full overflow-y-auto py-1 [&::-webkit-scrollbar]:w-[3px] [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-full" style={{ scrollbarGutter: 'stable' }}>
               <>
                 {computedMessages.map((msg, index) => {
                   const isLast = index === computedMessages.length - 1
@@ -1382,7 +1449,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
                     return (
                       <ChatMessage key={msg.id} type="bot" text={msg.text} isNew={isLast}>
                       <ProfileCardNew />
-                        <div className="text-[11px] text-gray-800 mt-1.5 bg-gray-100 rounded-xl rounded-bl-none px-2 py-1.5 inline-block">
+                        <div className="text-[11px] text-gray-800 mt-1 bg-gray-100 rounded-xl rounded-bl-none px-2 py-1 inline-block">
                         Does this look right to you?
                         </div>
                         <ReplyChips 
