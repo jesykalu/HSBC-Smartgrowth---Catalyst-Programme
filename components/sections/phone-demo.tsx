@@ -1058,7 +1058,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
           newMessages.push({
             id: newMessages.length + 1,
             type: "user",
-            text: "Thanks �� let's see what you'd recommend"
+            text: "Thanks, let's see what you'd recommend"
           })
           break
           
