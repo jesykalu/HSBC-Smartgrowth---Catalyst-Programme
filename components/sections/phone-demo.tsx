@@ -72,7 +72,7 @@ function DonutChart() {
             strokeDashoffset={-blueOffset}
             strokeLinecap="round"
           />
-          {/* Green segment - Investment ISA 40% */}
+          {/* Green segment - LISA 40% */}
           <circle
             cx="50"
             cy="50"
@@ -148,7 +148,7 @@ function ProductCards({
             <TrendingUp className="w-3 h-3 text-white" />
           </div>
           <div className="flex-1">
-            <div className="font-medium text-green-900 text-[11px]">Investment ISA</div>
+            <div className="font-medium text-green-900 text-[11px]">LISA</div>
             <div className="text-[10px] text-green-700">£4,000 · 5–7% return</div>
           </div>
           <span className="text-[10px] text-green-600 font-medium">Explore →</span>
@@ -297,23 +297,23 @@ function ComplianceCardNew() {
 // Summary card
 function SummaryCardNew() {
   return (
-    <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-3 mt-2 space-y-2">
-      <div className="flex justify-between items-center text-sm">
+    <div className="bg-white rounded-lg border border-gray-100 shadow-sm p-2 mt-1.5 space-y-1">
+      <div className="flex justify-between items-center text-[10px]">
         <span className="text-gray-600">Fixed Saver</span>
         <span className="font-medium text-gray-900">£6,000 @ 4.10% AER</span>
       </div>
-      <div className="text-[10px] text-gray-500 pl-0">12-month fixed term</div>
-      <div className="flex justify-between items-center text-sm pt-1 border-t border-gray-100">
-        <span className="text-gray-600">Investment ISA</span>
+      <div className="text-[9px] text-gray-500">12-month fixed term</div>
+      <div className="flex justify-between items-center text-[10px] pt-1 border-t border-gray-100">
+        <span className="text-gray-600">LISA</span>
         <span className="font-medium text-gray-900">£4,000 @ 5–7%</span>
       </div>
-      <div className="text-[10px] text-gray-500 pl-0">Flexible access</div>
-      <div className="pt-2 border-t border-gray-100">
+      <div className="text-[9px] text-gray-500">Flexible access</div>
+      <div className="pt-1 border-t border-gray-100">
         <div className="flex justify-between items-center">
-          <span className="text-sm font-medium text-gray-900">Total</span>
-          <span className="font-bold text-gray-900">£10,000</span>
+          <span className="text-[10px] font-medium text-gray-900">Total</span>
+          <span className="text-[11px] font-bold text-gray-900">£10,000</span>
         </div>
-        <div className="text-xs text-gray-500 mt-0.5">Estimated blended return: ~4.9% avg</div>
+        <div className="text-[9px] text-gray-500 mt-0.5">Est. blended return: ~4.9% avg</div>
       </div>
     </div>
   )
@@ -635,7 +635,7 @@ function FixedSaverDetailScreen({ onReturn }: { onReturn: () => void }) {
   )
 }
 
-// Investment ISA Detail Screen Component
+// LISA Detail Screen Component
 function ISADetailScreen({ onReturn }: { onReturn: () => void }) {
   const details = [
     { icon: FileText, label: "Wrapper", value: "Stocks & Shares ISA" },
@@ -663,7 +663,7 @@ function ISADetailScreen({ onReturn }: { onReturn: () => void }) {
         <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center mx-auto mb-2">
           <TrendingUp className="w-6 h-6 text-white" />
         </div>
-        <div className="text-white font-bold text-lg">Investment ISA</div>
+        <div className="text-white font-bold text-lg">LISA</div>
         <div className="text-white/90 text-2xl font-bold mt-1">5–7% projected return</div>
       </div>
       
