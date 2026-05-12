@@ -1211,10 +1211,13 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
     
     // Determine delay based on current step - pause longer on key screens
     const currentAction = demoSteps[currentStep]?.action
-    let delay = 1500 // Default delay
-    if (currentAction === "financialSnapshot") delay = 3000 // Financial snapshot needs time to read
-    if (currentAction === "faceid") delay = 12000 // Face ID animation completes at ~6s, then pause to see "Face ID recognised" result
-    if (currentAction === "compliance") delay = 6000 // Wait for all 6 compliance checks to animate (0.8s + 6*0.6s = ~4.4s + pause)
+    let delay = 4000 // Default delay - increased for readability
+    if (currentAction === "financialSnapshot") delay = 6000 // Financial snapshot needs time to read
+    if (currentAction === "faceid") delay = 14000 // Face ID animation completes at ~6s, then pause to see "Face ID recognised" result
+    if (currentAction === "compliance") delay = 9000 // Wait for all 6 compliance checks to animate (0.8s + 6*0.6s = ~4.4s + pause)
+    if (currentAction === "profileSummary") delay = 6000 // Profile summary needs time to read
+    if (currentAction === "allocation") delay = 6000 // Allocation chart needs time to read
+    if (currentAction === "planSummary") delay = 6000 // Plan summary needs time to read
     
     // Check if current step needs chip selection animation
     const needsChipSelection = currentAction === "question1" || currentAction === "question2" || currentAction === "question3" || currentAction === "profileSummary"
