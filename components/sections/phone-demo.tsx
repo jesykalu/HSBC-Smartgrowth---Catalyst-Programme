@@ -48,8 +48,8 @@ function renderText(text: string) {
 
 // Donut Chart Component
 function DonutChart() {
-  const radius = 50
-  const strokeWidth = 16
+  const radius = 36
+  const strokeWidth = 12
   const circumference = 2 * Math.PI * radius
   const bluePercent = 60
   const greenPercent = 40
@@ -57,13 +57,13 @@ function DonutChart() {
   const greenOffset = circumference * (bluePercent / 100)
 
   return (
-    <div className="flex flex-col items-center my-3">
-      <div className="relative w-[140px] h-[140px]">
-        <svg className="w-full h-full -rotate-90" viewBox="0 0 140 140">
+    <div className="flex flex-col items-center my-2">
+      <div className="relative w-[100px] h-[100px]">
+        <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
           {/* Blue segment - Fixed Saver 60% */}
           <circle
-            cx="70"
-            cy="70"
+            cx="50"
+            cy="50"
             r={radius}
             fill="none"
             stroke="#3B82F6"
@@ -74,8 +74,8 @@ function DonutChart() {
           />
           {/* Green segment - Investment ISA 40% */}
           <circle
-            cx="70"
-            cy="70"
+            cx="50"
+            cy="50"
             r={radius}
             fill="none"
             stroke="#22C55E"
@@ -87,8 +87,8 @@ function DonutChart() {
         </svg>
         {/* Center text */}
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-lg font-bold text-gray-900">£10,000</span>
-          <span className="text-xs text-gray-500">Total</span>
+          <span className="text-sm font-bold text-gray-900">£10,000</span>
+          <span className="text-[10px] text-gray-500">Total</span>
         </div>
       </div>
     </div>
@@ -109,54 +109,50 @@ function ProductCards({
   const isaVisited = visitedProducts.has("isa")
   
   return (
-    <div className="space-y-2 mt-2">
+    <div className="space-y-1.5 mt-1.5">
       <motion.div 
-        className="bg-blue-50 border border-blue-200 rounded-xl p-3 cursor-pointer hover:bg-blue-100 transition-colors relative"
+        className="bg-blue-50 border border-blue-200 rounded-lg p-2 cursor-pointer hover:bg-blue-100 transition-colors relative"
         whileTap={{ scale: 0.98 }}
         onClick={onTapFixedSaver}
       >
         {fixedSaverVisited && (
-          <div className="absolute top-2 right-2 flex items-center gap-1 px-1.5 py-0.5 bg-green-100 text-green-700 rounded-full text-[10px] font-medium">
-            <Check className="w-3 h-3" />
+          <div className="absolute top-1.5 right-1.5 flex items-center gap-0.5 px-1 py-0.5 bg-green-100 text-green-700 rounded-full text-[8px] font-medium">
+            <Check className="w-2.5 h-2.5" />
             Viewed
           </div>
         )}
-        <div className="flex items-center gap-2 mb-2">
-          <div className="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center">
-            <PiggyBank className="w-4 h-4 text-white" />
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-6 rounded-md bg-blue-500 flex items-center justify-center">
+            <PiggyBank className="w-3 h-3 text-white" />
           </div>
           <div className="flex-1">
-            <div className="font-medium text-blue-900 text-sm">Fixed Saver</div>
-            <div className="text-xs text-blue-700">£6,000 · 4.10% AER</div>
+            <div className="font-medium text-blue-900 text-[11px]">Fixed Saver</div>
+            <div className="text-[10px] text-blue-700">£6,000 · 4.10% AER</div>
           </div>
+          <span className="text-[10px] text-blue-600 font-medium">Explore →</span>
         </div>
-        <button className="w-full py-1.5 px-3 bg-blue-500 text-white rounded-lg text-xs font-medium hover:bg-blue-600 transition-colors">
-          Tap to explore →
-        </button>
       </motion.div>
       <motion.div 
-        className="bg-green-50 border border-green-200 rounded-xl p-3 cursor-pointer hover:bg-green-100 transition-colors relative"
+        className="bg-green-50 border border-green-200 rounded-lg p-2 cursor-pointer hover:bg-green-100 transition-colors relative"
         whileTap={{ scale: 0.98 }}
         onClick={onTapISA}
       >
         {isaVisited && (
-          <div className="absolute top-2 right-2 flex items-center gap-1 px-1.5 py-0.5 bg-green-100 text-green-700 rounded-full text-[10px] font-medium">
-            <Check className="w-3 h-3" />
+          <div className="absolute top-1.5 right-1.5 flex items-center gap-0.5 px-1 py-0.5 bg-green-100 text-green-700 rounded-full text-[8px] font-medium">
+            <Check className="w-2.5 h-2.5" />
             Viewed
           </div>
         )}
-        <div className="flex items-center gap-2 mb-2">
-          <div className="w-8 h-8 rounded-lg bg-green-500 flex items-center justify-center">
-            <TrendingUp className="w-4 h-4 text-white" />
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-6 rounded-md bg-green-500 flex items-center justify-center">
+            <TrendingUp className="w-3 h-3 text-white" />
           </div>
           <div className="flex-1">
-            <div className="font-medium text-green-900 text-sm">Investment ISA</div>
-            <div className="text-xs text-green-700">£4,000 · 5–7% return</div>
+            <div className="font-medium text-green-900 text-[11px]">Investment ISA</div>
+            <div className="text-[10px] text-green-700">£4,000 · 5–7% return</div>
           </div>
+          <span className="text-[10px] text-green-600 font-medium">Explore →</span>
         </div>
-        <button className="w-full py-1.5 px-3 bg-green-500 text-white rounded-lg text-xs font-medium hover:bg-green-600 transition-colors">
-          Tap to explore →
-        </button>
       </motion.div>
     </div>
   )
