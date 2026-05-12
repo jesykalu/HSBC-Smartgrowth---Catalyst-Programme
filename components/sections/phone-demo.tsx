@@ -297,23 +297,23 @@ function ComplianceCardNew() {
 // Summary card
 function SummaryCardNew() {
   return (
-    <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-3 mt-2 space-y-2">
-      <div className="flex justify-between items-center text-sm">
+    <div className="bg-white rounded-lg border border-gray-100 shadow-sm p-2 mt-1.5 space-y-1">
+      <div className="flex justify-between items-center text-[10px]">
         <span className="text-gray-600">Fixed Saver</span>
         <span className="font-medium text-gray-900">£6,000 @ 4.10% AER</span>
       </div>
-      <div className="text-[10px] text-gray-500 pl-0">12-month fixed term</div>
-      <div className="flex justify-between items-center text-sm pt-1 border-t border-gray-100">
+      <div className="text-[9px] text-gray-500">12-month fixed term</div>
+      <div className="flex justify-between items-center text-[10px] pt-1 border-t border-gray-100">
         <span className="text-gray-600">Investment ISA</span>
         <span className="font-medium text-gray-900">£4,000 @ 5–7%</span>
       </div>
-      <div className="text-[10px] text-gray-500 pl-0">Flexible access</div>
-      <div className="pt-2 border-t border-gray-100">
+      <div className="text-[9px] text-gray-500">Flexible access</div>
+      <div className="pt-1 border-t border-gray-100">
         <div className="flex justify-between items-center">
-          <span className="text-sm font-medium text-gray-900">Total</span>
-          <span className="font-bold text-gray-900">£10,000</span>
+          <span className="text-[10px] font-medium text-gray-900">Total</span>
+          <span className="text-[11px] font-bold text-gray-900">£10,000</span>
         </div>
-        <div className="text-xs text-gray-500 mt-0.5">Estimated blended return: ~4.9% avg</div>
+        <div className="text-[9px] text-gray-500 mt-0.5">Est. blended return: ~4.9% avg</div>
       </div>
     </div>
   )
