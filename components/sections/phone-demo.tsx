@@ -171,7 +171,7 @@ function ReplyChips({
   onSelect?: (index: number) => void 
 }) {
   return (
-    <div className="flex flex-col gap-2 mt-2 max-w-[95%] ml-8">
+    <div className="flex flex-col gap-1.5 mt-1.5 max-w-[95%] ml-8">
       {/* Please select label */}
       <span className="text-[10px] text-gray-400 mb-0.5">please select</span>
       {options.map((option, index) => {
@@ -181,7 +181,7 @@ function ReplyChips({
         return (
           <motion.button
             key={option}
-            className={`w-full px-3 py-2 rounded-xl text-xs font-medium text-left transition-all duration-300 ${
+              className={`w-full px-2.5 py-1.5 rounded-xl text-xs font-medium text-left transition-all duration-300 ${
               isSelected 
                 ? "bg-[#DB0011] text-white" 
                 : isPending
@@ -264,7 +264,7 @@ function ComplianceCardNew() {
   const checks = ["Eligibility", "Suitability", "KYC", "CDD", "Fraud Screening", "Affordability"]
 
   return (
-    <div className="bg-white rounded-xl border border-gray-100 p-3 mt-2 space-y-1.5">
+    <div className="bg-white rounded-xl border border-gray-100 p-2 mt-1.5 space-y-1">
       {checks.map((check, index) => (
         <motion.div
           key={check}
@@ -322,13 +322,13 @@ function SummaryCardNew() {
 // Success card
 function SuccessCard() {
   return (
-    <div className="bg-green-50 border border-green-200 rounded-xl p-3 mt-2 text-center">
-      <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center mx-auto mb-1.5">
+    <div className="bg-green-50 border border-green-200 rounded-xl p-2 mt-1.5 text-center">
+      <div className="w-7 h-7 rounded-full bg-green-500 flex items-center justify-center mx-auto mb-1">
         <Check className="w-4 h-4 text-white" />
       </div>
       <div className="font-bold text-green-800 text-[11px]">Plan Active</div>
       <div className="text-[10px] text-green-700 mt-0.5">£10,000 invested · ~4.9% avg return</div>
-      <button className="mt-2 w-full py-1.5 px-3 bg-[#DB0011] text-white rounded-lg text-[10px] font-medium flex items-center justify-center gap-1.5 hover:bg-[#b8000e] transition-colors">
+      <button className="mt-1.5 w-full py-1 px-2.5 bg-[#DB0011] text-white rounded-lg text-[10px] font-medium flex items-center justify-center gap-1 hover:bg-[#b8000e] transition-colors">
         <FileText className="w-3 h-3" />
         Download Documents
       </button>
@@ -733,7 +733,7 @@ function ChatMessage({ type, text, children, isNew = false }: ChatMessageProps) 
       initial={isNew ? { opacity: 0, y: 8 } : false}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className={`flex items-start gap-2 px-2 py-1 ${isBot ? "" : "flex-row-reverse"}`}
+      className={`flex items-start gap-1.5 px-2 py-0.5 ${isBot ? "" : "flex-row-reverse"}`}
     >
       <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
         isBot ? "bg-[#DB0011]" : "bg-gray-400"
@@ -743,7 +743,7 @@ function ChatMessage({ type, text, children, isNew = false }: ChatMessageProps) 
 
       <div className={`flex flex-col ${isBot ? "items-start max-w-[75%]" : "items-end max-w-[85%]"}`}>
         {text && (
-          <div className={`rounded-2xl px-3 py-2 text-left ${
+          <div className={`rounded-2xl px-2.5 py-1.5 text-left ${
             isBot 
               ? "bg-gray-100 rounded-tl-none" 
               : "bg-[#DB0011] rounded-tr-none"
@@ -1351,7 +1351,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
       case "done":
         return (
           <PhoneShell phase={phase} isLarge={isLarge} isXLarge={isXLarge}>
-            <div ref={scrollRef} className="h-full w-full overflow-y-auto py-2 [&::-webkit-scrollbar]:w-[3px] [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-full" style={{ scrollbarGutter: 'stable' }}>
+            <div ref={scrollRef} className="h-full w-full overflow-y-auto py-1 [&::-webkit-scrollbar]:w-[3px] [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-full" style={{ scrollbarGutter: 'stable' }}>
               <>
                 {computedMessages.map((msg, index) => {
                   const isLast = index === computedMessages.length - 1
@@ -1412,7 +1412,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
                     return (
                       <ChatMessage key={msg.id} type="bot" text={msg.text} isNew={isLast}>
                       <ProfileCardNew />
-                        <div className="text-[11px] text-gray-800 mt-1.5 bg-gray-100 rounded-xl rounded-bl-none px-2 py-1.5 inline-block">
+                        <div className="text-[11px] text-gray-800 mt-1 bg-gray-100 rounded-xl rounded-bl-none px-2 py-1 inline-block">
                         Does this look right to you?
                         </div>
                         <ReplyChips 
