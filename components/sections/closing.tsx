@@ -1,7 +1,35 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Sparkles, Lock } from "lucide-react"
+import { Sparkles, Lock, Building2, ArrowRight, Globe, Link, BarChart3 } from "lucide-react"
+
+const whyAccenturePoints = [
+  {
+    icon: Building2,
+    title: "Deep HSBC Trust",
+    description: "Delivered global mobile banking platform on time and on budget. Built L3 capabilities enabling digital self-serve at scale. Embedded across technology, digital, and operations.",
+  },
+  {
+    icon: ArrowRight,
+    title: "Natural Next Step",
+    description: "HSBC has invested in building the digital platform. The next step is to activate the customer base. This proposal monetises what HSBC has already built — from capability build to value realisation.",
+  },
+  {
+    icon: Globe,
+    title: "Proven Delivery at Scale",
+    description: "Similar models delivered at BBVA, Intesa Sanpaolo, and Standard Chartered. Complex, outcome-led programmes across industries globally.",
+  },
+  {
+    icon: Link,
+    title: "End-to-End Capability",
+    description: "The only partner covering strategy → data → AI → orchestration → operations. No other partner can stitch all layers together end-to-end.",
+  },
+  {
+    icon: BarChart3,
+    title: "Outcomes-Aligned Commercial Model",
+    description: "Fixed fee for platform build. Variable fees tied only to incremental growth, efficiency, and new revenue. HSBC retains the majority of value created.",
+  },
+]
 
 export function ClosingSection() {
   return (
@@ -9,12 +37,57 @@ export function ClosingSection() {
       {/* Background decoration */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(106,0,255,0.08),transparent_70%)]" />
       
-      <div className="max-w-4xl mx-auto text-center relative z-10">
+      <div className="max-w-4xl mx-auto relative z-10">
+        {/* Why Accenture Block */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="mb-16"
+        >
+          <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-8 text-center tracking-tight font-[family-name:var(--font-display)]">
+            Why Accenture
+          </h3>
+          
+          <div className="space-y-4">
+            {whyAccenturePoints.map((point, index) => (
+              <motion.div
+                key={point.title}
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="bg-card rounded-xl p-5 border border-border hover:border-primary/30 transition-colors"
+              >
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <point.icon className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-foreground mb-1">{point.title}</h4>
+                    <p className="text-sm text-muted-foreground">{point.description}</p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Divider */}
+        <div className="flex items-center justify-center gap-4 mb-12">
+          <div className="w-16 h-px bg-primary/30" />
+          <div className="w-2 h-2 rounded-full bg-primary" />
+          <div className="w-16 h-px bg-primary/30" />
+        </div>
+
+        {/* Main CTA / Quote */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
+          className="text-center"
         >
           {/* Icon */}
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-8">
@@ -31,13 +104,6 @@ export function ClosingSection() {
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             This is not just a feature. It is a new model for customer engagement and growth.
           </p>
-
-          {/* Divider */}
-          <div className="flex items-center justify-center gap-4 mt-12">
-            <div className="w-16 h-px bg-primary/30" />
-            <div className="w-2 h-2 rounded-full bg-primary" />
-            <div className="w-16 h-px bg-primary/30" />
-          </div>
 
           {/* Footer brand */}
           <motion.div

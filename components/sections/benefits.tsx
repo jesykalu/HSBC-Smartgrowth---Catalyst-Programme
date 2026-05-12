@@ -1,51 +1,42 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Wallet, TrendingUp, Heart, PiggyBank, Shield, Rocket } from "lucide-react"
+import { TrendingUp, DollarSign, Settings } from "lucide-react"
 
-const benefits = [
-  {
-    icon: Wallet,
-    title: "Deposit Retention",
-    metric: "20–30%",
-    description: "Retain up to 20–30% of at-risk idle balances",
-    subtext: "Reduce outflows to competitors and AI-driven platforms",
-  },
+const levers = [
   {
     icon: TrendingUp,
-    title: "Revenue Uplift",
-    metric: "15–25%",
-    description: "Increase product conversion rates by 15–25%",
-    subtext: "Unlock new revenue from previously idle funds",
+    title: "Convert More Moments",
+    value: "£300M–£500M",
+    region: "(UK)",
+    how: "+0.75% lift across ~1bn annual interactions = 7.5M incremental outcomes/year",
+    detail: "Blended value: £63 per outcome (credit cards, loans, mortgages, wealth, insurance)",
+    benchmark: "Tier-1 NBA deployments show 0.5–1.5% lift range",
   },
   {
-    icon: Heart,
-    title: "Customer Loyalty",
-    metric: "↑",
-    description: "Increase engagement frequency within mobile app",
-    subtext: "Strengthen trust through proactive guidance",
+    icon: DollarSign,
+    title: "Monetise Customer Attention",
+    value: "£50M–£100M",
+    region: "(UK)",
+    how: "5% capture of 1bn interactions = 50M monetised moments/year at £3 revenue each",
+    detail: "",
+    benchmark: "Chase generates 18B+ offers annually — this is modelled conservatively at half that rate",
   },
   {
-    icon: PiggyBank,
-    title: "Cost Efficiency",
-    metric: "↓",
-    description: "Reduce reliance on outbound sales and advisory channels",
-    subtext: "Shift to digital self-service conversion",
+    icon: Settings,
+    title: "Reduce the Cost to Grow",
+    value: "£90M–£225M",
+    region: "(UK)",
+    how: "30% reduction in campaign & marketing ops (~£420M estimated annual ops base)",
+    detail: "Equivalent to 600–800 FTE automated",
+    benchmark: "Midpoint of Accenture agentic programme range (20–40%)",
   },
-  {
-    icon: Shield,
-    title: "Competitive Positioning",
-    metric: "AI",
-    description: "Compete directly with AI tools like ChatGPT",
-    subtext: "Prevent disintermediation by external platforms",
-  },
-  {
-    icon: Rocket,
-    title: "Future-Ready Architecture",
-    metric: "∞",
-    description: "Foundation for personalised and dynamic product models",
-    subtext: "Enables long-term innovation in retail banking",
-  },
+]
+
+const summaryStats = [
+  { label: "Total UK Value", value: "£400M–£700M+" },
+  { label: "Total Global Value", value: "~$1.7bn" },
+  { label: "ROI", value: "8:1 over 2 years" },
 ]
 
 export function BenefitsSection() {
@@ -65,10 +56,11 @@ export function BenefitsSection() {
           <div className="w-24 h-1 bg-primary mx-auto rounded-full" />
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {benefits.map((benefit, index) => (
+        {/* Value Levers Grid */}
+        <div className="grid md:grid-cols-3 gap-6 mb-12">
+          {levers.map((lever, index) => (
             <motion.div
-              key={benefit.title}
+              key={lever.title}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -76,19 +68,60 @@ export function BenefitsSection() {
               className="group"
             >
               <div className="bg-card rounded-2xl p-6 border border-border hover:border-primary/30 transition-all duration-300 h-full hover:shadow-lg hover:shadow-primary/5">
+                {/* Header */}
                 <div className="flex items-start justify-between mb-4">
                   <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                    <benefit.icon className="w-6 h-6 text-primary" />
+                    <lever.icon className="w-6 h-6 text-primary" />
                   </div>
-                  <span className="text-3xl font-bold text-primary font-[family-name:var(--font-display)]">{benefit.metric}</span>
+                  <div className="text-right">
+                    <span className="text-2xl font-bold text-primary font-[family-name:var(--font-display)]">{lever.value}</span>
+                    <span className="text-sm text-muted-foreground ml-1">{lever.region}</span>
+                  </div>
                 </div>
-                <h3 className="text-xl font-bold text-foreground mb-2 tracking-tight font-[family-name:var(--font-display)]">{benefit.title}</h3>
-                <p className="text-foreground/80 mb-2">{benefit.description}</p>
-                <p className="text-sm text-muted-foreground">{benefit.subtext}</p>
+
+                {/* Title */}
+                <h3 className="text-xl font-bold text-foreground mb-4 tracking-tight font-[family-name:var(--font-display)]">
+                  {lever.title}
+                </h3>
+
+                {/* How */}
+                <p className="text-sm text-foreground/80 mb-3">{lever.how}</p>
+
+                {/* Detail */}
+                {lever.detail && (
+                  <p className="text-sm text-muted-foreground mb-3">{lever.detail}</p>
+                )}
+
+                {/* Benchmark */}
+                <div className="pt-3 border-t border-border">
+                  <p className="text-xs text-muted-foreground italic">
+                    Benchmark: {lever.benchmark}
+                  </p>
+                </div>
               </div>
             </motion.div>
           ))}
         </div>
+
+        {/* Summary Stats Bar */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="bg-primary/5 rounded-2xl p-6 border border-primary/20"
+        >
+          <div className="grid md:grid-cols-3 gap-6 text-center">
+            {summaryStats.map((stat, index) => (
+              <div key={stat.label} className={index !== summaryStats.length - 1 ? "md:border-r md:border-primary/20" : ""}>
+                <p className="text-sm text-muted-foreground mb-1">{stat.label}</p>
+                <p className="text-2xl md:text-3xl font-bold text-primary font-[family-name:var(--font-display)]">
+                  {stat.value}
+                </p>
+              </div>
+            ))}
+          </div>
+        </motion.div>
       </div>
     </section>
   )
