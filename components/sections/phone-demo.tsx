@@ -173,7 +173,7 @@ function ReplyChips({
   onSelect?: (index: number) => void 
 }) {
   return (
-    <div className="flex flex-col gap-2 mt-2 w-full">
+    <div className="flex flex-col gap-2 mt-2 max-w-[75%] ml-8">
       {options.map((option, index) => (
         <motion.button
           key={option}
@@ -585,22 +585,22 @@ function ChatMessage({ type, text, children, isNew = false }: ChatMessageProps) 
       initial={isNew ? { opacity: 0, y: 8 } : false}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className={`flex items-start gap-2 px-3 py-1.5 ${isBot ? "ml-2" : "flex-row-reverse mr-2"}`}
+      className={`flex items-start gap-2 px-2 py-1 ${isBot ? "" : "flex-row-reverse"}`}
     >
-      <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 ${
+      <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
         isBot ? "bg-[#DB0011]" : "bg-gray-400"
       }`}>
-        <span className="text-white text-[10px] font-bold">{isBot ? "H" : "J"}</span>
+        <span className="text-white text-[9px] font-bold">{isBot ? "H" : "J"}</span>
       </div>
 
-      <div className={`${isBot ? "max-w-[78%]" : "max-w-[72%] text-right"}`}>
+      <div className={`flex flex-col ${isBot ? "items-start max-w-[75%]" : "items-end max-w-[68%]"}`}>
         {text && (
-          <div className={`inline-block rounded-2xl px-3 py-2 ${
+          <div className={`rounded-2xl px-3 py-2 text-left ${
             isBot 
-              ? "bg-gray-100 rounded-bl-none text-left" 
-              : "bg-[#DB0011] text-white rounded-br-none"
+              ? "bg-gray-100 rounded-tl-none" 
+              : "bg-[#DB0011] rounded-tr-none"
           }`}>
-            <p className={`text-sm leading-relaxed ${isBot ? "text-gray-800" : "text-white"}`}>
+            <p className={`text-xs leading-relaxed ${isBot ? "text-gray-800" : "text-white"}`}>
               {renderText(text)}
             </p>
           </div>
@@ -629,7 +629,7 @@ function PhoneShell({
   const dimensions = isXLarge 
     ? "w-[400px] h-[860px]" 
     : isLarge 
-      ? "w-[300px] h-[640px]" 
+      ? "w-[320px] h-[660px]" 
       : "w-[280px] h-[600px]"
   const outerRadius = isXLarge ? "rounded-[4rem]" : isLarge ? "rounded-[3.2rem]" : "rounded-[3.2rem]"
   const innerRadius1 = isXLarge ? "rounded-[3.9rem]" : isLarge ? "rounded-[3.1rem]" : "rounded-[3.1rem]"
@@ -637,7 +637,7 @@ function PhoneShell({
   const screenRadius = isXLarge ? "rounded-[3.6rem]" : isLarge ? "rounded-[2.8rem]" : "rounded-[2.8rem]"
   const statusBarHeight = isXLarge ? "h-20" : isLarge ? "h-14" : "h-14"
   const headerHeight = isXLarge ? "h-20" : isLarge ? "h-14" : "h-14"
-  const dynamicIslandWidth = isXLarge ? "w-[140px] h-[44px]" : isLarge ? "w-[120px] h-[38px]" : "w-[100px] h-[32px]"
+  const dynamicIslandWidth = isXLarge ? "w-[140px] h-[44px]" : isLarge ? "w-[124px] h-[38px]" : "w-[100px] h-[32px]"
   const timeTextSize = isXLarge ? "text-base" : isLarge ? "text-sm" : "text-xs"
   const hsbcTextSize = isXLarge ? "text-2xl" : isLarge ? "text-xl" : "text-lg"
   const homeIndicatorWidth = isXLarge ? "w-40" : isLarge ? "w-36" : "w-32"
@@ -1065,7 +1065,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
       case "done":
         return (
           <PhoneShell phase={phase} isLarge={isLarge} isXLarge={isXLarge}>
-            <div ref={scrollRef} className="h-full overflow-y-auto py-3">
+            <div ref={scrollRef} className="h-full w-full overflow-y-auto py-2 [&::-webkit-scrollbar]:w-[3px] [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-full" style={{ scrollbarGutter: 'stable' }}>
               <>
                 {computedMessages.map((msg, index) => {
                   const isLast = index === computedMessages.length - 1
@@ -1191,7 +1191,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
   }
 
   if (heroMode) {
-    const navWidth = isLarge ? "w-[300px]" : "w-[280px]"
+    const navWidth = isLarge ? "w-[320px]" : "w-[280px]"
     
     return (
       <div className="flex flex-col items-center overflow-visible">
