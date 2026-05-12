@@ -958,11 +958,13 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
   }
   const phase = getPhase()
   
-  // Scroll chat to bottom with very slow, readable animation
-  const scrollToBottom = () => {
+  // Scroll chat with very slow, readable animation
+  // scrollPercentage: 1 = scroll to bottom, 0.5 = scroll halfway, etc.
+  const scrollToPosition = (scrollPercentage: number = 1) => {
     if (scrollRef.current) {
       const element = scrollRef.current
-      const targetScroll = element.scrollHeight
+      const maxScroll = element.scrollHeight - element.clientHeight
+      const targetScroll = maxScroll * scrollPercentage
       const startScroll = element.scrollTop
       const distance = targetScroll - startScroll
       const duration = 3000 // 3 seconds for very slow readable scroll
@@ -984,6 +986,24 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
       
       requestAnimationFrame(animateScroll)
     }
+  }
+  
+  // Convenience function for scrolling to bottom
+  const scrollToBottom = () => scrollToPosition(1)
+  
+  // Determine scroll position based on step - some steps need to show content from the top
+  const getScrollPositionForStep = (stepIndex: number) => {
+    const action = demoSteps[stepIndex]?.action
+    // For financialSnapshot, start at top so user can see the intro message and card
+    if (action === "financialSnapshot") return 0
+    // For other content-heavy steps, scroll to bottom
+    return 1
+  }
+  
+  // Smart scroll based on current step
+  const scrollForStep = (stepIndex: number) => {
+    const position = getScrollPositionForStep(stepIndex)
+    scrollToPosition(position)
   }
   
   // Build messages for a given step (no timers, immediate rendering)
@@ -1166,8 +1186,9 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
   // Handle Next button - just advances step, messages computed directly
   const handleNext = () => {
     if (currentStep < totalSteps - 1) {
-      setCurrentStep(currentStep + 1)
-      setTimeout(scrollToBottom, 100)
+      const nextStep = currentStep + 1
+      setCurrentStep(nextStep)
+      setTimeout(() => scrollForStep(nextStep), 100)
     }
   }
   
@@ -1187,7 +1208,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
       })
       setChipSelections(newSelections)
       
-      setTimeout(scrollToBottom, 100)
+      setTimeout(() => scrollForStep(prevStep), 100)
     }
   }
   
@@ -1246,8 +1267,9 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
         return
       }
       
-      setTimeout(scrollToBottom, 100)
-      setCurrentStep(currentStep + 1)
+      const nextStep = currentStep + 1
+      setTimeout(() => scrollForStep(nextStep), 100)
+      setCurrentStep(nextStep)
     }, delay)
     
     return () => clearTimeout(timeout)
