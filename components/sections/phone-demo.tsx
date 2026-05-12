@@ -997,8 +997,8 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
     const action = demoSteps[stepIndex]?.action
     // For financialSnapshot, start at top so user can see the intro message and card
     if (action === "financialSnapshot") return { position: 0, duration: 3000 }
-    // For question1 (step 7), scroll more slowly so user can read the content
-    if (action === "question1") return { position: 1, duration: 5000 }
+    // For question1 (step 7), scroll fully to bottom so "Great! Just a couple..." is visible
+    if (action === "question1") return { position: 1, duration: 3000 }
     // For other content-heavy steps, scroll to bottom
     return { position: 1, duration: 3000 }
   }
@@ -1011,6 +1011,13 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
       scrollRef.current.scrollTop = 0
     } else {
       scrollToPosition(position, duration)
+      // For question1, do a second scroll after content renders to ensure we're at bottom
+      const action = demoSteps[stepIndex]?.action
+      if (action === "question1") {
+        setTimeout(() => {
+          scrollToPosition(1, 1000)
+        }, duration + 500)
+      }
     }
   }
   
@@ -1058,7 +1065,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
           newMessages.push({
             id: newMessages.length + 1,
             type: "user",
-            text: "Thanks �� let's see what you'd recommend"
+            text: "Thanks, let's see what you'd recommend"
           })
           break
           
@@ -1289,12 +1296,16 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
           }))
           setPendingSelection(null)
           
-          // After 1s more, advance to next step (black response appears)
+          // After 1s, advance to next step then scroll to show the new content
           setTimeout(() => {
             if (currentStep < totalSteps - 1) {
               const nextStep = currentStep + 1
-              setTimeout(() => scrollForStep(nextStep), 100)
+              // First set the step to render the new content
               setCurrentStep(nextStep)
+              // Then scroll after DOM updates to ensure we scroll to show all new content
+              setTimeout(() => {
+                scrollToPosition(1, 1500) // Scroll fully to bottom over 1.5s
+              }, 100) // Brief delay for DOM to update
             }
           }, 1000)
         }, 600)
