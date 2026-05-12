@@ -322,12 +322,16 @@ function SummaryCardNew() {
 // Success card
 function SuccessCard() {
   return (
-    <div className="bg-green-50 border border-green-200 rounded-xl p-4 mt-3 text-center">
-      <div className="w-12 h-12 rounded-full bg-green-500 flex items-center justify-center mx-auto mb-2">
-        <Check className="w-6 h-6 text-white" />
+    <div className="bg-green-50 border border-green-200 rounded-xl p-3 mt-2 text-center">
+      <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center mx-auto mb-1.5">
+        <Check className="w-4 h-4 text-white" />
       </div>
-      <div className="font-bold text-green-800 text-sm">Plan Active</div>
-      <div className="text-xs text-green-700 mt-1">£10,000 invested · ~4.9% avg return</div>
+      <div className="font-bold text-green-800 text-[11px]">Plan Active</div>
+      <div className="text-[10px] text-green-700 mt-0.5">£10,000 invested · ~4.9% avg return</div>
+      <button className="mt-2 w-full py-1.5 px-3 bg-[#DB0011] text-white rounded-lg text-[10px] font-medium flex items-center justify-center gap-1.5 hover:bg-[#b8000e] transition-colors">
+        <FileText className="w-3 h-3" />
+        Download Documents
+      </button>
     </div>
   )
 }
