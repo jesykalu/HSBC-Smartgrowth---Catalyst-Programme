@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react"
 import { motion } from "framer-motion"
-import { Check, PiggyBank, TrendingUp, ChevronRight, ChevronLeft, Play, Pause, MessageCircle, ArrowLeft, Calendar, Coins, Lock, Shield, FileText, Users, Sparkles, CreditCard, Plane, BarChart3, ArrowUpDown, ShoppingBag, Wallet } from "lucide-react"
+import { Check, PiggyBank, TrendingUp, ChevronRight, ChevronLeft, Play, Pause, RotateCcw, MessageCircle, ArrowLeft, Calendar, Coins, Lock, Shield, FileText, Users, Sparkles, CreditCard, Plane, BarChart3, ArrowUpDown, ShoppingBag, Wallet } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 // Phase types
@@ -1293,17 +1293,17 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
             )}
           </button>
           
-          {/* Replay button - only on final step */}
-          {isComplete && !isAutoPlaying && (
-            <button
-              type="button"
-              onClick={handleReplay}
-              className="rounded-full p-1.5 border bg-white shadow-sm hover:bg-gray-50"
-              title="Replay"
-            >
-              <Play className="w-3.5 h-3.5" />
-            </button>
-          )}
+{/* Replay button - only on final step */}
+  {isComplete && !isAutoPlaying && (
+  <button
+  type="button"
+  onClick={handleReplay}
+  className="rounded-full p-1.5 border bg-white shadow-sm hover:bg-gray-50"
+  title="Replay"
+  >
+  <RotateCcw className="w-3.5 h-3.5" />
+  </button>
+  )}
         </div>
       </div>
     )
@@ -1401,8 +1401,8 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
                 size="sm"
                 className="rounded-full px-4"
               >
-                <Play className="w-4 h-4 mr-1" />
-                Replay
+<RotateCcw className="w-4 h-4 mr-1" />
+  Replay
               </Button>
             </div>
           )}
