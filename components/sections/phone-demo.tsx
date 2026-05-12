@@ -828,13 +828,12 @@ function PhoneShell({
             
             {/* HSBC Header - only show in chat/done phases */}
             {(phase === "chat" || phase === "done") && (
-              <div className={`${headerHeight} bg-[#DB0011] flex items-center px-4 gap-2`}>
+              <div className={`${headerHeight} bg-[#DB0011] flex items-center px-4`}>
                 <img 
-                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-TZwEiHPVB06OT66kEbfat5cSQ6KNAv.png" 
+                  src="/images/hsbc-logo-full.png" 
                   alt="HSBC" 
-                  className={`${isXLarge ? "h-5" : isLarge ? "h-4" : "h-3"} w-auto`}
+                  className={`${isXLarge ? "h-6" : isLarge ? "h-5" : "h-4"} w-auto`}
                 />
-                <div className={`text-white font-bold ${hsbcTextSize} tracking-tight`}>HSBC</div>
               </div>
             )}
             
@@ -902,13 +901,12 @@ export function PhonePreview() {
             </div>
           </div>
         </div>
-        <div className="h-12 bg-[#DB0011] flex items-center px-4 gap-2">
+        <div className="h-12 bg-[#DB0011] flex items-center px-4">
           <img 
-            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-TZwEiHPVB06OT66kEbfat5cSQ6KNAv.png" 
+            src="/images/hsbc-logo-full.png" 
             alt="HSBC" 
-            className="h-5 w-auto"
+            className="h-6 w-auto"
           />
-          <div className="text-white font-bold text-base tracking-tight">HSBC</div>
         </div>
         <div className="p-3 bg-gray-50 h-[calc(100%-6rem)]">
           <div className="text-xs text-gray-500 mb-0.5">Current Account</div>
