@@ -1378,20 +1378,18 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
             <span className="text-[10px] text-gray-400">{isAutoPlaying ? "Pause" : "Auto"}</span>
           </div>
           
-          {/* Replay button - only on final step */}
-          {isComplete && !isAutoPlaying && (
-            <div className="flex flex-col items-center gap-0.5">
-              <button
-                type="button"
-                onClick={handleReplay}
-                className="rounded-full p-1.5 border bg-white shadow-sm hover:bg-gray-50"
-                title="Replay"
-              >
-                <RotateCcw className="w-3.5 h-3.5" />
-              </button>
-              <span className="text-[10px] text-gray-400">Replay</span>
-            </div>
-          )}
+          {/* Restart button - always visible */}
+          <div className="flex flex-col items-center gap-0.5">
+            <button
+              type="button"
+              onClick={handleReplay}
+              className="rounded-full p-1.5 border bg-white shadow-sm hover:bg-gray-50"
+              title="Restart"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+            </button>
+            <span className="text-[10px] text-gray-400">Restart</span>
+          </div>
         </div>
       </div>
     )
