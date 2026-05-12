@@ -49,7 +49,7 @@ export function ClosingSection() {
           >
             <p className="text-sm text-muted-foreground mb-2">Presented by</p>
             <div className="flex items-center justify-center gap-3">
-              <span className="text-xl font-bold text-primary tracking-tight font-[family-name:var(--font-display)]">Accenture</span>
+              <span className="text-xl font-bold text-primary tracking-tight font-[family-name:var(--font-display)]">Team Orbit</span>
             </div>
           </motion.div>
         </motion.div>
