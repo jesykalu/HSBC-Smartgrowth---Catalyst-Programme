@@ -1289,16 +1289,16 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
           }))
           setPendingSelection(null)
           
-          // After 1s, scroll first to make room for the response
+          // After 1s, advance to next step then scroll to show the new content
           setTimeout(() => {
             if (currentStep < totalSteps - 1) {
               const nextStep = currentStep + 1
-              // Scroll first
-              scrollForStep(nextStep)
-              // Then advance step after scroll completes (use shorter scroll duration here)
+              // First set the step to render the new content
+              setCurrentStep(nextStep)
+              // Then scroll after DOM updates to ensure we scroll to show all new content
               setTimeout(() => {
-                setCurrentStep(nextStep)
-              }, 1500) // Wait for scroll to complete before showing response
+                scrollToPosition(1, 1500) // Scroll fully to bottom over 1.5s
+              }, 100) // Brief delay for DOM to update
             }
           }, 1000)
         }, 600)
