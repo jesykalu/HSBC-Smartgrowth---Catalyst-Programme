@@ -1057,32 +1057,35 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
     setIsAutoPlaying(false)
   }
   
-  // Autoplay effect - auto-advance every 2.5 seconds
+  // Autoplay effect - with variable delays for certain steps
   useEffect(() => {
     if (!isAutoPlaying) return
     
-    const interval = setInterval(() => {
-      setCurrentStep(prev => {
-        if (prev >= totalSteps - 1) {
-          setIsAutoPlaying(false)
-          return prev
-        }
-        // Auto-select chip options for question steps and profile summary
-        const nextStep = prev + 1
-        const nextStepAction = demoSteps[nextStep]?.action
-        if (nextStepAction === "question1" || nextStepAction === "question2" || nextStepAction === "question3" || nextStepAction === "profileSummary") {
-          setChipSelections(prevSelections => ({
-            ...prevSelections,
-            [nextStep]: 0 // Auto-select first option (e.g., "Yes, that's me")
-          }))
-        }
-        setTimeout(scrollToBottom, 100)
-        return nextStep
-      })
-    }, 800)
+    // Determine delay based on current step
+    const currentAction = demoSteps[currentStep]?.action
+    const delay = currentAction === "financialSnapshot" ? 3000 : 800 // Pause longer on financial snapshot
     
-    return () => clearInterval(interval)
-  }, [isAutoPlaying, totalSteps])
+    const timeout = setTimeout(() => {
+      if (currentStep >= totalSteps - 1) {
+        setIsAutoPlaying(false)
+        return
+      }
+      
+      // Auto-select chip options for question steps and profile summary
+      const nextStep = currentStep + 1
+      const nextStepAction = demoSteps[nextStep]?.action
+      if (nextStepAction === "question1" || nextStepAction === "question2" || nextStepAction === "question3" || nextStepAction === "profileSummary") {
+        setChipSelections(prevSelections => ({
+          ...prevSelections,
+          [nextStep]: 0 // Auto-select first option (e.g., "Yes, that's me")
+        }))
+      }
+      setTimeout(scrollToBottom, 100)
+      setCurrentStep(nextStep)
+    }, delay)
+    
+    return () => clearTimeout(timeout)
+  }, [isAutoPlaying, currentStep, totalSteps])
   
   // Toggle autoplay
   const toggleAutoPlay = () => {
