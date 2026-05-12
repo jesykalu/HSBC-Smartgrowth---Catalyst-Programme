@@ -1238,92 +1238,73 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
   }
 
   if (heroMode) {
-    const navWidth = isLarge ? "w-[259px]" : "w-[227px]"
-    
     return (
-      <div className="flex flex-col items-center overflow-visible">
+      <div className="flex items-center gap-3 overflow-visible">
         {renderContent()}
         
-        {/* Navigation bar - always visible */}
-        <div className={`mt-4 flex items-center justify-between gap-4 ${navWidth} relative z-[100]`}>
+        {/* Controls panel - right side of phone */}
+        <div className="flex flex-col items-center gap-2 relative z-[100]">
+          {/* Step counter */}
+          <span className="text-xs text-white font-medium bg-black/50 px-2 py-0.5 rounded-full whitespace-nowrap">
+            {currentStep + 1}/{totalSteps}
+          </span>
+          
           {/* Prev button */}
           <button
             type="button"
             onClick={handlePrev}
             disabled={isPrevDisabled}
-            className={`rounded-full px-4 py-2 text-sm font-medium border bg-white shadow-sm transition-all ${
+            className={`rounded-full p-1.5 border bg-white shadow-sm transition-all ${
               isPrevDisabled ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-50 cursor-pointer"
             }`}
+            title="Previous"
           >
-            <span className="flex items-center">
-              <ChevronLeft className="w-4 h-4 mr-1" />
-              Prev
-            </span>
+            <ChevronLeft className="w-3.5 h-3.5" />
           </button>
-          
-          {/* Step counter */}
-          <span className="text-sm text-white font-medium bg-black/50 px-3 py-1 rounded-full">
-            {currentStep + 1} / {totalSteps}
-          </span>
           
           {/* Next button */}
           <button
             type="button"
             onClick={handleNext}
             disabled={isNextDisabled}
-            className={`rounded-full px-4 py-2 text-sm font-medium bg-[#DB0011] text-white shadow-sm transition-all ${
+            className={`rounded-full p-1.5 bg-[#DB0011] text-white shadow-sm transition-all ${
               isNextDisabled ? "opacity-50 cursor-not-allowed" : "hover:bg-[#b8000e] cursor-pointer"
             }`}
+            title="Next"
           >
-            <span className="flex items-center">
-              Next
-              <ChevronRight className="w-4 h-4 ml-1" />
-            </span>
+            <ChevronRight className="w-3.5 h-3.5" />
           </button>
-        </div>
-        
-        {/* Autoplay toggle button */}
-        <div className="mt-3">
+          
+          {/* Autoplay toggle button */}
           <button
             type="button"
             onClick={toggleAutoPlay}
-            className={`rounded-full px-4 py-2 text-sm font-medium border shadow-sm transition-all ${
+            className={`rounded-full p-1.5 border shadow-sm transition-all ${
               isAutoPlaying 
                 ? "bg-[#DB0011] text-white border-[#DB0011] hover:bg-[#b8000e]" 
                 : "bg-white hover:bg-gray-50"
             }`}
+            title={isAutoPlaying ? "Pause" : "Autoplay"}
           >
-            <span className="flex items-center">
-              {isAutoPlaying ? (
-                <>
-                  <Pause className="w-4 h-4 mr-1" />
-                  Pause
-                </>
-              ) : (
-                <>
-                  <Play className="w-4 h-4 mr-1" />
-                  Autoplay
-                </>
-              )}
-            </span>
+            {isAutoPlaying ? (
+              <Pause className="w-3.5 h-3.5" />
+            ) : (
+              <Play className="w-3.5 h-3.5" />
+            )}
           </button>
-        </div>
-        
-        {/* Replay button - only on final step */}
-        {isComplete && !isAutoPlaying && (
-          <div className="mt-3">
+          
+          {/* Replay button - only on final step */}
+          {isComplete && !isAutoPlaying && (
             <button
               type="button"
               onClick={handleReplay}
-              className="rounded-full px-4 py-2 text-sm font-medium border bg-white shadow-sm hover:bg-gray-50"
+              className="rounded-full p-1.5 border bg-white shadow-sm hover:bg-gray-50"
+              title="Replay"
             >
-              <span className="flex items-center">
-                <Play className="w-4 h-4 mr-1" />
-                Replay
-              </span>
+              <Play className="w-3.5 h-3.5" />
             </button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     )
   }
