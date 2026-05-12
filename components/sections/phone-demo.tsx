@@ -746,7 +746,7 @@ function ChatMessage({ type, text, children, isNew = false }: ChatMessageProps) 
           <div className={`rounded-2xl px-2.5 py-1.5 text-left ${
             isBot 
               ? "bg-gray-100 rounded-tl-none" 
-              : "bg-[#DB0011] rounded-tr-none"
+              : "bg-gray-800 rounded-tr-none"
           }`}>
             <p className={`text-xs leading-tight ${isBot ? "text-gray-800" : "text-white"}`}>
               {renderText(text)}
@@ -1161,9 +1161,19 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
     return { messages: newMessages }
   }
   
-  // Handle chip selection - ONLY highlights, does NOT advance
+  // Handle chip selection - highlights first, then advances after 0.8s delay
   const handleChipSelect = (stepId: number, index: number) => {
+    // First, show the selection immediately
     setChipSelections(prev => ({ ...prev, [stepId]: index }))
+    
+    // After 0.8s delay, advance to next step (selection becomes Jes's response)
+    setTimeout(() => {
+      if (currentStep < totalSteps - 1) {
+        const nextStep = currentStep + 1
+        setCurrentStep(nextStep)
+        setTimeout(() => scrollForStep(nextStep), 100)
+      }
+    }, 800)
   }
   
   // Navigate to Fixed Saver product detail
