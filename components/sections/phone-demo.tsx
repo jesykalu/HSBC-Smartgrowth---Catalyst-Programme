@@ -740,7 +740,7 @@ function ChatMessage({ type, text, children, isNew = false }: ChatMessageProps) 
               ? "bg-gray-100 rounded-tl-none" 
               : "bg-[#DB0011] rounded-tr-none"
           }`}>
-            <p className={`text-xs leading-relaxed ${isBot ? "text-gray-800" : "text-white"}`}>
+            <p className={`text-xs leading-tight ${isBot ? "text-gray-800" : "text-white"}`}>
               {renderText(text)}
             </p>
           </div>
