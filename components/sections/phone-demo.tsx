@@ -837,13 +837,31 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
   }
   const phase = getPhase()
   
-  // Scroll chat to bottom when messages change
+  // Scroll chat to bottom with slow, readable animation
   const scrollToBottom = () => {
     if (scrollRef.current) {
-      scrollRef.current.scrollTo({
-        top: scrollRef.current.scrollHeight,
-        behavior: "smooth"
-      })
+      const element = scrollRef.current
+      const targetScroll = element.scrollHeight
+      const startScroll = element.scrollTop
+      const distance = targetScroll - startScroll
+      const duration = 1500 // 1.5 seconds for slow readable scroll
+      let startTime: number | null = null
+      
+      const animateScroll = (currentTime: number) => {
+        if (startTime === null) startTime = currentTime
+        const elapsed = currentTime - startTime
+        const progress = Math.min(elapsed / duration, 1)
+        
+        // Ease-out curve for natural deceleration
+        const easeOut = 1 - Math.pow(1 - progress, 3)
+        element.scrollTop = startScroll + (distance * easeOut)
+        
+        if (progress < 1) {
+          requestAnimationFrame(animateScroll)
+        }
+      }
+      
+      requestAnimationFrame(animateScroll)
     }
   }
   
