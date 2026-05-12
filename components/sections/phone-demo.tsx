@@ -174,13 +174,15 @@ function ReplyChips({
 }) {
   return (
     <div className="flex flex-col gap-2 mt-2 max-w-[75%] ml-8">
+      {/* Please select label */}
+      <span className="text-[10px] text-gray-400 mb-0.5">please select</span>
       {options.map((option, index) => (
         <motion.button
           key={option}
           className={`w-full px-3 py-2 rounded-xl text-xs font-medium transition-colors text-left ${
             selectedIndex === index 
               ? "bg-[#DB0011] text-white" 
-              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              : "bg-pink-100 text-gray-700 hover:bg-pink-200"
           }`}
           whileTap={{ scale: 0.98 }}
           onClick={() => onSelect?.(index)}
