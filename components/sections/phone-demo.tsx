@@ -259,22 +259,36 @@ function ProfileCardNew() {
   )
 }
 
-// Compliance card - all checks visible immediately
+// Compliance card - checks animate from grey to green one by one
 function ComplianceCardNew() {
   const checks = ["Eligibility", "Suitability", "KYC", "CDD", "Fraud Screening", "Affordability"]
 
   return (
     <div className="bg-white rounded-xl border border-gray-100 p-3 mt-2 space-y-1.5">
-      {checks.map((check) => (
-        <div
+      {checks.map((check, index) => (
+        <motion.div
           key={check}
-          className="flex items-center gap-2 p-1.5 bg-green-50 rounded-lg"
+          className="flex items-center gap-2 p-1.5 rounded-lg"
+          initial={{ backgroundColor: "rgb(249 250 251)" }} // gray-50
+          animate={{ backgroundColor: "rgb(240 253 244)" }} // green-50
+          transition={{ duration: 0.3, delay: 0.8 + index * 0.6 }}
         >
-          <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
-            <Check className="w-3 h-3 text-white" />
-          </div>
+          <motion.div 
+            className="w-5 h-5 rounded-full flex items-center justify-center"
+            initial={{ backgroundColor: "rgb(209 213 219)" }} // gray-300
+            animate={{ backgroundColor: "rgb(34 197 94)" }} // green-500
+            transition={{ duration: 0.3, delay: 0.8 + index * 0.6 }}
+          >
+            <motion.div
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.2, delay: 1.0 + index * 0.6 }}
+            >
+              <Check className="w-3 h-3 text-white" />
+            </motion.div>
+          </motion.div>
           <span className="text-gray-700 text-xs">{check}</span>
-        </div>
+        </motion.div>
       ))}
     </div>
   )
@@ -1169,6 +1183,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
     let delay = 1500 // Default delay
     if (currentAction === "financialSnapshot") delay = 3000 // Financial snapshot needs time to read
     if (currentAction === "faceid") delay = 9000 // Face ID animation takes ~5s + longer pause to see checkmark and result
+    if (currentAction === "compliance") delay = 6000 // Wait for all 6 compliance checks to animate (0.8s + 6*0.6s = ~4.4s + pause)
     
     // Check if current step needs chip selection animation
     const needsChipSelection = currentAction === "question1" || currentAction === "question2" || currentAction === "question3" || currentAction === "profileSummary"
