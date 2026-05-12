@@ -1003,7 +1003,12 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
   // Smart scroll based on current step
   const scrollForStep = (stepIndex: number) => {
     const position = getScrollPositionForStep(stepIndex)
-    scrollToPosition(position)
+    if (position === 0 && scrollRef.current) {
+      // For steps that need to show content from top, immediately scroll to top
+      scrollRef.current.scrollTop = 0
+    } else {
+      scrollToPosition(position)
+    }
   }
   
   // Build messages for a given step (no timers, immediate rendering)
