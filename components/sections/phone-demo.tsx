@@ -1079,7 +1079,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
         setTimeout(scrollToBottom, 100)
         return nextStep
       })
-    }, 2500)
+    }, 800)
     
     return () => clearInterval(interval)
   }, [isAutoPlaying, totalSteps])
