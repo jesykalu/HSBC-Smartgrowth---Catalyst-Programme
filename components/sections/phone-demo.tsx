@@ -1271,12 +1271,17 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
     const chipStepId = needsChipSelection ? chipStepIds[currentAction!] : null
     
     if (needsChipSelection && chipStepId !== null && chipSelections[chipStepId] === undefined) {
-      // First, wait to show the unselected pink chips
+      // Get scroll duration for this step - need to wait for scroll to complete first
+      const { duration: scrollDuration } = getScrollConfigForStep(currentStep)
+      
+      // Wait for scroll to complete + extra time to read the question and see all chips
+      const waitForScrollAndRead = scrollDuration + 2000 // scroll time + 2s to read
+      
       const showChipsTimeout = setTimeout(() => {
         // Show pending state (transitioning to selection)
         setPendingSelection({ step: chipStepId, index: 0 })
         
-        // After 0.5s, confirm the selection (turn red)
+        // After 0.6s, confirm the selection (turn red)
         setTimeout(() => {
           setChipSelections(prevSelections => ({
             ...prevSelections,
@@ -1284,16 +1289,16 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
           }))
           setPendingSelection(null)
           
-          // After 0.8s more, advance to next step (black response appears)
+          // After 1s more, advance to next step (black response appears)
           setTimeout(() => {
             if (currentStep < totalSteps - 1) {
               const nextStep = currentStep + 1
               setTimeout(() => scrollForStep(nextStep), 100)
               setCurrentStep(nextStep)
             }
-          }, 800)
-        }, 500)
-      }, 1500) // Wait 1.5s to show pink chips first
+          }, 1000)
+        }, 600)
+      }, waitForScrollAndRead)
       
       return () => clearTimeout(showChipsTimeout)
     }
