@@ -349,88 +349,126 @@ function LockScreen({ showNotification }: { showNotification: boolean }) {
   )
 }
 
-// Face ID Screen Component - with scanning animation
+// Face ID Screen Component - realistic iPhone Face ID animation
 function FaceIDScreen() {
   return (
-    <div className="h-full flex flex-col items-center justify-center bg-white px-6">
-      {/* Face ID icon with scanning animation */}
-      <div className="w-20 h-20 relative mb-6">
-        {/* Scanning pulse effect */}
+    <div className="h-full flex flex-col items-center justify-center bg-black px-6">
+      {/* Face ID icon with realistic scanning animation */}
+      <div className="w-24 h-24 relative mb-8">
+        {/* Outer glow pulse - starts blue, fades during scan */}
         <motion.div
-          className="absolute inset-0 rounded-2xl bg-green-500/20"
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: [0.8, 1.3, 0.8], opacity: [0, 0.5, 0] }}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute inset-[-8px] rounded-3xl"
+          initial={{ opacity: 0 }}
+          animate={{ 
+            opacity: [0, 0.3, 0.3, 0.3, 0],
+            background: [
+              "radial-gradient(circle, rgba(59,130,246,0.3) 0%, transparent 70%)",
+              "radial-gradient(circle, rgba(59,130,246,0.4) 0%, transparent 70%)",
+              "radial-gradient(circle, rgba(59,130,246,0.3) 0%, transparent 70%)",
+              "radial-gradient(circle, rgba(34,197,94,0.4) 0%, transparent 70%)",
+              "radial-gradient(circle, rgba(34,197,94,0) 0%, transparent 70%)"
+            ]
+          }}
+          transition={{ duration: 2.5, times: [0, 0.2, 0.6, 0.8, 1], ease: "easeInOut" }}
         />
         
-        {/* Scanning line effect */}
+        {/* Scanning dots effect - like iPhone infrared dots */}
         <motion.div
-          className="absolute left-2 right-2 h-0.5 bg-gradient-to-r from-transparent via-green-500 to-transparent"
-          initial={{ top: "15%" }}
-          animate={{ top: ["15%", "85%", "15%"] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-        />
+          className="absolute inset-2 overflow-hidden rounded-2xl"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: [0, 1, 1, 0] }}
+          transition={{ duration: 2, times: [0, 0.1, 0.7, 0.85] }}
+        >
+          <div className="absolute inset-0 grid grid-cols-6 grid-rows-6 gap-1 p-1">
+            {[...Array(36)].map((_, i) => (
+              <motion.div
+                key={i}
+                className="w-full h-full rounded-full bg-blue-400"
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: [0, 0.8, 0.8, 0], scale: [0, 1, 1, 0] }}
+                transition={{ 
+                  duration: 1.8, 
+                  delay: 0.3 + (i % 6) * 0.03 + Math.floor(i / 6) * 0.05,
+                  times: [0, 0.2, 0.7, 1]
+                }}
+              />
+            ))}
+          </div>
+        </motion.div>
         
         <svg viewBox="0 0 80 80" className="w-full h-full relative z-10">
-          {/* Corner scan lines with draw animation */}
+          {/* Corner brackets - start blue, transition to green */}
           <motion.path
             d="M10 25 L10 16 Q10 10 16 10 L25 10"
             fill="none"
-            stroke="#22C55E"
-            strokeWidth="4"
+            strokeWidth="3"
             strokeLinecap="round"
-            initial={{ pathLength: 0 }}
-            animate={{ pathLength: 1 }}
-            transition={{ duration: 0.5, delay: 0 }}
+            initial={{ pathLength: 0, stroke: "#3B82F6" }}
+            animate={{ pathLength: 1, stroke: ["#3B82F6", "#3B82F6", "#22C55E"] }}
+            transition={{ pathLength: { duration: 0.4, delay: 0 }, stroke: { duration: 2.2, times: [0, 0.8, 1] } }}
           />
           <motion.path
             d="M55 10 L64 10 Q70 10 70 16 L70 25"
             fill="none"
-            stroke="#22C55E"
-            strokeWidth="4"
+            strokeWidth="3"
             strokeLinecap="round"
-            initial={{ pathLength: 0 }}
-            animate={{ pathLength: 1 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
+            initial={{ pathLength: 0, stroke: "#3B82F6" }}
+            animate={{ pathLength: 1, stroke: ["#3B82F6", "#3B82F6", "#22C55E"] }}
+            transition={{ pathLength: { duration: 0.4, delay: 0.1 }, stroke: { duration: 2.2, times: [0, 0.8, 1] } }}
           />
           <motion.path
             d="M70 55 L70 64 Q70 70 64 70 L55 70"
             fill="none"
-            stroke="#22C55E"
-            strokeWidth="4"
+            strokeWidth="3"
             strokeLinecap="round"
-            initial={{ pathLength: 0 }}
-            animate={{ pathLength: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
+            initial={{ pathLength: 0, stroke: "#3B82F6" }}
+            animate={{ pathLength: 1, stroke: ["#3B82F6", "#3B82F6", "#22C55E"] }}
+            transition={{ pathLength: { duration: 0.4, delay: 0.2 }, stroke: { duration: 2.2, times: [0, 0.8, 1] } }}
           />
           <motion.path
             d="M25 70 L16 70 Q10 70 10 64 L10 55"
             fill="none"
-            stroke="#22C55E"
-            strokeWidth="4"
+            strokeWidth="3"
             strokeLinecap="round"
-            initial={{ pathLength: 0 }}
-            animate={{ pathLength: 1 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
+            initial={{ pathLength: 0, stroke: "#3B82F6" }}
+            animate={{ pathLength: 1, stroke: ["#3B82F6", "#3B82F6", "#22C55E"] }}
+            transition={{ pathLength: { duration: 0.4, delay: 0.3 }, stroke: { duration: 2.2, times: [0, 0.8, 1] } }}
           />
-          {/* Face features with fade in */}
+          
+          {/* Face outline - appears during scan */}
+          <motion.ellipse
+            cx="40"
+            cy="40"
+            rx="18"
+            ry="22"
+            fill="none"
+            strokeWidth="1.5"
+            initial={{ opacity: 0, pathLength: 0, stroke: "#3B82F6" }}
+            animate={{ opacity: [0, 0.6, 0.6, 1], pathLength: 1, stroke: ["#3B82F6", "#3B82F6", "#22C55E", "#22C55E"] }}
+            transition={{ duration: 2.2, times: [0, 0.3, 0.8, 1] }}
+          />
+          
+          {/* Face features - fade in at the end */}
           <motion.g
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.4, delay: 0.6 }}
+            transition={{ duration: 0.3, delay: 2 }}
           >
             {/* Eyes */}
-            <circle cx="30" cy="35" r="3" fill="#22C55E" />
-            <circle cx="50" cy="35" r="3" fill="#22C55E" />
+            <circle cx="32" cy="36" r="2.5" fill="#22C55E" />
+            <circle cx="48" cy="36" r="2.5" fill="#22C55E" />
             {/* Nose */}
-            <line x1="40" y1="40" x2="40" y2="48" stroke="#22C55E" strokeWidth="2" strokeLinecap="round" />
-            {/* Mouth */}
-            <path
-              d="M32 55 Q40 60 48 55"
+            <path d="M40 40 L40 46" stroke="#22C55E" strokeWidth="1.5" strokeLinecap="round" />
+            {/* Smile */}
+            <motion.path
+              d="M34 52 Q40 56 46 52"
               fill="none"
               stroke="#22C55E"
-              strokeWidth="2"
+              strokeWidth="1.5"
               strokeLinecap="round"
+              initial={{ pathLength: 0 }}
+              animate={{ pathLength: 1 }}
+              transition={{ duration: 0.3, delay: 2.1 }}
             />
           </motion.g>
         </svg>
@@ -440,26 +478,53 @@ function FaceIDScreen() {
           className="absolute inset-0 flex items-center justify-center"
           initial={{ scale: 0, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.3, delay: 1.2, type: "spring", stiffness: 200 }}
+          transition={{ duration: 0.25, delay: 2.4, type: "spring", stiffness: 300, damping: 15 }}
         >
-          <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center shadow-lg">
-            <Check className="w-5 h-5 text-white" />
+          <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(34,197,94,0.5)]">
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.2, delay: 2.5 }}
+            >
+              <Check className="w-6 h-6 text-white" strokeWidth={3} />
+            </motion.div>
           </div>
         </motion.div>
       </div>
       
-      {/* Status text with animation */}
-      <motion.div 
-        className="text-center"
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 1.4 }}
-      >
-        <div className="text-green-600 text-sm font-medium flex items-center gap-1 justify-center">
-          Face ID recognised <Check className="w-4 h-4" />
-        </div>
-        <div className="text-gray-500 text-xs mt-1">Welcome back, Jes</div>
-      </motion.div>
+      {/* Status text with animation - iPhone style */}
+      <div className="text-center space-y-2">
+        {/* Scanning text - fades out */}
+        <motion.div
+          className="text-white/80 text-sm font-medium"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: [0, 1, 1, 0] }}
+          transition={{ duration: 2.2, times: [0, 0.1, 0.85, 1] }}
+        >
+          Look at iPhone
+        </motion.div>
+        
+        {/* Success text - fades in */}
+        <motion.div 
+          className="text-center"
+          initial={{ opacity: 0, y: 5 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 2.3 }}
+        >
+          <div className="text-green-500 text-sm font-semibold flex items-center gap-1.5 justify-center">
+            <Check className="w-4 h-4" />
+            Face ID recognised
+          </div>
+          <motion.div 
+            className="text-white/60 text-xs mt-1"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3, delay: 2.5 }}
+          >
+            Welcome back, Jes
+          </motion.div>
+        </motion.div>
+      </div>
     </div>
   )
 }
@@ -1061,9 +1126,11 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
   useEffect(() => {
     if (!isAutoPlaying) return
     
-    // Determine delay based on current step
+    // Determine delay based on current step - pause longer on key screens
     const currentAction = demoSteps[currentStep]?.action
-    const delay = currentAction === "financialSnapshot" ? 3000 : 1500 // Pause longer on financial snapshot
+    let delay = 1500 // Default delay
+    if (currentAction === "financialSnapshot") delay = 3000 // Financial snapshot needs time to read
+    if (currentAction === "faceid") delay = 3500 // Face ID animation takes ~2.8s to complete
     
     const timeout = setTimeout(() => {
       if (currentStep >= totalSteps - 1) {
