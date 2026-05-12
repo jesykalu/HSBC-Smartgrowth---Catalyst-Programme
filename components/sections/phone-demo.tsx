@@ -585,7 +585,7 @@ function ChatMessage({ type, text, children, isNew = false }: ChatMessageProps) 
       initial={isNew ? { opacity: 0, y: 8 } : false}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className={`flex items-start gap-2 px-3 py-1 ${isBot ? "" : "flex-row-reverse"}`}
+      className={`flex items-start gap-2 px-2 py-1 ${isBot ? "" : "flex-row-reverse"}`}
     >
       <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
         isBot ? "bg-[#DB0011]" : "bg-gray-400"
@@ -1065,7 +1065,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
       case "done":
         return (
           <PhoneShell phase={phase} isLarge={isLarge} isXLarge={isXLarge}>
-            <div ref={scrollRef} className="h-full overflow-y-auto py-2">
+            <div ref={scrollRef} className="h-full w-full overflow-y-auto py-2 [&::-webkit-scrollbar]:w-[3px] [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-full" style={{ scrollbarGutter: 'stable' }}>
               <>
                 {computedMessages.map((msg, index) => {
                   const isLast = index === computedMessages.length - 1
