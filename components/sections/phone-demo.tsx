@@ -349,7 +349,7 @@ function LockScreen({ showNotification }: { showNotification: boolean }) {
             <div className="flex items-start gap-3">
               <div className="w-10 h-10 rounded-xl bg-[#DB0011] flex items-center justify-center flex-shrink-0">
                 <img 
-                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-TZwEiHPVB06OT66kEbfat5cSQ6KNAv.png" 
+                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-DWuzL8ZSSyYS6sQmSfVVbQREiFHRek.png" 
                   alt="HSBC" 
                   className="w-6 h-auto"
                 />
