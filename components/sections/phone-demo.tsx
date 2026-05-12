@@ -240,19 +240,19 @@ function FinancialSnapshotCard() {
   )
 }
 
-// Profile card with withdrawal needs
+// Profile card with withdrawal needs - compact version
 function ProfileCardNew() {
   return (
-    <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-3 mt-2 space-y-2">
+    <div className="bg-white rounded-lg border border-gray-100 shadow-sm p-2 mt-1.5 space-y-1">
       {[
         { label: "Risk Appetite", value: "Low–Medium", color: "bg-blue-100 text-blue-700" },
-        { label: "Spending Behaviour", value: "Travel, Retail", color: "bg-purple-100 text-purple-700" },
-        { label: "Savings Pattern", value: "Strong Surplus", color: "bg-green-100 text-green-700" },
-        { label: "Withdrawal needs", value: "Occasional", color: "bg-yellow-100 text-yellow-700" },
+        { label: "Spending", value: "Travel, Retail", color: "bg-purple-100 text-purple-700" },
+        { label: "Savings", value: "Strong Surplus", color: "bg-green-100 text-green-700" },
+        { label: "Withdrawal", value: "Occasional", color: "bg-yellow-100 text-yellow-700" },
       ].map((item) => (
         <div key={item.label} className="flex items-center justify-between">
-          <span className="text-xs text-gray-600">{item.label}</span>
-          <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${item.color}`}>{item.value}</span>
+          <span className="text-[10px] text-gray-600">{item.label}</span>
+          <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-medium ${item.color}`}>{item.value}</span>
         </div>
       ))}
     </div>
@@ -1335,9 +1335,9 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
                   if (msg.type === "bot" && msg.text?.includes("built for your profile")) {
                     return (
                       <ChatMessage key={msg.id} type="bot" text={msg.text} isNew={isLast}>
-                        <ProfileCardNew />
-                        <div className="text-sm text-gray-800 mt-2 bg-gray-100 rounded-2xl rounded-bl-none px-3 py-2 inline-block">
-                          Does this look right to you?
+                      <ProfileCardNew />
+                        <div className="text-[11px] text-gray-800 mt-1.5 bg-gray-100 rounded-xl rounded-bl-none px-2 py-1.5 inline-block">
+                        Does this look right to you?
                         </div>
                         <ReplyChips 
                           options={["Yes, that's me", "Not quite"]}
