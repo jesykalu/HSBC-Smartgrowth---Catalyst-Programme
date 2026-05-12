@@ -48,8 +48,8 @@ function renderText(text: string) {
 
 // Donut Chart Component
 function DonutChart() {
-  const radius = 50
-  const strokeWidth = 16
+  const radius = 36
+  const strokeWidth = 12
   const circumference = 2 * Math.PI * radius
   const bluePercent = 60
   const greenPercent = 40
@@ -57,13 +57,13 @@ function DonutChart() {
   const greenOffset = circumference * (bluePercent / 100)
 
   return (
-    <div className="flex flex-col items-center my-3">
-      <div className="relative w-[140px] h-[140px]">
-        <svg className="w-full h-full -rotate-90" viewBox="0 0 140 140">
+    <div className="flex flex-col items-center my-2">
+      <div className="relative w-[100px] h-[100px]">
+        <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
           {/* Blue segment - Fixed Saver 60% */}
           <circle
-            cx="70"
-            cy="70"
+            cx="50"
+            cy="50"
             r={radius}
             fill="none"
             stroke="#3B82F6"
@@ -74,8 +74,8 @@ function DonutChart() {
           />
           {/* Green segment - Investment ISA 40% */}
           <circle
-            cx="70"
-            cy="70"
+            cx="50"
+            cy="50"
             r={radius}
             fill="none"
             stroke="#22C55E"
@@ -87,8 +87,8 @@ function DonutChart() {
         </svg>
         {/* Center text */}
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-lg font-bold text-gray-900">£10,000</span>
-          <span className="text-xs text-gray-500">Total</span>
+          <span className="text-sm font-bold text-gray-900">£10,000</span>
+          <span className="text-[10px] text-gray-500">Total</span>
         </div>
       </div>
     </div>
@@ -109,54 +109,50 @@ function ProductCards({
   const isaVisited = visitedProducts.has("isa")
   
   return (
-    <div className="space-y-2 mt-2">
+    <div className="space-y-1.5 mt-1.5">
       <motion.div 
-        className="bg-blue-50 border border-blue-200 rounded-xl p-3 cursor-pointer hover:bg-blue-100 transition-colors relative"
+        className="bg-blue-50 border border-blue-200 rounded-lg p-2 cursor-pointer hover:bg-blue-100 transition-colors relative"
         whileTap={{ scale: 0.98 }}
         onClick={onTapFixedSaver}
       >
         {fixedSaverVisited && (
-          <div className="absolute top-2 right-2 flex items-center gap-1 px-1.5 py-0.5 bg-green-100 text-green-700 rounded-full text-[10px] font-medium">
-            <Check className="w-3 h-3" />
+          <div className="absolute top-1.5 right-1.5 flex items-center gap-0.5 px-1 py-0.5 bg-green-100 text-green-700 rounded-full text-[8px] font-medium">
+            <Check className="w-2.5 h-2.5" />
             Viewed
           </div>
         )}
-        <div className="flex items-center gap-2 mb-2">
-          <div className="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center">
-            <PiggyBank className="w-4 h-4 text-white" />
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-6 rounded-md bg-blue-500 flex items-center justify-center">
+            <PiggyBank className="w-3 h-3 text-white" />
           </div>
           <div className="flex-1">
-            <div className="font-medium text-blue-900 text-sm">Fixed Saver</div>
-            <div className="text-xs text-blue-700">£6,000 · 4.10% AER</div>
+            <div className="font-medium text-blue-900 text-[11px]">Fixed Saver</div>
+            <div className="text-[10px] text-blue-700">£6,000 · 4.10% AER</div>
           </div>
+          <span className="text-[10px] text-blue-600 font-medium">Explore →</span>
         </div>
-        <button className="w-full py-1.5 px-3 bg-blue-500 text-white rounded-lg text-xs font-medium hover:bg-blue-600 transition-colors">
-          Tap to explore →
-        </button>
       </motion.div>
       <motion.div 
-        className="bg-green-50 border border-green-200 rounded-xl p-3 cursor-pointer hover:bg-green-100 transition-colors relative"
+        className="bg-green-50 border border-green-200 rounded-lg p-2 cursor-pointer hover:bg-green-100 transition-colors relative"
         whileTap={{ scale: 0.98 }}
         onClick={onTapISA}
       >
         {isaVisited && (
-          <div className="absolute top-2 right-2 flex items-center gap-1 px-1.5 py-0.5 bg-green-100 text-green-700 rounded-full text-[10px] font-medium">
-            <Check className="w-3 h-3" />
+          <div className="absolute top-1.5 right-1.5 flex items-center gap-0.5 px-1 py-0.5 bg-green-100 text-green-700 rounded-full text-[8px] font-medium">
+            <Check className="w-2.5 h-2.5" />
             Viewed
           </div>
         )}
-        <div className="flex items-center gap-2 mb-2">
-          <div className="w-8 h-8 rounded-lg bg-green-500 flex items-center justify-center">
-            <TrendingUp className="w-4 h-4 text-white" />
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-6 rounded-md bg-green-500 flex items-center justify-center">
+            <TrendingUp className="w-3 h-3 text-white" />
           </div>
           <div className="flex-1">
-            <div className="font-medium text-green-900 text-sm">Investment ISA</div>
-            <div className="text-xs text-green-700">£4,000 · 5–7% return</div>
+            <div className="font-medium text-green-900 text-[11px]">Investment ISA</div>
+            <div className="text-[10px] text-green-700">£4,000 · 5–7% return</div>
           </div>
+          <span className="text-[10px] text-green-600 font-medium">Explore →</span>
         </div>
-        <button className="w-full py-1.5 px-3 bg-green-500 text-white rounded-lg text-xs font-medium hover:bg-green-600 transition-colors">
-          Tap to explore →
-        </button>
       </motion.div>
     </div>
   )
@@ -166,64 +162,75 @@ function ProductCards({
 function ReplyChips({ 
   options, 
   selectedIndex,
+  pendingIndex,
   onSelect 
 }: { 
   options: string[]
   selectedIndex: number | null
+  pendingIndex?: number | null
   onSelect?: (index: number) => void 
 }) {
   return (
     <div className="flex flex-col gap-2 mt-2 max-w-[75%] ml-8">
       {/* Please select label */}
       <span className="text-[10px] text-gray-400 mb-0.5">please select</span>
-      {options.map((option, index) => (
-        <motion.button
-          key={option}
-          className={`w-full px-3 py-2 rounded-xl text-xs font-medium transition-colors text-left ${
-            selectedIndex === index 
-              ? "bg-[#DB0011] text-white" 
-              : "bg-pink-100 text-gray-700 hover:bg-pink-200"
-          }`}
-          whileTap={{ scale: 0.98 }}
-          onClick={() => onSelect?.(index)}
-        >
-          {option}
-        </motion.button>
-      ))}
+      {options.map((option, index) => {
+        const isSelected = selectedIndex === index
+        const isPending = pendingIndex === index
+        
+        return (
+          <motion.button
+            key={option}
+            className={`w-full px-3 py-2 rounded-xl text-xs font-medium text-left transition-all duration-300 ${
+              isSelected 
+                ? "bg-[#DB0011] text-white" 
+                : isPending
+                  ? "bg-[#DB0011]/70 text-white scale-[0.98]"
+                  : "bg-pink-100 text-gray-700 hover:bg-pink-200"
+            }`}
+            animate={isPending ? { scale: [1, 0.98, 1] } : {}}
+            transition={{ duration: 0.3 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => onSelect?.(index)}
+          >
+            {option}
+          </motion.button>
+        )
+      })}
     </div>
   )
 }
 
-// Financial Snapshot Card - NEW component
+// Financial Snapshot Card - compact version
 function FinancialSnapshotCard() {
   const data = [
-    { icon: PiggyBank, label: "Current savings products", value: "LISA · Easy Access Saver" },
-    { icon: CreditCard, label: "Avg. monthly spend", value: "£1,840 / month" },
-    { icon: Plane, label: "Large purchases (last 6 months)", value: "None detected" },
-    { icon: BarChart3, label: "Savings rate", value: "~18% of monthly income" },
-    { icon: ArrowUpDown, label: "Avg. monthly transfers to savings", value: "£320 / month" },
-    { icon: ShoppingBag, label: "Top spending categories", value: "Groceries, Transport, Subscriptions" },
-    { icon: Wallet, label: "Idle funds (uninvested)", value: "£10,000" },
+    { icon: PiggyBank, label: "Savings products", value: "LISA · Easy Access" },
+    { icon: CreditCard, label: "Monthly spend", value: "£1,840/mo" },
+    { icon: Plane, label: "Large purchases", value: "None" },
+    { icon: BarChart3, label: "Savings rate", value: "~18%" },
+    { icon: ArrowUpDown, label: "Monthly transfers", value: "£320/mo" },
+    { icon: ShoppingBag, label: "Top categories", value: "Groceries, Transport" },
+    { icon: Wallet, label: "Idle funds", value: "£10,000" },
   ]
 
   return (
-    <div className="bg-gradient-to-b from-white to-gray-50 rounded-xl border border-gray-100 shadow-sm p-4 mt-2">
+    <div className="bg-gradient-to-b from-white to-gray-50 rounded-lg border border-gray-100 shadow-sm p-1.5 mt-1">
       {/* Header */}
-      <div className="flex items-center gap-2 mb-3">
-        <Sparkles className="w-4 h-4 text-primary" />
-        <span className="font-bold text-gray-900 text-sm">Your Financial Snapshot</span>
+      <div className="flex items-center gap-1 mb-1">
+        <Sparkles className="w-2.5 h-2.5 text-primary" />
+        <span className="font-bold text-gray-900 text-[10px]">Your Financial Snapshot</span>
       </div>
       
       {/* Data rows */}
       <div className="space-y-0">
         {data.map((item, index) => (
           <div key={item.label}>
-            <div className="flex items-center justify-between py-2">
-              <div className="flex items-center gap-2">
-                <item.icon className="w-3.5 h-3.5 text-gray-400" />
-                <span className="text-xs text-gray-500">{item.label}</span>
+            <div className="flex items-center justify-between py-0.5">
+              <div className="flex items-center gap-1">
+                <item.icon className="w-2.5 h-2.5 text-gray-400" />
+                <span className="text-[9px] text-gray-500">{item.label}</span>
               </div>
-              <span className="text-xs text-gray-900 font-medium text-right max-w-[45%]">{item.value}</span>
+              <span className="text-[9px] text-gray-900 font-medium text-right">{item.value}</span>
             </div>
             {index < data.length - 1 && <div className="h-px bg-gray-100" />}
           </div>
@@ -233,41 +240,55 @@ function FinancialSnapshotCard() {
   )
 }
 
-// Profile card with withdrawal needs
+// Profile card with withdrawal needs - compact version
 function ProfileCardNew() {
   return (
-    <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-3 mt-2 space-y-2">
+    <div className="bg-white rounded-lg border border-gray-100 shadow-sm p-2 mt-1.5 space-y-1">
       {[
         { label: "Risk Appetite", value: "Low–Medium", color: "bg-blue-100 text-blue-700" },
-        { label: "Spending Behaviour", value: "Travel, Retail", color: "bg-purple-100 text-purple-700" },
-        { label: "Savings Pattern", value: "Strong Surplus", color: "bg-green-100 text-green-700" },
-        { label: "Withdrawal needs", value: "Occasional", color: "bg-yellow-100 text-yellow-700" },
+        { label: "Spending", value: "Travel, Retail", color: "bg-purple-100 text-purple-700" },
+        { label: "Savings", value: "Strong Surplus", color: "bg-green-100 text-green-700" },
+        { label: "Withdrawal", value: "Occasional", color: "bg-yellow-100 text-yellow-700" },
       ].map((item) => (
         <div key={item.label} className="flex items-center justify-between">
-          <span className="text-xs text-gray-600">{item.label}</span>
-          <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${item.color}`}>{item.value}</span>
+          <span className="text-[10px] text-gray-600">{item.label}</span>
+          <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-medium ${item.color}`}>{item.value}</span>
         </div>
       ))}
     </div>
   )
 }
 
-// Compliance card - all checks visible immediately
+// Compliance card - checks animate from grey to green one by one
 function ComplianceCardNew() {
   const checks = ["Eligibility", "Suitability", "KYC", "CDD", "Fraud Screening", "Affordability"]
 
   return (
     <div className="bg-white rounded-xl border border-gray-100 p-3 mt-2 space-y-1.5">
-      {checks.map((check) => (
-        <div
+      {checks.map((check, index) => (
+        <motion.div
           key={check}
-          className="flex items-center gap-2 p-1.5 bg-green-50 rounded-lg"
+          className="flex items-center gap-2 p-1.5 rounded-lg"
+          initial={{ backgroundColor: "rgb(249 250 251)" }} // gray-50
+          animate={{ backgroundColor: "rgb(240 253 244)" }} // green-50
+          transition={{ duration: 0.3, delay: 0.8 + index * 0.6 }}
         >
-          <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
-            <Check className="w-3 h-3 text-white" />
-          </div>
+          <motion.div 
+            className="w-5 h-5 rounded-full flex items-center justify-center"
+            initial={{ backgroundColor: "rgb(209 213 219)" }} // gray-300
+            animate={{ backgroundColor: "rgb(34 197 94)" }} // green-500
+            transition={{ duration: 0.3, delay: 0.8 + index * 0.6 }}
+          >
+            <motion.div
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.2, delay: 1.0 + index * 0.6 }}
+            >
+              <Check className="w-3 h-3 text-white" />
+            </motion.div>
+          </motion.div>
           <span className="text-gray-700 text-xs">{check}</span>
-        </div>
+        </motion.div>
       ))}
     </div>
   )
@@ -349,75 +370,192 @@ function LockScreen({ showNotification }: { showNotification: boolean }) {
   )
 }
 
-// Face ID Screen Component - shows authenticated state immediately, no tap required
+// Face ID Screen Component - realistic iPhone-style animation with white bg and red brackets
 function FaceIDScreen() {
   return (
     <div className="h-full flex flex-col items-center justify-center bg-white px-6">
-      {/* Face ID icon - already authenticated */}
-      <div className="w-20 h-20 relative mb-6">
-        <svg viewBox="0 0 80 80" className="w-full h-full">
-          {/* Face outline */}
-          <rect
-            x="10"
-            y="10"
-            width="60"
-            height="60"
-            rx="16"
+      {/* Face ID icon container */}
+      <div className="w-24 h-24 relative mb-8">
+        {/* Scanning pulse rings - like real iPhone infrared scan */}
+        <motion.div
+          className="absolute inset-[-20px] rounded-full border-2 border-[#DB0011]/30"
+          initial={{ scale: 0.6, opacity: 0 }}
+          animate={{ scale: [0.6, 1.2, 1.2], opacity: [0, 0.5, 0] }}
+          transition={{ duration: 2, repeat: 3, ease: "easeOut" }}
+        />
+        <motion.div
+          className="absolute inset-[-10px] rounded-full border-2 border-[#DB0011]/20"
+          initial={{ scale: 0.7, opacity: 0 }}
+          animate={{ scale: [0.7, 1.1, 1.1], opacity: [0, 0.4, 0] }}
+          transition={{ duration: 2, repeat: 3, ease: "easeOut", delay: 0.3 }}
+        />
+        
+        <svg viewBox="0 0 80 80" className="w-full h-full relative z-10">
+          {/* Corner brackets - HSBC red, animate to green on success */}
+          <motion.path
+            d="M6 22 L6 12 Q6 6 12 6 L22 6"
             fill="none"
-            stroke="#22C55E"
-            strokeWidth="3"
-          />
-          {/* Corner scan lines */}
-          <path
-            d="M10 25 L10 16 Q10 10 16 10 L25 10"
-            fill="none"
-            stroke="#22C55E"
             strokeWidth="4"
             strokeLinecap="round"
+            initial={{ stroke: "#DB0011", pathLength: 0 }}
+            animate={{ 
+              stroke: ["#DB0011", "#DB0011", "#DB0011", "#22C55E"],
+              pathLength: [0, 1, 1, 1]
+            }}
+            transition={{ duration: 5, times: [0, 0.15, 0.85, 1], ease: "easeInOut" }}
           />
-          <path
-            d="M55 10 L64 10 Q70 10 70 16 L70 25"
+          <motion.path
+            d="M58 6 L68 6 Q74 6 74 12 L74 22"
             fill="none"
-            stroke="#22C55E"
             strokeWidth="4"
             strokeLinecap="round"
+            initial={{ stroke: "#DB0011", pathLength: 0 }}
+            animate={{ 
+              stroke: ["#DB0011", "#DB0011", "#DB0011", "#22C55E"],
+              pathLength: [0, 1, 1, 1]
+            }}
+            transition={{ duration: 5, times: [0, 0.15, 0.85, 1], ease: "easeInOut", delay: 0.15 }}
           />
-          <path
-            d="M70 55 L70 64 Q70 70 64 70 L55 70"
+          <motion.path
+            d="M74 58 L74 68 Q74 74 68 74 L58 74"
             fill="none"
-            stroke="#22C55E"
             strokeWidth="4"
             strokeLinecap="round"
+            initial={{ stroke: "#DB0011", pathLength: 0 }}
+            animate={{ 
+              stroke: ["#DB0011", "#DB0011", "#DB0011", "#22C55E"],
+              pathLength: [0, 1, 1, 1]
+            }}
+            transition={{ duration: 5, times: [0, 0.15, 0.85, 1], ease: "easeInOut", delay: 0.3 }}
           />
-          <path
-            d="M25 70 L16 70 Q10 70 10 64 L10 55"
+          <motion.path
+            d="M22 74 L12 74 Q6 74 6 68 L6 58"
             fill="none"
-            stroke="#22C55E"
             strokeWidth="4"
             strokeLinecap="round"
+            initial={{ stroke: "#DB0011", pathLength: 0 }}
+            animate={{ 
+              stroke: ["#DB0011", "#DB0011", "#DB0011", "#22C55E"],
+              pathLength: [0, 1, 1, 1]
+            }}
+            transition={{ duration: 5, times: [0, 0.15, 0.85, 1], ease: "easeInOut", delay: 0.45 }}
           />
-          {/* Eyes */}
-          <circle cx="30" cy="35" r="3" fill="#22C55E" />
-          <circle cx="50" cy="35" r="3" fill="#22C55E" />
-          {/* Nose */}
-          <line x1="40" y1="40" x2="40" y2="48" stroke="#22C55E" strokeWidth="2" strokeLinecap="round" />
-          {/* Mouth */}
-          <path
-            d="M32 55 Q40 60 48 55"
-            fill="none"
-            stroke="#22C55E"
-            strokeWidth="2"
-            strokeLinecap="round"
-          />
+          
+          {/* Face icon - fades in during scan, transitions to green */}
+          <motion.g
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.8 }}
+          >
+            <motion.g
+              initial={{ stroke: "#DB0011", fill: "#DB0011" }}
+              animate={{ 
+                stroke: ["#DB0011", "#DB0011", "#22C55E"],
+                fill: ["#DB0011", "#DB0011", "#22C55E"]
+              }}
+              transition={{ duration: 5, times: [0, 0.85, 1], ease: "easeInOut" }}
+            >
+              {/* Left eye */}
+              <motion.circle 
+                cx="30" cy="32" r="3"
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ duration: 0.5, delay: 1.2 }}
+              />
+              {/* Right eye */}
+              <motion.circle 
+                cx="50" cy="32" r="3"
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ duration: 0.5, delay: 1.4 }}
+              />
+              {/* Nose line */}
+              <motion.line 
+                x1="40" y1="36" x2="40" y2="46" 
+                strokeWidth="2.5" 
+                strokeLinecap="round"
+                initial={{ pathLength: 0 }}
+                animate={{ pathLength: 1 }}
+                transition={{ duration: 0.6, delay: 1.6 }}
+              />
+              {/* Smile */}
+              <motion.path
+                d="M30 52 Q40 60 50 52"
+                fill="none"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                initial={{ pathLength: 0 }}
+                animate={{ pathLength: 1 }}
+                transition={{ duration: 0.7, delay: 2.0 }}
+              />
+            </motion.g>
+          </motion.g>
         </svg>
+        
+        {/* Scanning line effect - moves up and down slower */}
+        <motion.div
+          className="absolute left-2 right-2 h-0.5 bg-gradient-to-r from-transparent via-[#DB0011] to-transparent z-20"
+          initial={{ top: "20%", opacity: 0 }}
+          animate={{ 
+            top: ["20%", "80%", "20%", "80%", "20%", "80%", "50%"],
+            opacity: [0, 0.8, 0.8, 0.8, 0.8, 0.8, 0]
+          }}
+          transition={{ duration: 5, times: [0, 0.15, 0.3, 0.45, 0.6, 0.75, 1], ease: "easeInOut" }}
+        />
+        
+        {/* Checkmark overlay - appears after scan complete */}
+        <motion.div
+          className="absolute inset-0 flex items-center justify-center bg-white z-30"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4, delay: 5.2 }}
+        >
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 0.5, delay: 5.4, type: "spring", stiffness: 200 }}
+          >
+            <div className="w-14 h-14 bg-green-500 rounded-full flex items-center justify-center shadow-lg">
+              <Check className="w-8 h-8 text-white" strokeWidth={3} />
+            </div>
+          </motion.div>
+        </motion.div>
       </div>
       
-      {/* Status text - already authenticated */}
-      <div className="text-center">
-        <div className="text-green-600 text-sm font-medium flex items-center gap-1 justify-center">
-          Face ID recognised <Check className="w-4 h-4" />
-        </div>
-        <div className="text-gray-500 text-xs mt-1">Welcome back, Jes</div>
+      {/* Status text */}
+      <div className="text-center h-16 relative">
+        {/* "Face ID" scanning text */}
+        <motion.div
+          className="text-gray-800 text-lg font-medium"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: [0, 1, 1, 0] }}
+          transition={{ duration: 5, times: [0, 0.1, 0.9, 1] }}
+        >
+          Face ID
+          <motion.span
+            className="inline-block ml-1"
+            animate={{ opacity: [0, 1, 0] }}
+            transition={{ duration: 1, repeat: 5 }}
+          >
+            ...
+          </motion.span>
+        </motion.div>
+        
+        {/* Success message - fades in after checkmark */}
+        <motion.div 
+          className="absolute inset-0 flex flex-col items-center justify-center"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 5.8 }}
+        >
+          <div className="text-green-600 text-lg font-semibold flex items-center gap-1.5">
+            <Check className="w-5 h-5" />
+            Face ID recognised
+          </div>
+          <div className="text-gray-500 text-sm mt-1">
+            Welcome back, Jes
+          </div>
+        </motion.div>
       </div>
     </div>
   )
@@ -602,7 +740,7 @@ function ChatMessage({ type, text, children, isNew = false }: ChatMessageProps) 
               ? "bg-gray-100 rounded-tl-none" 
               : "bg-[#DB0011] rounded-tr-none"
           }`}>
-            <p className={`text-xs leading-relaxed ${isBot ? "text-gray-800" : "text-white"}`}>
+            <p className={`text-xs leading-tight ${isBot ? "text-gray-800" : "text-white"}`}>
               {renderText(text)}
             </p>
           </div>
@@ -771,6 +909,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
   const isXLarge = scale === "xlarge"
   const [currentStep, setCurrentStep] = useState(0)
   const [chipSelections, setChipSelections] = useState<Record<number, number | null>>({})
+  const [pendingSelection, setPendingSelection] = useState<{ step: number; index: number } | null>(null)
   const [visitedProducts, setVisitedProducts] = useState<Set<string>>(new Set())
   const [currentProductView, setCurrentProductView] = useState<"fixedSaver" | "isa" | null>(null)
   const [isAutoPlaying, setIsAutoPlaying] = useState(false)
@@ -788,13 +927,31 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
   }
   const phase = getPhase()
   
-  // Scroll chat to bottom when messages change
+  // Scroll chat to bottom with very slow, readable animation
   const scrollToBottom = () => {
     if (scrollRef.current) {
-      scrollRef.current.scrollTo({
-        top: scrollRef.current.scrollHeight,
-        behavior: "smooth"
-      })
+      const element = scrollRef.current
+      const targetScroll = element.scrollHeight
+      const startScroll = element.scrollTop
+      const distance = targetScroll - startScroll
+      const duration = 3000 // 3 seconds for very slow readable scroll
+      let startTime: number | null = null
+      
+      const animateScroll = (currentTime: number) => {
+        if (startTime === null) startTime = currentTime
+        const elapsed = currentTime - startTime
+        const progress = Math.min(elapsed / duration, 1)
+        
+        // Strong ease-out curve for heavy deceleration at the end
+        const easeOut = 1 - Math.pow(1 - progress, 5)
+        element.scrollTop = startScroll + (distance * easeOut)
+        
+        if (progress < 1) {
+          requestAnimationFrame(animateScroll)
+        }
+      }
+      
+      requestAnimationFrame(animateScroll)
     }
   }
   
@@ -1011,47 +1168,68 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
   const handleReplay = () => {
     setCurrentStep(0)
     setChipSelections({})
+    setPendingSelection(null)
     setVisitedProducts(new Set())
     setCurrentProductView(null)
     setIsAutoPlaying(false)
   }
   
-  // Autoplay effect - auto-advance every 2.5 seconds
+  // Autoplay effect - with variable delays for certain steps
   useEffect(() => {
     if (!isAutoPlaying) return
     
-    const interval = setInterval(() => {
-      setCurrentStep(prev => {
-        if (prev >= totalSteps - 1) {
-          setIsAutoPlaying(false)
-          return prev
-        }
-        // Auto-select chip options for question steps
-        const nextStep = prev + 1
-        const nextStepAction = demoSteps[nextStep]?.action
-        if (nextStepAction === "question1" || nextStepAction === "question2" || nextStepAction === "question3") {
+    // Determine delay based on current step - pause longer on key screens
+    const currentAction = demoSteps[currentStep]?.action
+    let delay = 1500 // Default delay
+    if (currentAction === "financialSnapshot") delay = 3000 // Financial snapshot needs time to read
+    if (currentAction === "faceid") delay = 12000 // Face ID animation completes at ~6s, then pause to see "Face ID recognised" result
+    if (currentAction === "compliance") delay = 6000 // Wait for all 6 compliance checks to animate (0.8s + 6*0.6s = ~4.4s + pause)
+    
+    // Check if current step needs chip selection animation
+    const needsChipSelection = currentAction === "question1" || currentAction === "question2" || currentAction === "question3" || currentAction === "profileSummary"
+    
+    if (needsChipSelection && chipSelections[currentStep] === undefined) {
+      // First show the pending state (pink -> transitioning)
+      const pendingTimeout = setTimeout(() => {
+        setPendingSelection({ step: currentStep, index: 0 })
+        
+        // Then after a short delay, confirm the selection (turn red)
+        setTimeout(() => {
           setChipSelections(prevSelections => ({
             ...prevSelections,
-            [nextStep]: 0 // Auto-select first option
+            [currentStep]: 0
           }))
-        }
-        setTimeout(scrollToBottom, 100)
-        return nextStep
-      })
-    }, 2500)
+          setPendingSelection(null)
+        }, 400)
+      }, 800) // Wait a bit before starting the selection animation
+      
+      return () => clearTimeout(pendingTimeout)
+    }
     
-    return () => clearInterval(interval)
-  }, [isAutoPlaying, totalSteps])
+    const timeout = setTimeout(() => {
+      if (currentStep >= totalSteps - 1) {
+        setIsAutoPlaying(false)
+        return
+      }
+      
+      setTimeout(scrollToBottom, 100)
+      setCurrentStep(currentStep + 1)
+    }, delay)
+    
+    return () => clearTimeout(timeout)
+  }, [isAutoPlaying, currentStep, totalSteps, chipSelections])
   
   // Toggle autoplay
   const toggleAutoPlay = () => {
     if (isAutoPlaying) {
       setIsAutoPlaying(false)
+      setPendingSelection(null)
     } else {
       // If at the end, restart first
       if (currentStep >= totalSteps - 1) {
         setCurrentStep(0)
         setChipSelections({})
+        setPendingSelection(null)
         setVisitedProducts(new Set())
         setCurrentProductView(null)
       }
@@ -1133,6 +1311,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
                         <ReplyChips 
                           options={["Yes, within 6 months", "Maybe, 6–12 months", "No plans"]}
                           selectedIndex={chipSelections[6] ?? null}
+                          pendingIndex={pendingSelection?.step === 6 ? pendingSelection.index : null}
                           onSelect={(idx) => handleChipSelect(6, idx)}
                         />
                       </ChatMessage>
@@ -1146,6 +1325,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
                         <ReplyChips 
                           options={["Regularly (monthly)", "Occasionally", "Rarely / lock it away"]}
                           selectedIndex={chipSelections[7] ?? null}
+                          pendingIndex={pendingSelection?.step === 7 ? pendingSelection.index : null}
                           onSelect={(idx) => handleChipSelect(7, idx)}
                         />
                       </ChatMessage>
@@ -1159,6 +1339,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
                         <ReplyChips 
                           options={["Play it safe", "Balanced approach", "Happy to take risks"]}
                           selectedIndex={chipSelections[8] ?? null}
+                          pendingIndex={pendingSelection?.step === 8 ? pendingSelection.index : null}
                           onSelect={(idx) => handleChipSelect(8, idx)}
                         />
                       </ChatMessage>
@@ -1169,13 +1350,14 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
                   if (msg.type === "bot" && msg.text?.includes("built for your profile")) {
                     return (
                       <ChatMessage key={msg.id} type="bot" text={msg.text} isNew={isLast}>
-                        <ProfileCardNew />
-                        <div className="text-sm text-gray-800 mt-2 bg-gray-100 rounded-2xl rounded-bl-none px-3 py-2 inline-block">
-                          Does this look right to you?
+                      <ProfileCardNew />
+                        <div className="text-[11px] text-gray-800 mt-1.5 bg-gray-100 rounded-xl rounded-bl-none px-2 py-1.5 inline-block">
+                        Does this look right to you?
                         </div>
                         <ReplyChips 
                           options={["Yes, that's me", "Not quite"]}
                           selectedIndex={chipSelections[9] ?? null}
+                          pendingIndex={pendingSelection?.step === 9 ? pendingSelection.index : null}
                           onSelect={(idx) => handleChipSelect(9, idx)}
                         />
                       </ChatMessage>
@@ -1243,67 +1425,80 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
         {renderContent()}
         
         {/* Controls panel - right side of phone */}
-        <div className="flex flex-col items-center gap-2 relative z-[100]">
+        <div className="flex flex-col items-center gap-3 relative z-[100]">
           {/* Step counter */}
-          <span className="text-xs text-white font-medium bg-black/50 px-2 py-0.5 rounded-full whitespace-nowrap">
-            {currentStep + 1}/{totalSteps}
-          </span>
+          <div className="flex flex-col items-center gap-0.5">
+            <span className="text-[10px] text-gray-400">Step</span>
+            <span className="text-xs text-white font-medium bg-black/50 px-2 py-0.5 rounded-full whitespace-nowrap">
+              {currentStep + 1}/{totalSteps}
+            </span>
+          </div>
           
           {/* Prev button */}
-          <button
-            type="button"
-            onClick={handlePrev}
-            disabled={isPrevDisabled}
-            className={`rounded-full p-1.5 border bg-white shadow-sm transition-all ${
-              isPrevDisabled ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-50 cursor-pointer"
-            }`}
-            title="Previous"
-          >
-            <ChevronLeft className="w-3.5 h-3.5" />
-          </button>
+          <div className="flex flex-col items-center gap-0.5">
+            <button
+              type="button"
+              onClick={handlePrev}
+              disabled={isPrevDisabled}
+              className={`rounded-full p-1.5 border bg-white shadow-sm transition-all ${
+                isPrevDisabled ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-50 cursor-pointer"
+              }`}
+              title="Previous"
+            >
+              <ChevronLeft className="w-3.5 h-3.5" />
+            </button>
+            <span className="text-[10px] text-gray-400">Prev</span>
+          </div>
           
           {/* Next button */}
-          <button
-            type="button"
-            onClick={handleNext}
-            disabled={isNextDisabled}
-            className={`rounded-full p-1.5 bg-[#DB0011] text-white shadow-sm transition-all ${
-              isNextDisabled ? "opacity-50 cursor-not-allowed" : "hover:bg-[#b8000e] cursor-pointer"
-            }`}
-            title="Next"
-          >
-            <ChevronRight className="w-3.5 h-3.5" />
-          </button>
+          <div className="flex flex-col items-center gap-0.5">
+            <button
+              type="button"
+              onClick={handleNext}
+              disabled={isNextDisabled}
+              className={`rounded-full p-1.5 bg-[#DB0011] text-white shadow-sm transition-all ${
+                isNextDisabled ? "opacity-50 cursor-not-allowed" : "hover:bg-[#b8000e] cursor-pointer"
+              }`}
+              title="Next"
+            >
+              <ChevronRight className="w-3.5 h-3.5" />
+            </button>
+            <span className="text-[10px] text-gray-400">Next</span>
+          </div>
           
           {/* Autoplay toggle button */}
-          <button
-            type="button"
-            onClick={toggleAutoPlay}
-            className={`rounded-full p-1.5 border shadow-sm transition-all ${
-              isAutoPlaying 
-                ? "bg-[#DB0011] text-white border-[#DB0011] hover:bg-[#b8000e]" 
-                : "bg-white hover:bg-gray-50"
-            }`}
-            title={isAutoPlaying ? "Pause" : "Autoplay"}
-          >
-            {isAutoPlaying ? (
-              <Pause className="w-3.5 h-3.5" />
-            ) : (
-              <Play className="w-3.5 h-3.5" />
-            )}
-          </button>
+          <div className="flex flex-col items-center gap-0.5">
+            <button
+              type="button"
+              onClick={toggleAutoPlay}
+              className={`rounded-full p-1.5 border shadow-sm transition-all ${
+                isAutoPlaying 
+                  ? "bg-[#DB0011] text-white border-[#DB0011] hover:bg-[#b8000e]" 
+                  : "bg-white hover:bg-gray-50"
+              }`}
+              title={isAutoPlaying ? "Pause" : "Autoplay"}
+            >
+              {isAutoPlaying ? (
+                <Pause className="w-3.5 h-3.5" />
+              ) : (
+                <Play className="w-3.5 h-3.5" />
+              )}
+            </button>
+            <span className="text-[10px] text-gray-400">{isAutoPlaying ? "Pause" : "Auto"}</span>
+          </div>
           
-{/* Replay button - only on final step */}
-  {isComplete && !isAutoPlaying && (
-  <button
-  type="button"
-  onClick={handleReplay}
-  className="rounded-full p-1.5 border bg-white shadow-sm hover:bg-gray-50"
-  title="Replay"
-  >
-  <RotateCcw className="w-3.5 h-3.5" />
-  </button>
-  )}
+          {/* Restart button - always visible */}
+          <div className="flex flex-col items-center gap-0.5">
+            <button
+              type="button"
+              onClick={handleReplay}
+              className="rounded-full p-1.5 border bg-white shadow-sm hover:bg-gray-50"
+              title="Restart"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+            </button>
+            <span className="text-[10px] text-gray-400">Restart</span>
+          </div>
         </div>
       </div>
     )

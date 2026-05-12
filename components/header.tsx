@@ -123,16 +123,8 @@ export function Header() {
               ))}
             </nav>
 
-            {/* Right side - CTA button (desktop) and mobile menu button */}
+            {/* Right side - mobile menu button */}
             <div className="flex items-center gap-4">
-              {/* See the Demo CTA - Desktop */}
-              <button
-                onClick={scrollToTop}
-                className="hidden md:block rounded-full px-4 py-2 text-sm font-semibold bg-primary text-white hover:bg-primary/90 transition-all"
-              >
-                See the Demo
-              </button>
-
               {/* Mobile menu button */}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -173,13 +165,7 @@ export function Header() {
                     {item.label}
                   </button>
                 ))}
-                {/* Mobile See the Demo CTA */}
-                <button
-                  onClick={scrollToTop}
-                  className="mt-4 rounded-full px-4 py-3 text-sm font-semibold bg-primary text-white hover:bg-primary/90 transition-all text-center"
-                >
-                  See the Demo
-                </button>
+
               </nav>
             </motion.div>
           )}
