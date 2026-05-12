@@ -784,7 +784,7 @@ function PhoneShell({
   const innerRadius2 = isXLarge ? "rounded-[3.8rem]" : isLarge ? "rounded-[3rem]" : "rounded-[3rem]"
   const screenRadius = isXLarge ? "rounded-[3.6rem]" : isLarge ? "rounded-[2.8rem]" : "rounded-[2.8rem]"
   const statusBarHeight = isXLarge ? "h-20" : isLarge ? "h-14" : "h-14"
-  const headerHeight = isXLarge ? "h-20" : isLarge ? "h-14" : "h-14"
+  const headerHeight = isXLarge ? "h-10" : isLarge ? "h-8" : "h-7"
   const dynamicIslandWidth = isXLarge ? "w-[140px] h-[44px]" : isLarge ? "w-[124px] h-[38px]" : "w-[100px] h-[32px]"
   const timeTextSize = isXLarge ? "text-base" : isLarge ? "text-sm" : "text-xs"
   const hsbcTextSize = isXLarge ? "text-2xl" : isLarge ? "text-xl" : "text-lg"
@@ -905,11 +905,11 @@ export function PhonePreview() {
             </div>
           </div>
         </div>
-        <div className="h-12 bg-[#DB0011] flex items-center px-4">
+        <div className="h-8 bg-[#DB0011] flex items-center px-3">
           <img 
             src="/images/hsbc-logo-full.png" 
             alt="HSBC" 
-            className="h-6 w-auto"
+            className="h-4 w-auto"
           />
         </div>
         <div className="p-3 bg-gray-50 h-[calc(100%-6rem)]">
