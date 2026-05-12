@@ -71,75 +71,52 @@ export function HeroSection() {
                 {/* Glow effect behind phone */}
                 <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full scale-150 pointer-events-none" />
                 
-                {/* Static iPhone mockup */}
+                {/* Static iPhone mockup - Lock Screen with Notification */}
                 <div className="relative w-[200px] h-[410px]">
                   {/* iPhone frame */}
                   <div className="absolute inset-0 bg-gradient-to-b from-[#3a3a3c] via-[#48484a] to-[#3a3a3c] rounded-[2.2rem] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]" />
                   <div className="absolute inset-[2px] bg-gradient-to-b from-[#636366] via-[#8e8e93] to-[#636366] rounded-[2.1rem]" />
                   <div className="absolute inset-[4px] bg-black rounded-[2rem]" />
                   
-                  {/* Screen content */}
-                  <div className="absolute inset-[6px] bg-white rounded-[1.9rem] overflow-hidden">
-                    {/* Status bar with Dynamic Island */}
-                    <div className="h-12 bg-white relative flex items-end justify-between px-6 pb-1">
-                      <div className="absolute top-2 left-1/2 -translate-x-1/2 w-20 h-6 bg-black rounded-full flex items-center justify-center">
-                        <div className="absolute left-3 w-[8px] h-[8px] rounded-full bg-[#1c1c1e] border border-[#2c2c2e]">
-                          <div className="absolute inset-[1px] rounded-full bg-gradient-to-br from-[#3a3a3c] to-[#1c1c1e]" />
-                        </div>
-                        <div className="absolute right-4 w-[5px] h-[5px] rounded-full bg-[#2c2c2e]" />
+                  {/* Screen content - Lock Screen */}
+                  <div className="absolute inset-[6px] bg-gradient-to-b from-[#1a1a2e] via-[#16213e] to-[#0f0f23] rounded-[1.9rem] overflow-hidden">
+                    {/* Dynamic Island */}
+                    <div className="absolute top-2 left-1/2 -translate-x-1/2 w-16 h-5 bg-black rounded-full flex items-center justify-center z-10">
+                      <div className="absolute left-2.5 w-[6px] h-[6px] rounded-full bg-[#1c1c1e] border border-[#2c2c2e]">
+                        <div className="absolute inset-[1px] rounded-full bg-gradient-to-br from-[#3a3a3c] to-[#1c1c1e]" />
                       </div>
-                      <span className="text-[10px] font-semibold text-gray-900">9:41</span>
-                      <div className="flex items-center gap-1">
-                        <div className="w-5 h-2.5 border border-gray-900 rounded-[2px] relative">
-                          <div className="absolute inset-[1px] right-[2px] bg-gray-900 rounded-[1px]" />
+                      <div className="absolute right-3 w-[4px] h-[4px] rounded-full bg-[#2c2c2e]" />
+                    </div>
+                    
+                    {/* Time display */}
+                    <div className="pt-12 text-center">
+                      <div className="text-white text-4xl font-light tracking-tight">9:41</div>
+                      <div className="text-white/70 text-[10px] mt-0.5">Monday, 12 May</div>
+                    </div>
+                    
+                    {/* HSBC Notification */}
+                    <div className="mx-3 mt-6">
+                      <div className="bg-white/95 backdrop-blur-xl rounded-xl p-2.5 shadow-lg">
+                        <div className="flex items-start gap-2">
+                          <div className="w-8 h-8 rounded-lg bg-[#DB0011] flex items-center justify-center flex-shrink-0">
+                            <span className="text-white text-[8px] font-bold">HSBC</span>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between">
+                              <span className="font-semibold text-gray-900 text-[10px]">HSBC</span>
+                              <span className="text-[8px] text-gray-500">now</span>
+                            </div>
+                            <p className="text-[8px] text-gray-700 mt-0.5 leading-relaxed">
+                              Jes, you have £10,000 sitting idle. We&apos;ve found savings products that could make your money work harder.
+                            </p>
+                          </div>
                         </div>
                       </div>
                     </div>
                     
-                    {/* HSBC Header */}
-                    <div className="h-8 bg-[#DB0011] flex items-center px-3">
-                      <div className="text-white font-bold text-sm tracking-tight">HSBC</div>
-                    </div>
-                    
-                    {/* Chat preview content */}
-                    <div className="p-3 space-y-2 bg-gray-50 h-full">
-                      {/* AI message bubble */}
-                      <div className="flex gap-2">
-                        <div className="w-6 h-6 rounded-full bg-[#DB0011] flex items-center justify-center flex-shrink-0">
-                          <span className="text-white text-[8px] font-bold">AI</span>
-                        </div>
-                        <div className="bg-white rounded-xl rounded-tl-sm px-2.5 py-1.5 shadow-sm max-w-[85%]">
-                          <p className="text-[9px] text-gray-700 leading-relaxed">
-                            Hi there! I&apos;m your HSBC AI assistant. How can I help you today?
-                          </p>
-                        </div>
-                      </div>
-                      
-                      {/* User message bubble */}
-                      <div className="flex justify-end">
-                        <div className="bg-[#DB0011] rounded-xl rounded-tr-sm px-2.5 py-1.5 max-w-[85%]">
-                          <p className="text-[9px] text-white leading-relaxed">
-                            I want to save money
-                          </p>
-                        </div>
-                      </div>
-                      
-                      {/* AI response */}
-                      <div className="flex gap-2">
-                        <div className="w-6 h-6 rounded-full bg-[#DB0011] flex items-center justify-center flex-shrink-0">
-                          <span className="text-white text-[8px] font-bold">AI</span>
-                        </div>
-                        <div className="bg-white rounded-xl rounded-tl-sm px-2.5 py-1.5 shadow-sm max-w-[85%]">
-                          <p className="text-[9px] text-gray-700 leading-relaxed">
-                            Great choice! Let me help you find the best savings option...
-                          </p>
-                        </div>
-                      </div>
-                    </div>
+                    {/* Home indicator */}
+                    <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-24 h-1 bg-white/30 rounded-full" />
                   </div>
-                  
-                  {/* Home indicator */}
-                  <div className="absolute bottom-3 left-1/2 -translate-x-1/2 w-24 h-1 bg-black/20 rounded-full" />
                   
                   {/* Side buttons */}
                   <div className="absolute right-0 top-28 w-[2px] h-14 bg-gradient-to-b from-[#636366] via-[#8e8e93] to-[#636366] rounded-r-sm" />
