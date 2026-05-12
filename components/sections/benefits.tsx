@@ -41,7 +41,7 @@ const summaryStats = [
 
 export function BenefitsSection() {
   return (
-    <section className="py-24 px-6 bg-background">
+    <section id="value-creation" className="py-24 px-6 bg-background">
       <div className="max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -50,6 +50,7 @@ export function BenefitsSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
+          <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">Value Creation</p>
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4 tracking-tight font-[family-name:var(--font-display)]">
             Quantifiable Business Impact
           </h2>

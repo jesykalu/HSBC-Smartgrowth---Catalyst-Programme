@@ -1,4 +1,5 @@
 import { Header } from "@/components/header"
+import { BackToTop } from "@/components/back-to-top"
 import { HeroSection } from "@/components/sections/hero"
 import { ProblemSection } from "@/components/sections/problem"
 import { PointOfViewSection } from "@/components/sections/point-of-view"
@@ -12,6 +13,7 @@ export default function ProposalPage() {
   return (
     <main className="min-h-screen">
       <Header />
+      <BackToTop />
       <HeroSection />
       <ProblemSection />
       <PointOfViewSection />

@@ -51,7 +51,7 @@ const layers = [
 
 export function ArchitectureSection() {
   return (
-    <section className="py-24 px-6 bg-muted/30">
+    <section id="how-it-works" className="py-24 px-6 bg-muted/30">
       <div className="max-w-4xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -60,6 +60,7 @@ export function ArchitectureSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
+          <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">How It Works</p>
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4 tracking-tight font-[family-name:var(--font-display)]">
             The Solution: How the Advice-Led Growth Engine Works
           </h2>

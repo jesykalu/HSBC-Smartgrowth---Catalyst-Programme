@@ -33,7 +33,7 @@ const whyAccenturePoints = [
 
 export function ClosingSection() {
   return (
-    <section className="py-32 px-6 bg-gradient-to-br from-primary/5 via-background to-primary/10 relative overflow-hidden">
+    <section id="why-us" className="py-32 px-6 bg-gradient-to-br from-primary/5 via-background to-primary/10 relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(106,0,255,0.08),transparent_70%)]" />
       
@@ -46,6 +46,7 @@ export function ClosingSection() {
           transition={{ duration: 0.6 }}
           className="mb-16"
         >
+          <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-3 text-center">Why Accenture</p>
           <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-8 text-center tracking-tight font-[family-name:var(--font-display)]">
             Why Accenture
           </h3>
