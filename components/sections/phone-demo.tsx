@@ -824,7 +824,12 @@ function PhoneShell({
             
             {/* HSBC Header - only show in chat/done phases */}
             {(phase === "chat" || phase === "done") && (
-              <div className={`${headerHeight} bg-[#DB0011] flex items-center px-4`}>
+              <div className={`${headerHeight} bg-[#DB0011] flex items-center px-4 gap-2`}>
+                <img 
+                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-TZwEiHPVB06OT66kEbfat5cSQ6KNAv.png" 
+                  alt="HSBC" 
+                  className={`${isXLarge ? "h-5" : isLarge ? "h-4" : "h-3"} w-auto`}
+                />
                 <div className={`text-white font-bold ${hsbcTextSize} tracking-tight`}>HSBC</div>
               </div>
             )}
@@ -893,7 +898,12 @@ export function PhonePreview() {
             </div>
           </div>
         </div>
-        <div className="h-12 bg-[#DB0011] flex items-center px-4">
+        <div className="h-12 bg-[#DB0011] flex items-center px-4 gap-2">
+          <img 
+            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-TZwEiHPVB06OT66kEbfat5cSQ6KNAv.png" 
+            alt="HSBC" 
+            className="h-5 w-auto"
+          />
           <div className="text-white font-bold text-base tracking-tight">HSBC</div>
         </div>
         <div className="p-3 bg-gray-50 h-[calc(100%-6rem)]">
