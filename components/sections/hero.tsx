@@ -173,11 +173,8 @@ export function HeroSection() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
               transition={{ duration: 0.4, ease: "easeOut" }}
-              className="relative z-10 flex flex-col items-center"
+              className="relative z-10"
             >
-              {/* Header */}
-              <h2 className="text-white text-xl font-semibold mb-4 tracking-wide">Experience the Demo</h2>
-              
               {/* Glow effect */}
               <div className="absolute inset-0 bg-primary/30 blur-[100px] rounded-full scale-150 pointer-events-none" />
               
