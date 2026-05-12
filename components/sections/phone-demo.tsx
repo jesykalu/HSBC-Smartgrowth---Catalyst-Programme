@@ -917,14 +917,14 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
   }
   const phase = getPhase()
   
-  // Scroll chat to bottom with slow, readable animation
+  // Scroll chat to bottom with very slow, readable animation
   const scrollToBottom = () => {
     if (scrollRef.current) {
       const element = scrollRef.current
       const targetScroll = element.scrollHeight
       const startScroll = element.scrollTop
       const distance = targetScroll - startScroll
-      const duration = 1500 // 1.5 seconds for slow readable scroll
+      const duration = 3000 // 3 seconds for very slow readable scroll
       let startTime: number | null = null
       
       const animateScroll = (currentTime: number) => {
@@ -932,8 +932,8 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
         const elapsed = currentTime - startTime
         const progress = Math.min(elapsed / duration, 1)
         
-        // Ease-out curve for natural deceleration
-        const easeOut = 1 - Math.pow(1 - progress, 3)
+        // Strong ease-out curve for heavy deceleration at the end
+        const easeOut = 1 - Math.pow(1 - progress, 5)
         element.scrollTop = startScroll + (distance * easeOut)
         
         if (progress < 1) {
