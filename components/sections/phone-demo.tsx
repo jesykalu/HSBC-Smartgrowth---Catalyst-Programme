@@ -351,7 +351,7 @@ function LockScreen({ showNotification }: { showNotification: boolean }) {
                 <img 
                   src="/images/hsbc-logo.png" 
                   alt="HSBC" 
-                  className="w-[26px] h-[26px] object-contain"
+                  className="w-[34px] h-[34px] object-contain"
                 />
               </div>
               <div className="flex-1 min-w-0">
