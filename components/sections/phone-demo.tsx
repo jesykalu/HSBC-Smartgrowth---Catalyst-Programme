@@ -1,8 +1,8 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { motion } from "framer-motion"
-import { Check, PiggyBank, TrendingUp, ChevronRight, ChevronLeft, Play, MessageCircle, ArrowLeft, Calendar, Coins, Lock, Shield, FileText, Users, Sparkles, CreditCard, Plane, BarChart3, ArrowUpDown, ShoppingBag, Wallet } from "lucide-react"
+import { Check, PiggyBank, TrendingUp, ChevronRight, ChevronLeft, Play, Pause, MessageCircle, ArrowLeft, Calendar, Coins, Lock, Shield, FileText, Users, Sparkles, CreditCard, Plane, BarChart3, ArrowUpDown, ShoppingBag, Wallet } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 // Phase types
@@ -773,6 +773,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
   const [chipSelections, setChipSelections] = useState<Record<number, number | null>>({})
   const [visitedProducts, setVisitedProducts] = useState<Set<string>>(new Set())
   const [currentProductView, setCurrentProductView] = useState<"fixedSaver" | "isa" | null>(null)
+  const [isAutoPlaying, setIsAutoPlaying] = useState(false)
   
   const scrollRef = useRef<HTMLDivElement>(null)
   
@@ -1012,6 +1013,50 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
     setChipSelections({})
     setVisitedProducts(new Set())
     setCurrentProductView(null)
+    setIsAutoPlaying(false)
+  }
+  
+  // Autoplay effect - auto-advance every 2.5 seconds
+  useEffect(() => {
+    if (!isAutoPlaying) return
+    
+    const interval = setInterval(() => {
+      setCurrentStep(prev => {
+        if (prev >= totalSteps - 1) {
+          setIsAutoPlaying(false)
+          return prev
+        }
+        // Auto-select chip options for question steps
+        const nextStep = prev + 1
+        const nextStepAction = demoSteps[nextStep]?.action
+        if (nextStepAction === "question1" || nextStepAction === "question2" || nextStepAction === "question3") {
+          setChipSelections(prevSelections => ({
+            ...prevSelections,
+            [nextStep]: 0 // Auto-select first option
+          }))
+        }
+        setTimeout(scrollToBottom, 100)
+        return nextStep
+      })
+    }, 2500)
+    
+    return () => clearInterval(interval)
+  }, [isAutoPlaying, totalSteps])
+  
+  // Toggle autoplay
+  const toggleAutoPlay = () => {
+    if (isAutoPlaying) {
+      setIsAutoPlaying(false)
+    } else {
+      // If at the end, restart first
+      if (currentStep >= totalSteps - 1) {
+        setCurrentStep(0)
+        setChipSelections({})
+        setVisitedProducts(new Set())
+        setCurrentProductView(null)
+      }
+      setIsAutoPlaying(true)
+    }
   }
   
   const isComplete = currentStep >= totalSteps - 1
@@ -1237,8 +1282,35 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
           </button>
         </div>
         
+        {/* Autoplay toggle button */}
+        <div className="mt-3">
+          <button
+            type="button"
+            onClick={toggleAutoPlay}
+            className={`rounded-full px-4 py-2 text-sm font-medium border shadow-sm transition-all ${
+              isAutoPlaying 
+                ? "bg-[#DB0011] text-white border-[#DB0011] hover:bg-[#b8000e]" 
+                : "bg-white hover:bg-gray-50"
+            }`}
+          >
+            <span className="flex items-center">
+              {isAutoPlaying ? (
+                <>
+                  <Pause className="w-4 h-4 mr-1" />
+                  Pause
+                </>
+              ) : (
+                <>
+                  <Play className="w-4 h-4 mr-1" />
+                  Autoplay
+                </>
+              )}
+            </span>
+          </button>
+        </div>
+        
         {/* Replay button - only on final step */}
-        {isComplete && (
+        {isComplete && !isAutoPlaying && (
           <div className="mt-3">
             <button
               type="button"
@@ -1315,8 +1387,31 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
             </Button>
           </div>
           
+          {/* Autoplay toggle button */}
+          <div className="mt-3">
+            <Button
+              type="button"
+              onClick={toggleAutoPlay}
+              variant={isAutoPlaying ? "default" : "outline"}
+              size="sm"
+              className={`rounded-full px-4 ${isAutoPlaying ? "bg-[#DB0011] text-white hover:bg-[#b8000e]" : ""}`}
+            >
+              {isAutoPlaying ? (
+                <>
+                  <Pause className="w-4 h-4 mr-1" />
+                  Pause
+                </>
+              ) : (
+                <>
+                  <Play className="w-4 h-4 mr-1" />
+                  Autoplay
+                </>
+              )}
+            </Button>
+          </div>
+          
           {/* Replay button - only on final step */}
-          {isComplete && (
+          {isComplete && !isAutoPlaying && (
             <div className="mt-3">
               <Button
                 type="button"
