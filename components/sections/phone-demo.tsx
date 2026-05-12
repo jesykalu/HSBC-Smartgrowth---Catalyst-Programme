@@ -741,7 +741,7 @@ function ChatMessage({ type, text, children, isNew = false }: ChatMessageProps) 
         <span className="text-white text-[9px] font-bold">{isBot ? "H" : "J"}</span>
       </div>
 
-      <div className={`flex flex-col ${isBot ? "items-start max-w-[75%]" : "items-end max-w-[68%]"}`}>
+      <div className={`flex flex-col ${isBot ? "items-start max-w-[75%]" : "items-end max-w-[85%]"}`}>
         {text && (
           <div className={`rounded-2xl px-3 py-2 text-left ${
             isBot 
