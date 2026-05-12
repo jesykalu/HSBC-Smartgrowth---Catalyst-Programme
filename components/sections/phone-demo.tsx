@@ -201,36 +201,36 @@ function ReplyChips({
   )
 }
 
-// Financial Snapshot Card - NEW component
+// Financial Snapshot Card - compact version
 function FinancialSnapshotCard() {
   const data = [
-    { icon: PiggyBank, label: "Current savings products", value: "LISA · Easy Access Saver" },
-    { icon: CreditCard, label: "Avg. monthly spend", value: "£1,840 / month" },
-    { icon: Plane, label: "Large purchases (last 6 months)", value: "None detected" },
-    { icon: BarChart3, label: "Savings rate", value: "~18% of monthly income" },
-    { icon: ArrowUpDown, label: "Avg. monthly transfers to savings", value: "£320 / month" },
-    { icon: ShoppingBag, label: "Top spending categories", value: "Groceries, Transport, Subscriptions" },
-    { icon: Wallet, label: "Idle funds (uninvested)", value: "£10,000" },
+    { icon: PiggyBank, label: "Savings products", value: "LISA · Easy Access" },
+    { icon: CreditCard, label: "Monthly spend", value: "£1,840/mo" },
+    { icon: Plane, label: "Large purchases", value: "None" },
+    { icon: BarChart3, label: "Savings rate", value: "~18%" },
+    { icon: ArrowUpDown, label: "Monthly transfers", value: "£320/mo" },
+    { icon: ShoppingBag, label: "Top categories", value: "Groceries, Transport" },
+    { icon: Wallet, label: "Idle funds", value: "£10,000" },
   ]
 
   return (
-    <div className="bg-gradient-to-b from-white to-gray-50 rounded-xl border border-gray-100 shadow-sm p-4 mt-2">
+    <div className="bg-gradient-to-b from-white to-gray-50 rounded-lg border border-gray-100 shadow-sm p-2 mt-1.5">
       {/* Header */}
-      <div className="flex items-center gap-2 mb-3">
-        <Sparkles className="w-4 h-4 text-primary" />
-        <span className="font-bold text-gray-900 text-sm">Your Financial Snapshot</span>
+      <div className="flex items-center gap-1.5 mb-1.5">
+        <Sparkles className="w-3 h-3 text-primary" />
+        <span className="font-bold text-gray-900 text-[11px]">Your Financial Snapshot</span>
       </div>
       
       {/* Data rows */}
       <div className="space-y-0">
         {data.map((item, index) => (
           <div key={item.label}>
-            <div className="flex items-center justify-between py-2">
-              <div className="flex items-center gap-2">
-                <item.icon className="w-3.5 h-3.5 text-gray-400" />
-                <span className="text-xs text-gray-500">{item.label}</span>
+            <div className="flex items-center justify-between py-1">
+              <div className="flex items-center gap-1.5">
+                <item.icon className="w-3 h-3 text-gray-400" />
+                <span className="text-[10px] text-gray-500">{item.label}</span>
               </div>
-              <span className="text-xs text-gray-900 font-medium text-right max-w-[45%]">{item.value}</span>
+              <span className="text-[10px] text-gray-900 font-medium text-right">{item.value}</span>
             </div>
             {index < data.length - 1 && <div className="h-px bg-gray-100" />}
           </div>
