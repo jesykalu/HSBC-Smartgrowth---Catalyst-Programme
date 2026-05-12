@@ -214,23 +214,23 @@ function FinancialSnapshotCard() {
   ]
 
   return (
-    <div className="bg-gradient-to-b from-white to-gray-50 rounded-lg border border-gray-100 shadow-sm p-2 mt-1.5">
+    <div className="bg-gradient-to-b from-white to-gray-50 rounded-lg border border-gray-100 shadow-sm p-1.5 mt-1">
       {/* Header */}
-      <div className="flex items-center gap-1.5 mb-1.5">
-        <Sparkles className="w-3 h-3 text-primary" />
-        <span className="font-bold text-gray-900 text-[11px]">Your Financial Snapshot</span>
+      <div className="flex items-center gap-1 mb-1">
+        <Sparkles className="w-2.5 h-2.5 text-primary" />
+        <span className="font-bold text-gray-900 text-[10px]">Your Financial Snapshot</span>
       </div>
       
       {/* Data rows */}
       <div className="space-y-0">
         {data.map((item, index) => (
           <div key={item.label}>
-            <div className="flex items-center justify-between py-1">
-              <div className="flex items-center gap-1.5">
-                <item.icon className="w-3 h-3 text-gray-400" />
-                <span className="text-[10px] text-gray-500">{item.label}</span>
+            <div className="flex items-center justify-between py-0.5">
+              <div className="flex items-center gap-1">
+                <item.icon className="w-2.5 h-2.5 text-gray-400" />
+                <span className="text-[9px] text-gray-500">{item.label}</span>
               </div>
-              <span className="text-[10px] text-gray-900 font-medium text-right">{item.value}</span>
+              <span className="text-[9px] text-gray-900 font-medium text-right">{item.value}</span>
             </div>
             {index < data.length - 1 && <div className="h-px bg-gray-100" />}
           </div>
