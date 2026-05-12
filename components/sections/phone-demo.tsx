@@ -389,13 +389,13 @@ function FaceIDScreen() {
           className="absolute inset-[-20px] rounded-full border-2 border-[#DB0011]/30"
           initial={{ scale: 0.6, opacity: 0 }}
           animate={{ scale: [0.6, 1.2, 1.2], opacity: [0, 0.5, 0] }}
-          transition={{ duration: 2, repeat: 3, ease: "easeOut" }}
+          transition={{ duration: 0.6, repeat: 2, ease: "easeOut" }}
         />
         <motion.div
           className="absolute inset-[-10px] rounded-full border-2 border-[#DB0011]/20"
           initial={{ scale: 0.7, opacity: 0 }}
           animate={{ scale: [0.7, 1.1, 1.1], opacity: [0, 0.4, 0] }}
-          transition={{ duration: 2, repeat: 3, ease: "easeOut", delay: 0.3 }}
+          transition={{ duration: 0.6, repeat: 2, ease: "easeOut", delay: 0.1 }}
         />
         
         <svg viewBox="0 0 80 80" className="w-full h-full relative z-10">
@@ -410,7 +410,7 @@ function FaceIDScreen() {
               stroke: ["#DB0011", "#DB0011", "#DB0011", "#22C55E"],
               pathLength: [0, 1, 1, 1]
             }}
-            transition={{ duration: 5, times: [0, 0.15, 0.85, 1], ease: "easeInOut" }}
+            transition={{ duration: 1.8, times: [0, 0.2, 0.8, 1], ease: "easeInOut" }}
           />
           <motion.path
             d="M58 6 L68 6 Q74 6 74 12 L74 22"
@@ -422,7 +422,7 @@ function FaceIDScreen() {
               stroke: ["#DB0011", "#DB0011", "#DB0011", "#22C55E"],
               pathLength: [0, 1, 1, 1]
             }}
-            transition={{ duration: 5, times: [0, 0.15, 0.85, 1], ease: "easeInOut", delay: 0.15 }}
+            transition={{ duration: 1.8, times: [0, 0.2, 0.8, 1], ease: "easeInOut", delay: 0.05 }}
           />
           <motion.path
             d="M74 58 L74 68 Q74 74 68 74 L58 74"
@@ -434,7 +434,7 @@ function FaceIDScreen() {
               stroke: ["#DB0011", "#DB0011", "#DB0011", "#22C55E"],
               pathLength: [0, 1, 1, 1]
             }}
-            transition={{ duration: 5, times: [0, 0.15, 0.85, 1], ease: "easeInOut", delay: 0.3 }}
+            transition={{ duration: 1.8, times: [0, 0.2, 0.8, 1], ease: "easeInOut", delay: 0.1 }}
           />
           <motion.path
             d="M22 74 L12 74 Q6 74 6 68 L6 58"
@@ -446,14 +446,14 @@ function FaceIDScreen() {
               stroke: ["#DB0011", "#DB0011", "#DB0011", "#22C55E"],
               pathLength: [0, 1, 1, 1]
             }}
-            transition={{ duration: 5, times: [0, 0.15, 0.85, 1], ease: "easeInOut", delay: 0.45 }}
+            transition={{ duration: 1.8, times: [0, 0.2, 0.8, 1], ease: "easeInOut", delay: 0.15 }}
           />
           
           {/* Face icon - fades in during scan, transitions to green */}
           <motion.g
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.8 }}
+            transition={{ duration: 0.2, delay: 0.2 }}
           >
             <motion.g
               initial={{ stroke: "#DB0011", fill: "#DB0011" }}
@@ -461,21 +461,21 @@ function FaceIDScreen() {
                 stroke: ["#DB0011", "#DB0011", "#22C55E"],
                 fill: ["#DB0011", "#DB0011", "#22C55E"]
               }}
-              transition={{ duration: 5, times: [0, 0.85, 1], ease: "easeInOut" }}
+              transition={{ duration: 1.8, times: [0, 0.8, 1], ease: "easeInOut" }}
             >
               {/* Left eye */}
               <motion.circle 
                 cx="30" cy="32" r="3"
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                transition={{ duration: 0.5, delay: 1.2 }}
+                transition={{ duration: 0.15, delay: 0.3 }}
               />
               {/* Right eye */}
               <motion.circle 
                 cx="50" cy="32" r="3"
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                transition={{ duration: 0.5, delay: 1.4 }}
+                transition={{ duration: 0.15, delay: 0.4 }}
               />
               {/* Nose line */}
               <motion.line 
@@ -484,7 +484,7 @@ function FaceIDScreen() {
                 strokeLinecap="round"
                 initial={{ pathLength: 0 }}
                 animate={{ pathLength: 1 }}
-                transition={{ duration: 0.6, delay: 1.6 }}
+                transition={{ duration: 0.2, delay: 0.5 }}
               />
               {/* Smile */}
               <motion.path
@@ -494,21 +494,21 @@ function FaceIDScreen() {
                 strokeLinecap="round"
                 initial={{ pathLength: 0 }}
                 animate={{ pathLength: 1 }}
-                transition={{ duration: 0.7, delay: 2.0 }}
+                transition={{ duration: 0.2, delay: 0.6 }}
               />
             </motion.g>
           </motion.g>
         </svg>
         
-        {/* Scanning line effect - moves up and down slower */}
+        {/* Scanning line effect - moves up and down like real Face ID */}
         <motion.div
           className="absolute left-2 right-2 h-0.5 bg-gradient-to-r from-transparent via-[#DB0011] to-transparent z-20"
           initial={{ top: "20%", opacity: 0 }}
           animate={{ 
-            top: ["20%", "80%", "20%", "80%", "20%", "80%", "50%"],
-            opacity: [0, 0.8, 0.8, 0.8, 0.8, 0.8, 0]
+            top: ["20%", "80%", "20%", "50%"],
+            opacity: [0, 0.8, 0.8, 0]
           }}
-          transition={{ duration: 5, times: [0, 0.15, 0.3, 0.45, 0.6, 0.75, 1], ease: "easeInOut" }}
+          transition={{ duration: 1.5, times: [0, 0.4, 0.8, 1], ease: "easeInOut" }}
         />
         
         {/* Checkmark overlay - appears after scan complete */}
@@ -516,12 +516,12 @@ function FaceIDScreen() {
           className="absolute inset-0 flex items-center justify-center bg-white z-30"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.4, delay: 5.2 }}
+          transition={{ duration: 0.2, delay: 1.9 }}
         >
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            transition={{ duration: 0.5, delay: 5.4, type: "spring", stiffness: 200 }}
+            transition={{ duration: 0.3, delay: 2.0, type: "spring", stiffness: 200 }}
           >
             <div className="w-14 h-14 bg-green-500 rounded-full flex items-center justify-center shadow-lg">
               <Check className="w-8 h-8 text-white" strokeWidth={3} />
@@ -537,13 +537,13 @@ function FaceIDScreen() {
           className="text-gray-800 text-[11px] font-medium"
           initial={{ opacity: 0 }}
           animate={{ opacity: [0, 1, 1, 0] }}
-          transition={{ duration: 5, times: [0, 0.1, 0.9, 1] }}
+          transition={{ duration: 1.8, times: [0, 0.1, 0.85, 1] }}
         >
           Face ID
           <motion.span
             className="inline-block ml-1"
             animate={{ opacity: [0, 1, 0] }}
-            transition={{ duration: 1, repeat: 5 }}
+            transition={{ duration: 0.4, repeat: 4 }}
           >
             ...
           </motion.span>
@@ -554,7 +554,7 @@ function FaceIDScreen() {
           className="absolute inset-0 flex flex-col items-center justify-center"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 5.8 }}
+          transition={{ duration: 0.3, delay: 2.2 }}
         >
           <div className="text-green-600 text-[11px] font-semibold flex items-center gap-1.5">
             <Check className="w-5 h-5" />
@@ -1058,7 +1058,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
           newMessages.push({
             id: newMessages.length + 1,
             type: "user",
-            text: "Thanks — let's see what you'd recommend"
+            text: "Thanks �� let's see what you'd recommend"
           })
           break
           
@@ -1252,7 +1252,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
     const currentAction = demoSteps[currentStep]?.action
     let delay = 4000 // Default delay - increased for readability
     if (currentAction === "financialSnapshot") delay = 6000 // Financial snapshot needs time to read
-    if (currentAction === "faceid") delay = 14000 // Face ID animation completes at ~6s, then pause to see "Face ID recognised" result
+    if (currentAction === "faceid") delay = 5000 // Face ID animation completes at ~2.5s, then pause to see "Face ID recognised" result
     if (currentAction === "compliance") delay = 9000 // Wait for all 6 compliance checks to animate (0.8s + 6*0.6s = ~4.4s + pause)
     if (currentAction === "profileSummary") delay = 6000 // Profile summary needs time to read
     if (currentAction === "allocation") delay = 6000 // Allocation chart needs time to read
