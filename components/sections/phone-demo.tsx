@@ -339,7 +339,7 @@ function LockScreen({ showNotification }: { showNotification: boolean }) {
       {/* Time display */}
       <div className="pt-16 text-center">
         <div className="text-white text-5xl font-light tracking-tight">9:41</div>
-        <div className="text-white/70 text-sm mt-1">Monday, 12 May</div>
+        <div className="text-white/70 text-sm mt-1">Tuesday 12 May</div>
       </div>
       
       {/* Notification - static, no animation delay */}
