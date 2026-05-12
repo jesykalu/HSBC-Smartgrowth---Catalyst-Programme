@@ -347,11 +347,11 @@ function LockScreen({ showNotification }: { showNotification: boolean }) {
         <div className="mx-4 mt-8">
           <div className="bg-white/95 backdrop-blur-xl rounded-2xl p-3 shadow-lg">
             <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0 bg-white">
+              <div className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0 bg-white flex items-center justify-center">
                 <img 
                   src="/images/hsbc-logo.png" 
                   alt="HSBC" 
-                  className="w-full h-full object-cover"
+                  className="w-5 h-5 object-contain"
                 />
               </div>
               <div className="flex-1 min-w-0">
