@@ -166,30 +166,41 @@ function ProductCards({
 function ReplyChips({ 
   options, 
   selectedIndex,
+  pendingIndex,
   onSelect 
 }: { 
   options: string[]
   selectedIndex: number | null
+  pendingIndex?: number | null
   onSelect?: (index: number) => void 
 }) {
   return (
     <div className="flex flex-col gap-2 mt-2 max-w-[75%] ml-8">
       {/* Please select label */}
       <span className="text-[10px] text-gray-400 mb-0.5">please select</span>
-      {options.map((option, index) => (
-        <motion.button
-          key={option}
-          className={`w-full px-3 py-2 rounded-xl text-xs font-medium transition-colors text-left ${
-            selectedIndex === index 
-              ? "bg-[#DB0011] text-white" 
-              : "bg-pink-100 text-gray-700 hover:bg-pink-200"
-          }`}
-          whileTap={{ scale: 0.98 }}
-          onClick={() => onSelect?.(index)}
-        >
-          {option}
-        </motion.button>
-      ))}
+      {options.map((option, index) => {
+        const isSelected = selectedIndex === index
+        const isPending = pendingIndex === index
+        
+        return (
+          <motion.button
+            key={option}
+            className={`w-full px-3 py-2 rounded-xl text-xs font-medium text-left transition-all duration-300 ${
+              isSelected 
+                ? "bg-[#DB0011] text-white" 
+                : isPending
+                  ? "bg-[#DB0011]/70 text-white scale-[0.98]"
+                  : "bg-pink-100 text-gray-700 hover:bg-pink-200"
+            }`}
+            animate={isPending ? { scale: [1, 0.98, 1] } : {}}
+            transition={{ duration: 0.3 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => onSelect?.(index)}
+          >
+            {option}
+          </motion.button>
+        )
+      })}
     </div>
   )
 }
@@ -877,6 +888,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
   const isXLarge = scale === "xlarge"
   const [currentStep, setCurrentStep] = useState(0)
   const [chipSelections, setChipSelections] = useState<Record<number, number | null>>({})
+  const [pendingSelection, setPendingSelection] = useState<{ step: number; index: number } | null>(null)
   const [visitedProducts, setVisitedProducts] = useState<Set<string>>(new Set())
   const [currentProductView, setCurrentProductView] = useState<"fixedSaver" | "isa" | null>(null)
   const [isAutoPlaying, setIsAutoPlaying] = useState(false)
@@ -1117,6 +1129,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
   const handleReplay = () => {
     setCurrentStep(0)
     setChipSelections({})
+    setPendingSelection(null)
     setVisitedProducts(new Set())
     setCurrentProductView(null)
     setIsAutoPlaying(false)
@@ -1132,37 +1145,51 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
     if (currentAction === "financialSnapshot") delay = 3000 // Financial snapshot needs time to read
     if (currentAction === "faceid") delay = 3500 // Face ID animation takes ~2.8s to complete
     
+    // Check if current step needs chip selection animation
+    const needsChipSelection = currentAction === "question1" || currentAction === "question2" || currentAction === "question3" || currentAction === "profileSummary"
+    
+    if (needsChipSelection && chipSelections[currentStep] === undefined) {
+      // First show the pending state (pink -> transitioning)
+      const pendingTimeout = setTimeout(() => {
+        setPendingSelection({ step: currentStep, index: 0 })
+        
+        // Then after a short delay, confirm the selection (turn red)
+        setTimeout(() => {
+          setChipSelections(prevSelections => ({
+            ...prevSelections,
+            [currentStep]: 0
+          }))
+          setPendingSelection(null)
+        }, 400)
+      }, 800) // Wait a bit before starting the selection animation
+      
+      return () => clearTimeout(pendingTimeout)
+    }
+    
     const timeout = setTimeout(() => {
       if (currentStep >= totalSteps - 1) {
         setIsAutoPlaying(false)
         return
       }
       
-      // Auto-select chip options for question steps and profile summary
-      const nextStep = currentStep + 1
-      const nextStepAction = demoSteps[nextStep]?.action
-      if (nextStepAction === "question1" || nextStepAction === "question2" || nextStepAction === "question3" || nextStepAction === "profileSummary") {
-        setChipSelections(prevSelections => ({
-          ...prevSelections,
-          [nextStep]: 0 // Auto-select first option (e.g., "Yes, that's me")
-        }))
-      }
       setTimeout(scrollToBottom, 100)
-      setCurrentStep(nextStep)
+      setCurrentStep(currentStep + 1)
     }, delay)
     
     return () => clearTimeout(timeout)
-  }, [isAutoPlaying, currentStep, totalSteps])
+  }, [isAutoPlaying, currentStep, totalSteps, chipSelections])
   
   // Toggle autoplay
   const toggleAutoPlay = () => {
     if (isAutoPlaying) {
       setIsAutoPlaying(false)
+      setPendingSelection(null)
     } else {
       // If at the end, restart first
       if (currentStep >= totalSteps - 1) {
         setCurrentStep(0)
         setChipSelections({})
+        setPendingSelection(null)
         setVisitedProducts(new Set())
         setCurrentProductView(null)
       }
@@ -1244,6 +1271,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
                         <ReplyChips 
                           options={["Yes, within 6 months", "Maybe, 6–12 months", "No plans"]}
                           selectedIndex={chipSelections[6] ?? null}
+                          pendingIndex={pendingSelection?.step === 6 ? pendingSelection.index : null}
                           onSelect={(idx) => handleChipSelect(6, idx)}
                         />
                       </ChatMessage>
@@ -1257,6 +1285,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
                         <ReplyChips 
                           options={["Regularly (monthly)", "Occasionally", "Rarely / lock it away"]}
                           selectedIndex={chipSelections[7] ?? null}
+                          pendingIndex={pendingSelection?.step === 7 ? pendingSelection.index : null}
                           onSelect={(idx) => handleChipSelect(7, idx)}
                         />
                       </ChatMessage>
@@ -1270,6 +1299,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
                         <ReplyChips 
                           options={["Play it safe", "Balanced approach", "Happy to take risks"]}
                           selectedIndex={chipSelections[8] ?? null}
+                          pendingIndex={pendingSelection?.step === 8 ? pendingSelection.index : null}
                           onSelect={(idx) => handleChipSelect(8, idx)}
                         />
                       </ChatMessage>
@@ -1287,6 +1317,7 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
                         <ReplyChips 
                           options={["Yes, that's me", "Not quite"]}
                           selectedIndex={chipSelections[9] ?? null}
+                          pendingIndex={pendingSelection?.step === 9 ? pendingSelection.index : null}
                           onSelect={(idx) => handleChipSelect(9, idx)}
                         />
                       </ChatMessage>
