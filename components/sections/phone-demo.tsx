@@ -171,7 +171,7 @@ function ReplyChips({
   onSelect?: (index: number) => void 
 }) {
   return (
-    <div className="flex flex-col gap-2 mt-2 max-w-[75%] ml-8">
+    <div className="flex flex-col gap-2 mt-2 max-w-[95%] ml-8">
       {/* Please select label */}
       <span className="text-[10px] text-gray-400 mb-0.5">please select</span>
       {options.map((option, index) => {
