@@ -27,32 +27,37 @@ export function HeroSection() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
+              className="space-y-6"
             >
               {/* Subscript pill badge */}
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 mb-6">
-                <svg
-                  className="w-4 h-4 text-white/80 flex-shrink-0"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M12 2L13.09 8.26L19 7L14.74 11.74L21 12L14.74 12.26L19 17L13.09 15.74L12 22L10.91 15.74L5 17L9.26 12.26L3 12L9.26 11.74L5 7L10.91 8.26Z" />
-                </svg>
-                <span className="text-sm font-semibold text-white tracking-wide">
-                  Accenture <span className="text-white/60">×</span> HSBC Proposal
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 backdrop-blur-md border border-white/10">
+                <div className="w-1.5 h-1.5 rounded-full bg-[#DB0011] animate-pulse" />
+                <span className="text-xs font-medium text-white/70 uppercase tracking-widest">
+                  Strategic Proposal
                 </span>
               </div>
               
               {/* Main headline */}
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-[1.1] text-balance tracking-tight font-[family-name:var(--font-display)]">
-                <span className="text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]">Your customers are already using AI to move their money.</span>{" "}
-                <span className="text-primary drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]">
-                  The question is — will it be your AI guiding them, or someone else&apos;s?
-                </span>
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-semibold leading-[1.15] text-balance tracking-tight">
+                <span className="text-white">Your customers are already using AI to move their money.</span>
               </h1>
+              
+              {/* Subheadline with accent */}
+              <p className="text-xl md:text-2xl lg:text-3xl font-light leading-relaxed text-white/60">
+                The question is — will it be{" "}
+                <span className="text-white font-medium">your AI</span>{" "}
+                guiding them, or someone else&apos;s?
+              </p>
+              
+              {/* Partnership badge */}
+              <div className="flex items-center gap-3 pt-4">
+                <span className="text-xs text-white/40 uppercase tracking-widest">Presented by</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-white/80 font-semibold text-sm">Accenture</span>
+                  <span className="text-white/30">|</span>
+                  <span className="text-white/80 font-semibold text-sm">HSBC</span>
+                </div>
+              </div>
             </motion.div>
 
             {/* Right column - Static phone preview with CTA */}
