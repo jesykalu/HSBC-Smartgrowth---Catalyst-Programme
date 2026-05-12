@@ -960,14 +960,15 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
   
   // Scroll chat with very slow, readable animation
   // scrollPercentage: 1 = scroll to bottom, 0.5 = scroll halfway, etc.
-  const scrollToPosition = (scrollPercentage: number = 1) => {
+  // customDuration: optional duration in ms (default 3000)
+  const scrollToPosition = (scrollPercentage: number = 1, customDuration?: number) => {
     if (scrollRef.current) {
       const element = scrollRef.current
       const maxScroll = element.scrollHeight - element.clientHeight
       const targetScroll = maxScroll * scrollPercentage
       const startScroll = element.scrollTop
       const distance = targetScroll - startScroll
-      const duration = 3000 // 3 seconds for very slow readable scroll
+      const duration = customDuration || 3000 // default 3 seconds
       let startTime: number | null = null
       
       const animateScroll = (currentTime: number) => {
@@ -991,23 +992,25 @@ export function PhoneDemoSection({ heroMode = false, scale = "default" }: PhoneD
   // Convenience function for scrolling to bottom
   const scrollToBottom = () => scrollToPosition(1)
   
-  // Determine scroll position based on step - some steps need to show content from the top
-  const getScrollPositionForStep = (stepIndex: number) => {
+  // Determine scroll position and duration based on step
+  const getScrollConfigForStep = (stepIndex: number) => {
     const action = demoSteps[stepIndex]?.action
     // For financialSnapshot, start at top so user can see the intro message and card
-    if (action === "financialSnapshot") return 0
+    if (action === "financialSnapshot") return { position: 0, duration: 3000 }
+    // For question1 (step 7), scroll more slowly so user can read the content
+    if (action === "question1") return { position: 1, duration: 5000 }
     // For other content-heavy steps, scroll to bottom
-    return 1
+    return { position: 1, duration: 3000 }
   }
   
   // Smart scroll based on current step
   const scrollForStep = (stepIndex: number) => {
-    const position = getScrollPositionForStep(stepIndex)
+    const { position, duration } = getScrollConfigForStep(stepIndex)
     if (position === 0 && scrollRef.current) {
       // For steps that need to show content from top, immediately scroll to top
       scrollRef.current.scrollTop = 0
     } else {
-      scrollToPosition(position)
+      scrollToPosition(position, duration)
     }
   }
   
